@@ -1,11 +1,10 @@
 package com.arm.threatassistant.presentation.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -44,10 +43,8 @@ fun ExtractedEntitiesSection(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(urls, key = { it }) { url ->
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    urls.forEach { url ->
                         Text(
                             text = url,
                             style = MaterialTheme.typography.bodySmall,
@@ -66,10 +63,8 @@ fun ExtractedEntitiesSection(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(phones, key = { it }) { phone ->
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    phones.forEach { phone ->
                         Text(
                             text = phone,
                             style = MaterialTheme.typography.bodySmall,

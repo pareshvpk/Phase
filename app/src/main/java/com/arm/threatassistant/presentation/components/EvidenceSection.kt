@@ -1,11 +1,10 @@
 package com.arm.threatassistant.presentation.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,10 +36,8 @@ fun EvidenceSection(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(assessment.evidenceSummary, key = { it }) { line ->
+            Column(modifier = Modifier.fillMaxWidth()) {
+                assessment.evidenceSummary.forEach { line ->
                     Text(
                         text = line,
                         style = MaterialTheme.typography.bodyMedium,

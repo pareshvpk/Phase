@@ -1,5 +1,6 @@
 package com.arm.threatassistant.presentation.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.arm.threatassistant.domain.model.AnalysisStatus
 import com.arm.threatassistant.R
@@ -19,11 +21,12 @@ fun ResultArea(
     resultMessage: String?,
     modifier: Modifier = Modifier
 ) {
+    val resultContentDescription = stringResource(R.string.content_description_result_area)
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .semantics { contentDescription = stringResource(R.string.content_description_result_area) },
+            .semantics { contentDescription = resultContentDescription },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         )

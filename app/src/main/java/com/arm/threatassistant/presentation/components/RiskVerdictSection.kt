@@ -1,5 +1,6 @@
 package com.arm.threatassistant.presentation.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,10 +23,17 @@ fun RiskVerdictSection(
 ) {
     if (assessment == null) return
 
+    val containerColor = when (assessment.verdict) {
+        ThreatVerdictLevel.SAFE -> MaterialTheme.colorScheme.surfaceContainer
+        ThreatVerdictLevel.SUSPICIOUS -> MaterialTheme.colorScheme.surfaceContainer
+        ThreatVerdictLevel.HIGH_RISK -> MaterialTheme.colorScheme.errorContainer
+        ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+
     Card(
         modifier = modifier.fillMaxWidth().padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = verdictColor(assessment.verdict)
+            containerColor = containerColor
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -35,12 +43,6 @@ fun RiskVerdictSection(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
-            val verdictColor = when (assessment.verdict) {
-                ThreatVerdictLevel.SAFE -> MaterialTheme.colorScheme.surfaceContainer
-                ThreatVerdictLevel.SUSPICIOUS -> MaterialTheme.colorScheme.surfaceContainer
-                ThreatVerdictLevel.HIGH_RISK -> MaterialTheme.colorScheme.errorContainer
-                ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> MaterialTheme.colorScheme.surfaceContainerHigh
-            }
             val verdictTextColor = when (assessment.verdict) {
                 ThreatVerdictLevel.SAFE -> MaterialTheme.colorScheme.onSurface
                 ThreatVerdictLevel.SUSPICIOUS -> MaterialTheme.colorScheme.onSurface

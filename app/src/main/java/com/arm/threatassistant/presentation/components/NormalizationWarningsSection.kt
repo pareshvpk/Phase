@@ -1,11 +1,10 @@
 package com.arm.threatassistant.presentation.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,10 +41,8 @@ fun NormalizationWarningsSection(
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(warnings, key = { it }) { warning ->
+            Column(modifier = Modifier.fillMaxWidth()) {
+                warnings.forEach { warning ->
                     Text(
                         text = "\u2022 $warning",
                         style = MaterialTheme.typography.bodySmall,

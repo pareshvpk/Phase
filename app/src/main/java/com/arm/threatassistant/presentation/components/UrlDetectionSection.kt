@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,10 +36,8 @@ fun UrlDetectionSection(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(result.signals, key = { it.signalId }) { signal ->
+            Column(modifier = Modifier.fillMaxWidth()) {
+                result.signals.forEach { signal ->
                     Text(
                         text = "${signal.description} (${signal.category.name})",
                         style = MaterialTheme.typography.bodyMedium,

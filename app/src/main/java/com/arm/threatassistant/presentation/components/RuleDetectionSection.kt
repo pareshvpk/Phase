@@ -45,11 +45,13 @@ fun RuleDetectionSection(
         return
     }
 
+    val ruleDetectionContentDescription = stringResource(R.string.content_description_rule_detection)
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .semantics { contentDescription = stringResource(R.string.content_description_rule_detection) },
+            .semantics { contentDescription = ruleDetectionContentDescription },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         )

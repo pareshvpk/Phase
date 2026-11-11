@@ -42,7 +42,7 @@
     <string name="privacy_no_url_auto_open">Extracted links are never opened or executed automatically.</string>
     <string name="privacy_original_preserved">The original message is always preserved; nothing is silently modified.</string>
     <string name="settings_permissions_title">Permissions</string>
-    <string name="settings_permissions_body">This app declares INTERNET (android:required=\"false\") but never uses it. No SMS permissions are requested.</string>
+    <string name="settings_permissions_body">This app requests no permissions at all: no INTERNET, no SMS, no storage access. All analysis runs locally.</string>
     <string name="settings_app_version">Android Threat Assistant v1.0.0</string>
     <string name="content_description_back">Navigate back</string>
     <string name="content_description_settings">Open settings and privacy</string>

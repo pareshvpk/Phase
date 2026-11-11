@@ -1,12 +1,15 @@
 package com.arm.threatassistant.presentation.components
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.arm.threatassistant.R
 import com.arm.threatassistant.domain.detection.riskpolicy.ThreatVerdictLevel
 
@@ -36,10 +39,8 @@ fun RecommendedActionsSection(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                items(actions, key = { it }) { action ->
+            Column(modifier = Modifier.fillMaxWidth()) {
+                actions.forEach { action ->
                     Text(
                         text = "\u2022 $action",
                         style = MaterialTheme.typography.bodyMedium,
