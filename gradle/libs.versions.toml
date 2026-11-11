@@ -1,0 +1,48 @@
+# Project-wide dependency and plugin versions.
+# All versions are pinned to stable, mutually compatible releases.
+# AGP 8.5.0 requires JDK 17 and supports compileSdk 35.
+# Kotlin 1.9.24 pairs with the Compose compiler plugin of the same version.
+# Compose BOM 2024.06.00 pins the Compose UI / Material 3 / Foundation artifacts.
+
+[versions]
+agp = "8.6.0"
+kotlin = "2.0.0"
+composeUi = "1.8.2"
+composeMaterial3 = "1.4.0"
+composeFoundation = "1.6.8"
+composeFoundationLayout = "1.8.1"
+coreKtx = "1.12.0"
+activityCompose = "1.8.2"
+lifecycleRuntimeCompose = "2.8.2"
+lifecycleViewmodelCompose = "2.8.2"
+junit = "4.13.2"
+androidxTest = "1.6.1"
+androidxTestRunner = "1.6.1"
+androidxTestRules = "1.6.1"
+androidxTestExtJunit = "1.1.5"
+androidxTestExtRules = "1.5.2"
+
+[libraries]
+android-application = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-android = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRules" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+androidx-test-ext-rules = { group = "androidx.test.ext", name = "rules", version.ref = "androidxTestExtRules" }
+
+# Compose libraries pinned to versions compatible with Compose Compiler 2.0.0.
+compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "composeUi" }
+compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "composeUi" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial3" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeFoundation" }
+compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "composeFoundationLayout" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

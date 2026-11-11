@@ -1,0 +1,25 @@
+{
+  "formatVersion": "1.0.0",
+  "component": {
+    "group": "androidx.compose.material3",
+    "module": "material3",
+    "version": "1.4.0"
+  },
+  "variant": {
+    "name": "release",
+    "files": [
+      {
+        "name": "material3-1.4.0.aar",
+        "attributes": {
+          "org.gradle.category": "library",
+          "org.gradle.jvm.environment": "standard-jvm",
+          "org.gradle.usage": "java-api",
+          "com.android.build.api.attributes.AapiVersionAttr": "35",
+          "com.android.build.api.attributes.AagpVersionAttr": "8.6.0",
+          "com.android.build.api.attributes.BuildTypeAttr": "release",
+          "com.android.build.api.attributes.AppexAttr": "false"
+        }
+      }
+    ]
+  }
+}
