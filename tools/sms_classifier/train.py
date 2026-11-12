@@ -12,7 +12,7 @@ implementation exactly:
 
   1. Unicode NFC normalization
   2. Lowercasing
-  3. Tokenization on non-alphanumeric boundaries (tokens of length >= 2)
+  3. Tokenization on Unicode letter/number boundaries (tokens of length >= 2)
   4. Word n-grams: unigrams + bigrams (joined by single space)
   5. TF = raw term frequency
   6. IDF = smooth_idf = log((n_docs + 1) / (df + 1)) + 1
@@ -62,9 +62,11 @@ NGRAM_MAX = 2
 def preprocess(text: str) -> list[str]:
     """NFC normalize, lowercase, tokenize, emit unigrams + bigrams.
 
-    Tokenization matches Kotlin SmsTextPreprocessor exactly: only ASCII
-    alphanumeric characters ([a-zA-Z0-9]) are kept as token characters;
-    everything else is a delimiter. Tokens shorter than 2 chars are dropped.
+    Tokenization matches Kotlin SmsTextPreprocessor exactly: any Unicode
+    letter or number is a token character (so Devanagari and other non-Latin
+    scripts are preserved); everything else is a delimiter. Tokens shorter
+    than 2 chars are dropped, except single non-ASCII letters/digits which
+    can be meaningful on their own.
     """
     if not text or not text.strip():
         return []
@@ -73,17 +75,17 @@ def preprocess(text: str) -> list[str]:
     normalized = unicodedata.normalize("NFC", text)
     # 2. Lowercasing
     lowercased = normalized.lower()
-    # 3. Tokenization: split on non-ASCII-alphanumeric boundaries
+    # 3. Tokenization: split on non-letter/non-number boundaries
     tokens = []
     current = []
     for ch in lowercased:
-        if ('a' <= ch <= 'z') or ('0' <= ch <= '9'):
+        if ch.isalnum():
             current.append(ch)
         else:
-            if len(current) >= MIN_TOKEN_LENGTH:
+            if _is_usable_token(current):
                 tokens.append("".join(current))
             current = []
-    if len(current) >= MIN_TOKEN_LENGTH:
+    if _is_usable_token(current):
         tokens.append("".join(current))
 
     if not tokens:
@@ -94,6 +96,15 @@ def preprocess(text: str) -> list[str]:
     for i in range(len(tokens) - 1):
         ngrams.append(tokens[i] + " " + tokens[i + 1])
     return ngrams
+
+
+def _is_usable_token(chars: list[str]) -> bool:
+    """Tokens of length >= 2 are kept; single ASCII characters are noise."""
+    if len(chars) >= MIN_TOKEN_LENGTH:
+        return True
+    if len(chars) == 1:
+        return not chars[0].isascii() and chars[0].isalnum()
+    return False
 
 
 # ---------------------------------------------------------------------------

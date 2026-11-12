@@ -36,6 +36,13 @@ object UrlSpecialistDetector {
         "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
     )
 
+    // URL extraction fallback for when the input carries no pre-extracted URLs.
+    // Deliberately unicode-friendly so homograph hosts are not truncated.
+    private val URL_EXTRACTION_PATTERN = Pattern.compile(
+        """\b(?:https?://|www\.)[^\s<>"']+""",
+        Pattern.CASE_INSENSITIVE
+    )
+
     // Detects mixed-script (Cyrillic + Latin, etc.) in domain labels for homograph detection.
     private val HAS_CYRILLIC = Pattern.compile("[\\u0400-\\u04FF]")
     private val HAS_GREEK = Pattern.compile("[\\u0370-\\u03FF]")
@@ -61,7 +68,11 @@ object UrlSpecialistDetector {
      * [com.arm.threatassistant.domain.normalization.InputNormalizer].
      */
     fun detect(input: com.arm.threatassistant.domain.model.AnalysisInput): UrlDetectionResult {
-        val urls = input.extractedUrls
+        val urls = if (input.extractedUrls.isNotEmpty()) {
+            input.extractedUrls
+        } else {
+            extractUrls(input.messageText)
+        }
         val analyses = mutableListOf<UrlAnalysis>()
         val signals = mutableListOf<UrlDetectionSignal>()
         var signalIndex = 0
@@ -233,6 +244,19 @@ object UrlSpecialistDetector {
     // Per-URL analysis
     // -----------------------------------------------------------------------
 
+    private fun extractUrls(text: String): List<String> {
+        if (text.isEmpty()) return emptyList()
+        val urls = mutableListOf<String>()
+        val matcher = URL_EXTRACTION_PATTERN.matcher(text)
+        while (matcher.find()) {
+            val candidate = matcher.group().trimEnd('.', ',', ';', ':', '!', '?', ')', ']', '}')
+            if (candidate.isNotEmpty()) {
+                urls.add(candidate)
+            }
+        }
+        return urls
+    }
+
     private fun analyzeUrl(url: String): UrlAnalysis {
         var scheme: String? = null
         var host: String? = null
@@ -244,10 +268,23 @@ object UrlSpecialistDetector {
         var isShortener = false
 
         try {
-            val uri = URI(url)
+            // Bare www. references have no scheme; give URI one so host parses.
+            val parseTarget = if (url.startsWith("www.", ignoreCase = true)) "http://$url" else url
+            val uri = URI(parseTarget)
             scheme = uri.scheme
-            host = uri.host
-            port = uri.port
+            // java.net.URI.host is null for non-ASCII (homograph) hosts; fall back
+            // to the raw authority so mixed-script detection still sees the host.
+            host = uri.host ?: uri.authority?.let { authority ->
+                val hostPort = authority.substringAfterLast('@')
+                if (hostPort.startsWith("[")) {
+                    hostPort.substringBefore("]") + "]"
+                } else {
+                    hostPort.substringBefore(':')
+                }
+            }
+            // java.net.URI.port returns -1 when no port is present; treat that
+            // as "no port" rather than an unusual port.
+            port = uri.port.takeIf { it != -1 }
             path = uri.path
 
             host?.let { h ->

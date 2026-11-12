@@ -115,6 +115,12 @@ object RiskPolicyEngine {
         val riskScore = rawScore.coerceIn(0.0, weights.maxScore)
         val ruleSignalCount = ruleResult?.signalCount ?: 0
         val urlSignalCount = urlResult?.signalCount ?: 0
+        val ruleHighSeverityCount = ruleResult?.signals?.count {
+            it.severity == com.arm.threatassistant.domain.detection.ruleengine.DetectionSeverity.HIGH
+        } ?: 0
+        val urlHighSeverityCount = urlResult?.signals?.count {
+            it.severity == UrlDetectionSeverity.HIGH
+        } ?: 0
         val classifierScore = classifierResult?.threatScore
 
         val evidenceSummary = buildEvidenceSummary(
@@ -125,8 +131,10 @@ object RiskPolicyEngine {
         val verdict = determineVerdict(
             riskScore = riskScore,
             ruleSignalCount = ruleSignalCount,
+            ruleHighSeverityCount = ruleHighSeverityCount,
             classifierScore = classifierScore,
             urlSignalCount = urlSignalCount,
+            urlHighSeverityCount = urlHighSeverityCount,
             inputStatus = inputStatus
         )
 
@@ -190,13 +198,19 @@ object RiskPolicyEngine {
     private fun determineVerdict(
         riskScore: Double,
         ruleSignalCount: Int,
+        ruleHighSeverityCount: Int,
         classifierScore: Double?,
         urlSignalCount: Int,
+        urlHighSeverityCount: Int,
         inputStatus: AnalysisStatus
     ): ThreatVerdictLevel {
 
-        // No evidence at all → INSUFFICIENT_EVIDENCE.
-        val hasAnyEvidence = ruleSignalCount > 0 || urlSignalCount > 0 || classifierScore != null
+        val classifierConfident = classifierScore != null &&
+            classifierScore >= thresholds.classifierMinConfidence
+
+        // No evidence at all → INSUFFICIENT_EVIDENCE. A low-confidence
+        // classifier score does not count as evidence.
+        val hasAnyEvidence = ruleSignalCount > 0 || urlSignalCount > 0 || classifierConfident
         if (!hasAnyEvidence) {
             return ThreatVerdictLevel.INSUFFICIENT_EVIDENCE
         }
@@ -213,7 +227,8 @@ object RiskPolicyEngine {
 
         // HIGH_RISK: multiple high-severity rule signals even if aggregate
         // score is moderate (conservative: multiple coercion rules = serious).
-        if (ruleSignalCount >= 3) {
+        // Only HIGH severity signals count; several LOW/MEDIUM signals do not.
+        if (ruleHighSeverityCount >= 3) {
             return ThreatVerdictLevel.HIGH_RISK
         }
 
@@ -223,7 +238,11 @@ object RiskPolicyEngine {
             return ThreatVerdictLevel.SUSPICIOUS
         }
 
-        if (classifierScore != null && classifierScore >= thresholds.classifierMinConfidence) {
+        if (ruleHighSeverityCount >= 1 || urlHighSeverityCount >= 1) {
+            return ThreatVerdictLevel.SUSPICIOUS
+        }
+
+        if (classifierConfident) {
             return ThreatVerdictLevel.SUSPICIOUS
         }
 

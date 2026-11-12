@@ -1,6 +1,7 @@
 package com.arm.threatassistant.domain.detection.ruleengine
 
 import com.arm.threatassistant.domain.model.AnalysisInput
+import java.text.Normalizer
 
 /**
  * Deterministic, offline rule engine for detecting suspicious SMS patterns.
@@ -19,13 +20,30 @@ import com.arm.threatassistant.domain.model.AnalysisInput
  * - Broad single-word terms (e.g. "bank", "account", "OTP", "payment") never
  *   fire alone; only multi-word phrases and contextual combinations match.
  * - All relevant matches are returned; the engine never stops at the first.
- * - Duplicate signals for the same rule and matched span are suppressed.
+ * - Duplicate signals for the same rule and matched span are suppressed, and
+ *   overlapping matches of the same rule collapse into the longest one.
  * - No network, no LLM, no ExecuTorch, no external APIs.
  */
 object FastRuleEngine {
 
     internal const val DETECTOR_ID = "FastRuleEngine"
     internal const val DETECTOR_VERSION = "1.0.0"
+
+    /**
+     * Zero-width / invisible / directional formatting characters used to break
+     * up phrases ("Act<ZWSP>within<ZWSP>24 hours") so that naive phrase
+     * matching fails. They are replaced with a space before matching — not
+     * deleted, so the words they separate stay separated.
+     */
+    private val INVISIBLE_CHARACTERS = Regex(
+        "[\\u00AD\\u200B-\\u200F\\u202A-\\u202E\\u2060-\\u2064\\uFEFF\\uFFF9-\\uFFFB]"
+    )
+
+    /** Punctuation and symbols are replaced with a space before matching. */
+    private val PUNCTUATION_OR_SYMBOLS = Regex("[\\p{Punct}\\p{S}]")
+
+    /** Runs of whitespace collapse to a single space. */
+    private val WHITESPACE_RUNS = Regex("\\s+")
 
     /**
      * A single rule definition. Patterns are matched against a normalized,
@@ -38,6 +56,13 @@ object FastRuleEngine {
         val patterns: List<String>,
         val description: String
     )
+
+    /** A matched span of normalized text, used to suppress overlapping matches. */
+    private data class MatchSpan(val start: Int, val end: Int, val text: String) {
+        val length: Int get() = end - start + 1
+
+        fun overlaps(other: MatchSpan): Boolean = start <= other.end && other.start <= end
+    }
 
     /** All rules, grouped by category for maintainability. */
     private val RULES = listOf(
@@ -131,13 +156,14 @@ object FastRuleEngine {
             listOf("unexpected refund processing fee", "refund processing fee"),
             "Message mentions an unexpected refund processing fee, a common scam lure."),
         RuleDefinition("pay_006", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.HIGH,
-            listOf("pay now to avoid", "pay today to avoid"),
-            "Message demands payment to avoid consequences."),
+            listOf("pay now to avoid", "pay today to avoid", "pay now"),
+            "Message demands immediate payment, often to avoid consequences."),
         RuleDefinition("pay_007", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.MEDIUM,
             listOf("penalty of", "penalty will be"),
             "Message threatens a penalty."),
         RuleDefinition("pay_008", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.HIGH,
-            listOf("transfer funds immediately", "send money immediately"),
+            listOf("transfer funds immediately", "transfer money immediately",
+                "send money immediately"),
             "Message demands immediate fund transfer."),
 
         // ---- E. Account suspension threats ----
@@ -176,36 +202,24 @@ object FastRuleEngine {
         val normalized = normalizeForMatching(text)
 
         val detectedSignals = mutableListOf<DetectionSignal>()
-        val seen = mutableSetOf<String>() // (ruleId, matchedSpan) for dedup
 
         var signalIndex = 0
 
         for (rule in RULES) {
-            for (pattern in rule.patterns) {
-                val regex = Regex(pattern, RegexOption.IGNORE_CASE)
-                val matcher = regex.find(normalized)
-                if (matcher != null && matcher.value.isNotEmpty()) {
-                    val matchedSpan = matcher.value
-                    val dedupKey = "${rule.ruleId}|$matchedSpan"
-                    if (dedupKey in seen) {
-                        continue
-                    }
-                    seen.add(dedupKey)
-
-                    signalIndex++
-                    detectedSignals.add(
-                        DetectionSignal(
-                            signalId = "${DETECTOR_ID}-$signalIndex",
-                            category = rule.category,
-                            ruleId = rule.ruleId,
-                            description = rule.description,
-                            matchedText = matchedSpan,
-                            severity = rule.severity,
-                            detectorId = DETECTOR_ID,
-                            detectorVersion = DETECTOR_VERSION
-                        )
+            for (span in bestMatches(rule, normalized)) {
+                signalIndex++
+                detectedSignals.add(
+                    DetectionSignal(
+                        signalId = "${DETECTOR_ID}-$signalIndex",
+                        category = rule.category,
+                        ruleId = rule.ruleId,
+                        description = rule.description,
+                        matchedText = span.text,
+                        severity = rule.severity,
+                        detectorId = DETECTOR_ID,
+                        detectorVersion = DETECTOR_VERSION
                     )
-                }
+                )
             }
         }
 
@@ -220,15 +234,50 @@ object FastRuleEngine {
     }
 
     /**
-     * Produces a matching-friendly representation of [text]: lowercased,
-     * punctuation replaced with spaces, and whitespace collapsed. This makes
-     * matching tolerant of case, punctuation, and whitespace variations while
-     * the original input remains preserved in [AnalysisInput.messageText].
+     * Returns the matches of [rule] inside [normalized] that do not overlap
+     * each other.
+     *
+     * When several patterns of the same rule match overlapping text (e.g.
+     * "account will be blocked today" and "account will be blocked"), only the
+     * longest match is kept so that a single rule never emits redundant
+     * signals for the same piece of text. Non-overlapping matches of the same
+     * rule are all returned.
+     */
+    private fun bestMatches(rule: RuleDefinition, normalized: String): List<MatchSpan> {
+        val candidates = mutableListOf<MatchSpan>()
+        for (pattern in rule.patterns) {
+            val matcher = Regex(pattern, RegexOption.IGNORE_CASE).find(normalized) ?: continue
+            if (matcher.value.isEmpty()) continue
+            candidates.add(MatchSpan(matcher.range.first, matcher.range.last, matcher.value))
+        }
+        if (candidates.isEmpty()) return emptyList()
+
+        candidates.sortWith(compareByDescending<MatchSpan> { it.length }.thenBy { it.start })
+
+        val selected = mutableListOf<MatchSpan>()
+        for (candidate in candidates) {
+            if (selected.none { it.overlaps(candidate) }) {
+                selected.add(candidate)
+            }
+        }
+        return selected
+    }
+
+    /**
+     * Produces a matching-friendly representation of [text]: NFC-normalized,
+     * lowercased, zero-width/invisible characters replaced with spaces,
+     * punctuation replaced with spaces, and whitespace collapsed.
+     *
+     * This makes matching tolerant of case, punctuation, whitespace and
+     * invisible-character obfuscation while the original input remains
+     * preserved in [AnalysisInput.messageText].
      */
     private fun normalizeForMatching(text: String): String {
-        return text.lowercase()
-            .replace(Regex("[\\p{Punct}\\p{S}]"), " ")
-            .replace(Regex("\\s+"), " ")
+        return Normalizer.normalize(text, Normalizer.Form.NFC)
+            .lowercase()
+            .replace(INVISIBLE_CHARACTERS, " ")
+            .replace(PUNCTUATION_OR_SYMBOLS, " ")
+            .replace(WHITESPACE_RUNS, " ")
             .trim()
     }
 }
