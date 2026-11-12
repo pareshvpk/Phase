@@ -13,6 +13,26 @@ AnalysisInput → InputNormalizer → FastRuleEngine → UrlSpecialistDetector �
 All stages run offline on the device. No network access, no DNS lookups, no
 HTTP requests. The LLM never participates in the security decision.
 
+## Build & test
+
+Requirements:
+
+- **JDK 21** — the Android Studio bundled JBR (`C:\Program Files\Android\Android Studio\jbr`)
+- **Android SDK 35** (compileSdk/targetSdk 35, minSdk 26), pointed at by `sdk.dir` in `local.properties`
+
+```bash
+./gradlew assembleDebug        # debug APK -> app/build/outputs/apk/debug/app-debug.apk
+./gradlew testDebugUnitTest    # 144 JVM unit tests
+```
+
+On Windows (bash), point Gradle at the Android Studio JBR:
+
+```bash
+export JAVA_HOME='C:/Program Files/Android/Android Studio/jbr'
+```
+
+Both commands currently succeed: the debug APK builds and all 144 unit tests pass.
+
 ## Phase 1 — Foundation (complete)
 
 Domain models and a placeholder analysis action.
@@ -35,9 +55,10 @@ No threat verdict or risk scoring is produced.
 2. `MainActivity` extracts intent-sourced text using `ShareSheetAdapter` or
    `ProcessTextAdapter`, producing an `AnalysisInput` tagged with the
    `InputSource`.
-3. `ThreatAnalysisViewModel.onAnalyze()` (manual) or
-   `onIngestedInput()` (intent) validates input via `ManualInputAdapter`, then
-   passes it to `InputNormalizer`.
+3. `ThreatAnalysisViewModel.onAnalyze()` (manual) validates input via
+   `ManualInputAdapter`; `onIngestedInput()` (intent) receives text already
+   adapted by `ShareSheetAdapter` / `ProcessTextAdapter`. Both then pass the
+   `AnalysisInput` to `InputNormalizer`.
 4. The UI renders the normalized preview, extracted URLs, extracted phone
    numbers, and normalization warnings.
 
@@ -67,6 +88,8 @@ Package: `com.arm.threatassistant.domain.detection.ruleengine`
 `FastRuleEngine` is a deterministic, offline rule engine that detects suspicious
 SMS patterns across five categories and returns structured detection signals.
 It does NOT produce a security verdict.
+
+37 rules are defined as data in a single `RULES` list.
 
 ### Rule categories
 
@@ -99,7 +122,7 @@ and produces structured evidence without producing a security verdict.
 - `SmsClassifierStatus` — AVAILABLE / UNAVAILABLE / ERROR / UNSUPPORTED_INPUT.
 - `SmsClassifierResult` — evidence container (label, score, model version, contributing features, error info).
 - `SmsTextPreprocessor` — NFC normalization, lowercasing, tokenization, unigram + bigram generation.
-- `TfIdfVectorizer` — raw-count TF × pre-computed IDF, L2-normalized, aligned to model vocabulary.
+- `TfIdfVectorizer` — raw-count TF × pre-computed IDF, L2-normalized, aligned to model vocabulary; out-of-vocabulary single words fall back to simple suffix stripping (`ies`, `ing`, `ed`, `es`, `s`).
 - `SmsClassifierModel` — in-memory model with validation on load.
 - `SmsClassifierModelLoader` — loads model from JSON asset using `org.json`.
 - `SmsSpecialistClassifier` — inference entry point. Sigmoid output mapped to [0.0, 1.0].
@@ -133,7 +156,7 @@ HTTP requests, no URL visits.
 |----------|----------|-------------|
 | IP_BASED_URL | HIGH | URL uses an IP address literal instead of a domain name. |
 | URL_SHORTENER | MEDIUM | Domain is a known URL shortener (bit.ly, tinyurl.com, etc.). |
-| SUSPICIOUS_TLD | MEDIUM | TLD commonly abused in phishing (xyz, top, club, cf, ga, gq, ml, tk). |
+| SUSPICIOUS_TLD | MEDIUM | TLD commonly abused in phishing (e.g. xyz, top, club, cf, ga, gq, ml, tk). |
 | HOMOGRAPH_ATTACK | HIGH | Domain mixes scripts (Latin + Cyrillic/Greek) or uses look-alike characters. |
 | SUSPICIOUS_SUBDOMAIN | MEDIUM | Excessive subdomain depth used to mimic legitimate brands. |
 | MISLEADING_STRUCTURE | HIGH | URL structure designed to confuse (e.g. @ in userinfo). |
@@ -162,7 +185,7 @@ a deterministic threat verdict.
 ### Decision principles
 
 - No single keyword is sufficient proof of fraud.
-- Classifier confidence must exceed 0.60 to influence the verdict.
+- Classifier confidence must reach 0.60 to influence the verdict.
 - Conflicting evidence is resolved conservatively (lean toward SUSPICIOUS).
 - Every verdict is accompanied by an explainable evidence summary.
 - Decisions are deterministic and reproducible.
@@ -188,7 +211,7 @@ a deterministic threat verdict.
 | SUSPICIOUS | 0.30 | Score at or above = SUSPICIOUS |
 | SAFE | 0.05 | Score at or above = SAFE |
 | Classifier min confidence | 0.60 | Minimum classifier score to influence verdict |
-| Min rule signals | 1 | At least one signal required for any verdict |
+| Min rule signals | 1 | Any evidence (rule signal, URL signal, or confident classifier score) is required; otherwise INSUFFICIENT_EVIDENCE |
 
 ## Phase 5 — ExecuTorch Integration (evaluated, deferred)
 
@@ -203,7 +226,8 @@ See `docs/EXECUTORCH_EVALUATION.md` for full evaluation.
 
 Package: `com.arm.threatassistant.presentation`
 
-Seven screens delivered via `ThreatAssistantScreen`:
+Seven UI areas delivered via `ThreatAssistantScreen` (with `SettingsScreen`
+reachable from the top app bar):
 
 1. **Home** — App title and navigation
 2. **SMS/Message input** — `MessageInput` + `AnalyzeButton`
@@ -221,8 +245,8 @@ Additional development components: `RuleDetectionSection`, `SmsClassifierSection
 See `docs/PRIVACY_SECURITY.md`.
 
 Key guarantees:
-- No `READ_SMS` / `RECEIVE_SMS` permissions
-- No network requests; `INTERNET` permission unused
+- No permissions declared in `AndroidManifest.xml` (no `INTERNET`, no SMS, no storage)
+- No network requests
 - No analytics, no message-content logging
 - URLs never opened automatically
 - Original message always preserved

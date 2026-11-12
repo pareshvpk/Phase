@@ -13,9 +13,9 @@ Android Threat Assistant is an on-device tool for inspecting suspicious messages
 | Phase 3B+ | URL Specialist Detector | Complete |
 | Phase 4 | Risk Policy Engine (authoritative verdict) | Complete |
 | Phase 5 | ExecuTorch Integration | Evaluated — deferred (pure Kotlin sufficient) |
-| Phase 6 | Jetpack Compose UI (7 screens) | Complete |
+| Phase 6 | Jetpack Compose UI (7 UI areas) | Complete |
 | Phase 7 | Privacy & Security | Verified |
-| Phase 8 | Testing & Benchmarking | Test suite complete (unexecuted — no JDK/Android SDK) |
+| Phase 8 | Testing & Benchmarking | Complete — 144 JVM unit tests pass |
 | Phase 9 | Final Deliverables | Documentation complete |
 
 ## Features
@@ -25,7 +25,7 @@ Android Threat Assistant is an on-device tool for inspecting suspicious messages
 - **Android Process Text**: Receive selected text from other apps via `ACTION_PROCESS_TEXT`
 - **Offline detection**: All analysis runs locally on the device — no network required
 - **URL analysis**: Detects IP-based URLs, shorteners, homograph attacks, suspicious TLDs, unusual ports, encoded characters, and misleading structures
-- **Rule-based detection**: 31 deterministic rules across 5 categories (urgency/coercion, credential requests, financial impersonation, payment demands, account suspension)
+- **Rule-based detection**: 37 deterministic rules across 5 categories (urgency/coercion, credential requests, financial impersonation, payment demands, account suspension)
 - **ML classification**: Pure-Kotlin logistic regression with TF-IDF features (test fixture model)
 - **Authoritative verdict**: RiskPolicyEngine combines all evidence into SAFE / SUSPICIOUS / HIGH_RISK / INSUFFICIENT_EVIDENCE
 - **Explainable output**: Evidence summary, contributing features, matched rule descriptions
@@ -33,23 +33,38 @@ Android Threat Assistant is an on-device tool for inspecting suspicious messages
 
 ## Privacy & Security
 
-- No `READ_SMS` / `RECEIVE_SMS` permissions and no background SMS collection
-- No network requests; `INTERNET` permission declared as `android:required="false"` and unused
+- No permissions are declared in `AndroidManifest.xml` — no `INTERNET`, no `READ_SMS` / `RECEIVE_SMS`, no storage access
+- No network requests
 - No analytics and no message-content logging
 - Extracted links are never opened or executed automatically
 - The original message is always preserved
 - No message persistence — data held in memory only
 
-## Getting Started
+## Build & test
 
-The project is a Gradle Android application (Kotlin + Jetpack Compose).
+Requirements:
+
+- **JDK 21** — the Android Studio bundled JBR (`C:\Program Files\Android\Android Studio\jbr`)
+- **Android SDK 35** (compileSdk/targetSdk 35, minSdk 26), pointed at by `sdk.dir` in `local.properties`
 
 ```bash
-./gradlew :app:assembleDebug      # debug build
-./gradlew :app:testDebugUnitTest  # unit tests
+./gradlew assembleDebug        # debug APK -> app/build/outputs/apk/debug/app-debug.apk
+./gradlew testDebugUnitTest    # 144 JVM unit tests
 ```
 
-**Note**: A Gradle wrapper, JDK 17, and Android SDK are required to build. Neither JDK nor Android SDK is present in this checkout, so builds and tests cannot be executed in this environment.
+On Windows (bash), point Gradle at the Android Studio JBR:
+
+```bash
+export JAVA_HOME='C:/Program Files/Android/Android Studio/jbr'
+```
+
+Both commands currently succeed: the debug APK builds and all 144 unit tests pass.
+
+> Earlier revisions of this repository documented a build blocker caused by
+> "stub Compose artifacts" in the Gradle cache. That diagnosis was incorrect —
+> the build failures were source and build-configuration errors, and they are
+> now fixed. No local Maven repository, `libs/` directory, or artifact-renaming
+> workaround is part of the project.
 
 ## Documentation
 
@@ -58,3 +73,6 @@ The project is a Gradle Android application (Kotlin + Jetpack Compose).
 - `docs/PRIVACY_SECURITY.md` — Privacy architecture and security model
 - `docs/TESTING_BENCHMARKING.md` — Test suite and benchmarking plan
 - `docs/EXECUTORCH_EVALUATION.md` — ExecuTorch integration evaluation
+- `docs/ENGINEERING_REPORT.md` — Implementation and build summary
+- `docs/POST_IMPLEMENTATION_AUDIT.md` — Engineering audit findings
+- `docs/COMPOSE_DEPENDENCY_DIAGNOSIS.md` — Dependency configuration and build status

@@ -10,41 +10,40 @@ The ARM Digital Safety Guardian project has been implemented across all 9 phases
 - **Phase 3B+**: URL Specialist Detector (10 detection categories) - NEW
 - **Phase 4**: Risk Policy Engine (authoritative verdict engine) - NEW
 - **Phase 5**: ExecuTorch integration evaluated and deferred - documented
-- **Phase 6**: 7 Jetpack Compose screens - NEW/EXISTING
+- **Phase 6**: 7 Jetpack Compose UI areas - NEW/EXISTING
 - **Phase 7**: Privacy & security verified
-- **Phase 8**: Testing suite (11 test classes) - written, unexecuted
+- **Phase 8**: Testing suite (9 JVM test classes, 144 tests) - executed, all passing
 - **Phase 9**: Documentation complete
 
-**Critical Finding: The project cannot be compiled in the current environment.** The Gradle cache contains incomplete/stub Compose artifacts (`androidx.compose.ui:ui:1.8.2` = 4,626 bytes, `androidx.compose.material3:material3:1.4.0` = 4,703 bytes) that lack actual compiled classes. The full implementations exist only in `-android` variant artifacts (`ui-android:1.8.2` = 5.5MB, `material3-android:1.4.0` = 5.2MB), but split-package conflicts between stub and full artifacts prevent the Kotlin compiler from recognizing `@Composable` annotations.
+**Build status: the debug APK builds and all 144 JVM unit tests pass.** An earlier revision of this audit reported the build as blocked by "stub" Compose artifacts in the Gradle cache. That diagnosis was incorrect — the Compose artifacts resolved normally, and the actual failures were source and build-configuration errors, now fixed. See `docs/COMPOSE_DEPENDENCY_DIAGNOSIS.md` for the details.
 
-## Critical Defects (Build Blockers)
+## Resolved Defects (previously reported as build blockers)
 
-| Defect | Location | Impact |
-|--------|----------|--------|
-| `ui:1.8.2` artifact is a stub (4,626 bytes) | Gradle cache | `FontWeight`, `TextStyle`, and other Compose UI types unavailable |
-| `material3:1.4.0` artifact is a stub (4,703 bytes) | Gradle cache | `Card`, `Text`, `Column`, `Scaffold`, `Icons`, `Row`, and other Material3 composables unavailable |
-| Split-package conflict | `ui` vs `ui-android`, `material3` vs `material3-android` | Stub artifacts shadow full `-android` variants, causing `@Composable` annotations to be unrecognized |
-| No JDK 17 standalone | Environment | Android Studio JBR (JDK 21) available but not on PATH as `java` |
-| No `local.properties` | Repository root | SDK path not configured for Gradle |
+| Defect | Location | Resolution |
+|--------|----------|------------|
+| Compose dependencies pinned outside the BOM range | `gradle/libs.versions.toml` | Replaced with the Compose BOM platform (`2024.09.00`) |
+| Java/Kotlin target `1.8` | `app/build.gradle.kts` | Set to `17` |
+| `android.injected.test.only.run.unit.tests=true` set in the project file | `gradle.properties` | Removed — it is an Android Studio injected property |
+| Wrong Compose imports (`Row`, `FontWeight`, `TextStyle`, `Chip`, Material icons, `collectAsStateWithLifecycle`) | Compose components and screens | Imports and composables corrected to the artifacts in use |
+| Unused `INTERNET` permission | `AndroidManifest.xml` | Removed — the app now declares no permissions |
+| No JDK on `PATH` | Environment | Android Studio JBR (JDK 21) is used via `JAVA_HOME` |
 
 ## Major Defects
 
-| Defect | Location | Impact |
+| Defect | Location | Status |
 |--------|----------|--------|
-| `FontWeight` import path | `ThreatAssistantTheme.kt:7`, `RiskVerdictSection.kt:11`, `RuleDetectionSection.kt:18`, `SmsClassifierSection.kt:11` | Unresolved reference due to missing `ui-text` artifact |
-| `TextStyle` import path | `ThreatAssistantTheme.kt:8` | Unresolved reference due to missing `ui-text` artifact |
-| `collectAsStateWithLifecycle` import | `MainScreen.kt`, `ThreatAssistantScreen.kt` | Requires `lifecycle-runtime-compose:2.8.2` which may not resolve |
-| `Icons` from Material3 | `ThreatAssistantScreen.kt` | `material-icons-core` artifact not available in repositories |
-| `Row` from Material3 | `RuleDetectionSection.kt`, `ThreatAssistantScreen.kt` | `Row` is in `foundation-layout`, not `material3` |
-| `Chip` / `ChipDefaults` | `RuleDetectionSection.kt` | Not available in material3 stub artifact |
-| `semantics` / `contentDescription` | Multiple components | `semantics` composable not available in Compose UI stub |
+| `collectAsStateWithLifecycle` import | `MainScreen.kt`, `ThreatAssistantScreen.kt` | Resolved — replaced with `collectAsState` |
+| `Icons` from Material3 | `ThreatAssistantScreen.kt` | Resolved — icons removed from the top bar |
+| `Chip` / `ChipDefaults` | `RuleDetectionSection.kt` | Resolved — replaced with available components |
+| `semantics` / `contentDescription` | Multiple components | Resolved — replaced with plain text |
+| `Row` from Material3 | `RuleDetectionSection.kt`, `ThreatAssistantScreen.kt` | Resolved — imported from `foundation-layout` |
 
 ## Security Findings
 
 | Finding | Severity | Details |
 |---------|----------|---------|
 | No `READ_SMS` / `RECEIVE_SMS` | PASS | Not declared in manifest |
-| `INTERNET` permission `android:required="false"` | PASS | Declared but unused; no network code in detection pipeline |
+| No `INTERNET` permission | PASS | The manifest declares no permissions at all; no network code in the detection pipeline |
 | No analytics dependencies | PASS | No analytics SDKs in build configuration |
 | URLs never auto-opened | PASS | Extracted URLs displayed as plain text only |
 | Original message preserved | PASS | `AnalysisInput.messageText` never modified |
@@ -151,19 +150,19 @@ All properties in `ThreatAnalysisUiState` are correctly referenced by UI screens
 
 ## Test Coverage Assessment
 
-### Test Classes (11 total)
+### Test Classes (9 JVM test classes, 144 tests, all passing)
 
 | Test File | Tests | Coverage |
 |-----------|-------|----------|
 | ThreatVerdictTest | 5 | Domain models |
-| Phase2InputTest | 16 | Input adapters, normalizer |
-| FastRuleEngineTest | ~30 | All 31 rules, false positives, edge cases |
-| SmsTextPreprocessorTest | 11 | NFC, tokenization, n-grams |
-| TfIdfVectorizerTest | 8 | TF-IDF vectorization |
-| SmsSpecialistClassifierTest | 14 | Classifier inference, edge cases |
-| SmsClassifierIntegrationTest | 7 | Classifier + rule engine integration |
-| UrlSpecialistDetectorTest | 12 | All 10 URL categories |
-| RiskPolicyEngineTest | 13 | Verdict logic, boundaries, determinism |
+| Phase2InputTest | 20 | Input adapters, normalizer |
+| FastRuleEngineTest | 51 | All 37 rules, false positives, edge cases |
+| SmsTextPreprocessorTest | 13 | NFC, tokenization, n-grams |
+| TfIdfVectorizerTest | 7 | TF-IDF vectorization |
+| SmsSpecialistClassifierTest | 15 | Classifier inference, edge cases |
+| SmsClassifierIntegrationTest | 6 | Classifier + rule engine integration |
+| UrlSpecialistDetectorTest | 13 | All 10 URL categories |
+| RiskPolicyEngineTest | 14 | Verdict logic, boundaries, determinism |
 
 ### Test Quality
 - **Meaningful assertions**: Yes - tests verify actual detection behavior
@@ -184,40 +183,28 @@ All properties in `ThreatAnalysisUiState` are correctly referenced by UI screens
 ### Available
 - Android Studio JBR (JDK 21.0.10) at `C:\Program Files\Android\Android Studio\jbr\`
 - Android SDK 35 at `C:\Users\pares\AppData\Local\Android\Sdk\`
-- Gradle wrapper 8.7 at `D:\ARM\gradlew.bat`
-- Gradle cache with partial Compose artifacts
-
-### Missing
-- Standalone JDK 17 (JBR 21 available but not on PATH as `java`)
 - `local.properties` with `sdk.dir`
-- Complete Compose UI artifacts (stubs only)
-- `material-icons-core` artifact
+- Gradle wrapper 8.7 at `D:\ARM\gradlew.bat`
 
-### Build Commands (Cannot Execute)
+### Build Commands (working)
 ```
-./gradlew :app:assembleDebug   # BLOCKED - Compose artifacts incomplete
-./gradlew :app:testDebugUnitTest  # BLOCKED - Same reason
-./gradlew clean               # WORKS
-./gradlew :app:compileDebugKotlin  # BLOCKED - Compilation errors
+export JAVA_HOME='C:/Program Files/Android/Android Studio/jbr'   # Windows bash
+./gradlew :app:assembleDebug   # SUCCESS - app/build/outputs/apk/debug/app-debug.apk
+./gradlew :app:testDebugUnitTest  # SUCCESS - 144 tests, 0 failures
+./gradlew :app:compileDebugKotlin  # SUCCESS
 ```
 
 ## Exact Remaining Work
 
-### Immediate (Build Blockers)
-1. Obtain complete Compose UI artifacts (ui:1.8.2, material3:1.4.0, ui-text:1.8.2)
-2. OR resolve split-package conflict between stub and -android variants
-3. Configure `local.properties` with `sdk.dir`
-4. Run `./gradlew :app:compileDebugKotlin`
-5. Run `./gradlew :app:assembleDebug`
-6. Run `./gradlew :app:testDebugUnitTest`
+### Immediate
+None — the build and the full unit test suite run green.
 
 ### Short Term
 1. Obtain production SMS dataset (UCI SMS Spam Collection or similar)
 2. Train production model via `tools/sms_classifier/train.py`
 3. Replace test fixture model with production model
-4. Execute unit tests and fix failures
-5. Measure detection metrics (precision, recall, F1, FPR)
-6. Measure performance metrics (latency, memory, CPU)
+4. Measure detection metrics (precision, recall, F1, FPR)
+5. Measure performance metrics (latency, memory, CPU)
 
 ### Medium Term
 1. Test on actual Android ARM device
@@ -236,23 +223,22 @@ All properties in `ThreatAnalysisUiState` are correctly referenced by UI screens
 
 ## Submission Readiness Assessment
 
-**NOT READY FOR SUBMISSION.**
+**READY FOR BUILD-LEVEL SUBMISSION; NOT READY FOR MEASURED-EVALUATION SUBMISSION.**
 
-Reason: The project cannot be built, tested, or packaged in the current environment due to missing Compose UI artifacts. All source code is complete and logically correct, but:
+The application builds, packages, and passes its full unit test suite. The
+remaining gaps are about measured evidence and hardware, not about the build:
 
-1. **Build**: Cannot execute `./gradlew :app:assembleDebug` - Compose compilation errors
-2. **Tests**: Cannot execute `./gradlew :app:testDebugUnitTest` - Same blocker
-3. **APK**: No APK generated
+1. **Build**: `./gradlew :app:assembleDebug` succeeds
+2. **Tests**: `./gradlew :app:testDebugUnitTest` — 144 tests, 0 failures
+3. **APK**: `app/build/outputs/apk/debug/app-debug.apk` generated
 4. **Metrics**: No detection metrics or performance benchmarks measured
 5. **Device Testing**: No Android device or Raspberry Pi 5 available
+6. **Production model**: Still the synthetic test fixture
 
-### Path to Submission Readiness
+### Path to Full Submission Readiness
 
-1. Resolve Compose artifact issue (obtain complete artifacts or fix split-package conflict)
-2. Configure build environment (`local.properties`, JDK)
-3. Execute build and tests
-4. Train production model with real dataset
-5. Measure and document detection metrics
-6. Measure and document performance benchmarks on target hardware
-7. Generate release APK
-8. Complete all Phase 9 deliverables
+1. Train production model with a real, licensed dataset
+2. Measure and document detection metrics
+3. Measure and document performance benchmarks on target hardware
+4. Test on a physical ARM Android device
+5. Generate a signed release APK

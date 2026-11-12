@@ -11,7 +11,7 @@ ExecuTorch integration has been **evaluated and deferred** for this project. The
 The SMS Specialist Classifier uses:
 - **Algorithm**: Logistic regression (linear model)
 - **Features**: TF-IDF with word unigrams + bigrams
-- **Model size**: ~205 vocabulary terms (test fixture), small JSON artifact
+- **Model size**: 25 vocabulary terms (shipped test fixture), small JSON artifact
 - **Inference**: Pure Kotlin, CPU-only, ~microseconds per message
 - **Dependencies**: None beyond Kotlin stdlib
 
@@ -43,16 +43,18 @@ AnalysisInput → InputNormalizer → FastRuleEngine → UrlSpecialistDetector �
 
 All components run offline on CPU with no external dependencies.
 
-### Blocker
+### Implementation cost
 
-No JDK or Android SDK is available in this environment, so ExecuTorch integration cannot be built or tested. Even if pursued, it would require:
+If pursued later, ExecuTorch integration would require:
 1. PyTorch model training and export
 2. ExecuTorch Android SDK dependency
 3. .pte model artifact packaging
 4. Kotlin runtime integration
 5. Fallback to pure Kotlin when ExecuTorch is unavailable
 
-These are out of scope for the current implementation phase.
+These are out of scope for the current implementation phase. The current build
+and test toolchain (JDK 21 + Android SDK 35) is already in place, so this is a
+design decision rather than an environment constraint.
 
 ## Recommendation
 

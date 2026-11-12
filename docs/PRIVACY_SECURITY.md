@@ -11,12 +11,15 @@
 
 ## Permission Audit
 
+The manifest declares **no permissions at all**.
+
 | Permission | Declared? | Used? | Required? | Rationale |
 |------------|-----------|-------|-----------|-----------|
-| `INTERNET` | Yes (`android:required="false"`) | No | No | Declared but unused; retained for future optional features. Never used for detection. |
+| `INTERNET` | No | No | No | Not requested — the app makes no network calls of any kind. |
 | `READ_SMS` | No | No | No | Not requested. SMS content only enters via manual entry or share sheet. |
 | `RECEIVE_SMS` | No | No | No | Not requested. No background SMS collection. |
 | `SEND_SMS` | No | No | No | Not requested. |
+| Storage | No | No | No | No files, databases, or `SharedPreferences` are written. |
 
 ## Data Flow
 

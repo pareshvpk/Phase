@@ -6,7 +6,7 @@
 **Package**: `com.arm.threatassistant`
 **Platform**: Android (minSdk 26, targetSdk 35, compileSdk 35)
 **Framework**: Kotlin + Jetpack Compose, Gradle build
-**AGP**: 8.6.0, **Kotlin**: 2.0.0, **Compose**: pinned versions
+**AGP**: 8.6.0, **Kotlin**: 2.0.0, **Compose**: aligned via Compose BOM 2024.09.00
 
 ## What Was Implemented
 
@@ -20,7 +20,7 @@
 - Manifest intent filters for share sheet and process text
 
 ### Phase 3A — FastRuleEngine (existing, preserved)
-- 31 deterministic rules across 5 categories
+- 37 deterministic rules across 5 categories
 - Structured `DetectionSignal` output, no verdict
 
 ### Phase 3B — SMS Specialist Classifier (existing, preserved)
@@ -31,13 +31,13 @@
 - `UrlDetectionEvidence.kt` — evidence data classes
 - `UrlSpecialistDetector.kt` — 10 detection categories (IP-based, shorteners, homographs, suspicious TLDs, unusual ports, encoded chars, misleading structure, etc.)
 - `UrlDetectionSection.kt` — Compose UI component
-- `UrlSpecialistDetectorTest.kt` — 12 unit tests
+- `UrlSpecialistDetectorTest.kt` — 13 unit tests
 
 ### Phase 4 — Risk Policy Engine (NEW)
 - `RiskPolicyEngine.kt` — authoritative verdict engine
 - Verdict levels: SAFE, SUSPICIOUS, HIGH_RISK, INSUFFICIENT_EVIDENCE
 - Deterministic scoring with configurable weights and thresholds
-- `RiskPolicyEngineTest.kt` — 13 unit tests (boundary cases, conflicting signals, determinism)
+- `RiskPolicyEngineTest.kt` — 14 unit tests (boundary cases, conflicting signals, determinism)
 
 ### Phase 5 — ExecuTorch Integration (EVALUATED, DEFERRED)
 - Evaluated against pure-Kotlin logistic regression
@@ -45,19 +45,19 @@
 - See `docs/EXECUTORCH_EVALUATION.md`
 
 ### Phase 6 — UI (NEW/EXISTING)
-- 7 screens: Home, Input, Analysis, Verdict, Evidence, Actions, Settings
+- 7 UI areas: Home, Input, Analysis, Verdict, Evidence, Actions, Settings
 - New components: `RiskVerdictSection`, `EvidenceSection`, `RecommendedActionsSection`, `UrlDetectionSection`, `ThreatAssistantScreen`, `SettingsScreen`
 - `ThreatAssistantScreen` replaces `MainScreen` as entry point with settings navigation
 
 ### Phase 7 — Privacy & Security (VERIFIED)
-- No SMS permissions, no network usage, no analytics
+- No permissions declared in the manifest, no network usage, no analytics
 - URLs never auto-opened
 - Original message preserved
 - See `docs/PRIVACY_SECURITY.md`
 
-### Phase 8 — Testing (TEST SUITE COMPLETE, UNEXECUTED)
-- 9 test classes covering all detection components
-- Cannot execute — no JDK/Android SDK available
+### Phase 8 — Testing (EXECUTED, PASSING)
+- 9 JVM unit test classes, 144 tests, 0 failures
+- Requires JDK 21 (Android Studio JBR) and Android SDK 35
 - See `docs/TESTING_BENCHMARKING.md`
 
 ### Phase 9 — Documentation (COMPLETE)
@@ -73,17 +73,37 @@
 5. **Strings**: Added all new section labels and privacy strings to `strings.xml`.
 6. **MainActivity**: Updated to use `ThreatAssistantScreen` instead of `MainScreen`.
 
-## What Was Not Implemented (Blockers)
+## Build and Detection Fixes
+
+The build was previously blocked by source and build-configuration errors, not by
+dependency artifacts:
+
+1. **Compose dependencies**: switched from hard-pinned Compose versions to the
+   Compose BOM platform (`compose-bom = 2024.09.00`); no `exclude()` statements.
+2. **Java/Kotlin target**: `1.8` → `17`.
+3. **Gradle properties**: removed `android.injected.test.only.run.unit.tests=true`,
+   an Android Studio injected property that does not belong in the project file.
+4. **Compose imports**: corrected imports and composables that did not match the
+   artifacts in use (`Row` from `foundation-layout`, `FontWeight`/`TextStyle`
+   from `ui-text`, removal of `Chip`/`ChipDefaults` and Material icons,
+   `collectAsStateWithLifecycle` → `collectAsState`).
+5. **Manifest**: removed the unused `INTERNET` permission — the app now declares
+   no permissions at all.
+6. **Detection logic**: URL detector treats a missing port as absent and parses
+   non-ASCII hosts; `RiskPolicyEngine` applies severity-aware multi-signal rules
+   and ignores low-confidence classifier scores; `FastRuleEngine` strips
+   zero-width characters and normalizes before matching; the SMS preprocessor
+   and vectorizer use Unicode-aware tokens with a stem fallback.
+
+## What Was Not Implemented
 
 | Item | Reason |
 |------|--------|
-| Debug APK generation | No JDK 17 or Android SDK available |
-| Unit test execution | No JDK or Gradle toolchain |
+| Release APK | No signing configuration |
 | Production model training | No labelled dataset available (only 30-row synthetic sample) |
 | ExecuTorch integration | Evaluated, deferred — pure Kotlin sufficient |
 | Android device testing | No device available |
 | Raspberry Pi 5 benchmarking | No hardware available |
-| Release APK signing | No signing configuration, no build toolchain |
 
 ## Files Created (New)
 
@@ -118,28 +138,30 @@
 
 - `build.gradle.kts` (root): AGP 8.6.0, Kotlin 2.0.0 plugins — configured correctly
 - `settings.gradle.kts`: includes `:app`, repositories configured — correct
-- `gradle/libs.versions.toml`: all versions pinned and compatible — correct
-- `app/build.gradle.kts`: Compose enabled, SDK 35, minSdk 26 — correct
-- `AndroidManifest.xml`: INTERNET permission (required=false), share sheet + process text filters — correct
+- `gradle/libs.versions.toml`: versions pinned; Compose artifacts aligned via the Compose BOM — correct
+- `app/build.gradle.kts`: Compose enabled, SDK 35, minSdk 26, Java/Kotlin target 17 — correct
+- `AndroidManifest.xml`: no permissions declared, share sheet + process text filters — correct
 
-**Build cannot be executed** — no JDK 17 or Android SDK present in environment.
+**Build executes successfully** with JDK 21 (Android Studio JBR) and Android SDK 35:
+
+```bash
+export JAVA_HOME='C:/Program Files/Android/Android Studio/jbr'   # Windows bash
+./gradlew assembleDebug        # -> app/build/outputs/apk/debug/app-debug.apk
+./gradlew testDebugUnitTest    # -> 144 tests, 0 failures
+```
 
 ## Recommendations for Challenge Submission
 
-1. **Install build toolchain**: JDK 17 + Android SDK 35
-2. **Run builds**: `./gradlew :app:assembleDebug` and `./gradlew :app:testDebugUnitTest`
-3. **Obtain production dataset**: UCI SMS Spam Collection or Mendeley smishing dataset
-4. **Train production model**: `python tools/sms_classifier/train.py --data data/labeled.csv --output app/src/main/assets/sms_classifier_model.json`
-5. **Replace test fixture**: Update ViewModel to load production model asset
-6. **Test on device**: Install debug APK on ARM Android device, verify offline functionality
-7. **Benchmark**: Measure end-to-end latency, memory, CPU on target device
+1. **Obtain production dataset**: UCI SMS Spam Collection or Mendeley smishing dataset
+2. **Train production model**: `python tools/sms_classifier/train.py --data data/labeled.csv --output app/src/main/assets/sms_classifier_model.json`
+3. **Replace test fixture**: Update ViewModel to load production model asset
+4. **Test on device**: Install debug APK on ARM Android device, verify offline functionality
+5. **Benchmark**: Measure end-to-end latency, memory, CPU on target device
 
 ## Challenge Submission Readiness
 
 **Code**: Complete — all 9 phases addressed, detection pipeline functional
-**Build**: Blocked — no JDK/Android SDK available
-**Tests**: Written but unexecuted
-**APK**: Not generated
+**Build**: Working — debug APK builds
+**Tests**: 144 JVM unit tests, all passing
+**APK**: Generated — `app/build/outputs/apk/debug/app-debug.apk`
 **Documentation**: Complete
-
-The application code is complete and ready for build once the toolchain is available.
