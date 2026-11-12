@@ -106,6 +106,7 @@ class ThreatAnalysisViewModel : ViewModel() {
         if (input.messageText.isBlank()) {
             _uiState.update {
                 it.copy(
+                    inputText = "",
                     status = AnalysisStatus.IDLE,
                     errorMessage = "Shared content contained no usable text.",
                     resultMessage = null,
@@ -116,6 +117,25 @@ class ThreatAnalysisViewModel : ViewModel() {
                 )
             }
             return
+        }
+
+        // Populate the input field immediately so the shared text is visible,
+        // then run the same analysis pipeline used for manual input.
+        _uiState.update {
+            it.copy(
+                inputText = input.messageText,
+                errorMessage = null,
+                status = AnalysisStatus.ANALYZING,
+                resultMessage = null,
+                normalizedText = null,
+                extractedUrls = emptyList(),
+                extractedPhones = emptyList(),
+                normalizationWarnings = emptyList(),
+                ruleDetectionResult = null,
+                smsClassifierResult = null,
+                urlDetectionResult = null,
+                riskAssessment = null
+            )
         }
         ingest(context, input)
     }

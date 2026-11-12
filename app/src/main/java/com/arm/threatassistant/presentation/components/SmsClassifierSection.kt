@@ -17,6 +17,7 @@ import com.arm.threatassistant.R
 import com.arm.threatassistant.domain.detection.smsclassifier.ContributingFeature
 import com.arm.threatassistant.domain.detection.smsclassifier.SmsClassifierResult
 import com.arm.threatassistant.domain.detection.smsclassifier.SmsClassifierStatus
+import java.util.Locale
 
 /**
  * Displays SMS Specialist Classifier output for development and testing.
@@ -111,7 +112,11 @@ fun SmsClassifierSection(
                             modifier = Modifier.weight(0.3f)
                         )
                         Text(
-                            text = "${(result.threatScore ?: 0.0) * 100.0}".let { "$it%" },
+                            text = String.format(
+                                Locale.US,
+                                "%.1f%%",
+                                (result.threatScore ?: 0.0) * 100.0
+                            ),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurface
                         )

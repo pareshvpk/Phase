@@ -73,7 +73,10 @@ fun SettingsScreen(
         TopAppBar(
             title = { Text(text = stringResource(R.string.settings_title)) },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimary
             ),
             navigationIcon = {
                 IconButton(onClick = onBack) {
@@ -165,7 +168,8 @@ fun SettingsScreen(
 @Composable
 fun ThreatAssistantScreen(
     viewModel: ThreatAnalysisViewModel = viewModel(),
-    ingestedInput: AnalysisInput? = null
+    ingestedInput: AnalysisInput? = null,
+    ingestRequestId: Long = 0L
 ) {
     var showSettings by remember { mutableStateOf(false) }
 
@@ -179,6 +183,7 @@ fun ThreatAssistantScreen(
     MainScreenContent(
         viewModel = viewModel,
         ingestedInput = ingestedInput,
+        ingestRequestId = ingestRequestId,
         onSettingsClick = { showSettings = true }
     )
 }
@@ -188,13 +193,16 @@ fun ThreatAssistantScreen(
 private fun MainScreenContent(
     viewModel: ThreatAnalysisViewModel,
     ingestedInput: AnalysisInput?,
+    ingestRequestId: Long,
     onSettingsClick: () -> Unit
 ) {
     val context = LocalContext.current
     val state: ThreatAnalysisUiState by viewModel.uiState.collectAsState()
 
-    // Ingest intent-sourced input (share sheet / process text) once when it arrives.
-    LaunchedEffect(ingestedInput) {
+    // Ingest each intent-sourced input (share sheet / process text) once. The
+    // request id changes on every new intent, including repeated shares of the
+    // same text, so onNewIntent deliveries are not ignored.
+    LaunchedEffect(ingestRequestId) {
         if (ingestedInput != null) {
             viewModel.onIngestedInput(context, ingestedInput)
         }
@@ -210,7 +218,9 @@ private fun MainScreenContent(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 actions = {
                     IconButton(onClick = onSettingsClick) {
