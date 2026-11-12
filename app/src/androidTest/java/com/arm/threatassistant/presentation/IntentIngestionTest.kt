@@ -25,7 +25,7 @@ class IntentIngestionTest {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, "Shared SMS: https://example.com free money")
         }
-        ActivityScenario.launch(intent).close()
+        ActivityScenario.launch<MainActivity>(intent).close()
     }
 
     @Test
@@ -34,7 +34,7 @@ class IntentIngestionTest {
             type = "text/plain"
             putExtra(Intent.EXTRA_PROCESS_TEXT, "Selected text from another app")
         }
-        ActivityScenario.launch(intent).close()
+        ActivityScenario.launch<MainActivity>(intent).close()
     }
 
     @Test
@@ -42,6 +42,6 @@ class IntentIngestionTest {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
         }
-        ActivityScenario.launch(intent).close()
+        ActivityScenario.launch<MainActivity>(intent).close()
     }
 }
