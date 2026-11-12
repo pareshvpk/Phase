@@ -72,7 +72,7 @@ class Phase2InputTest {
     fun normalizerExtractsMultipleUrls() {
         val text = "Visit https://example.com and http://sub.example.org/path?q=1 or www.example.net."
         val result = InputNormalizer.normalize(text)
-        assertTrue(result.extractedUrls.size >= 2, "Expected multiple URLs, got ${result.extractedUrls}")
+        assertTrue("Expected multiple URLs, got ${result.extractedUrls}", result.extractedUrls.size >= 2)
         assertTrue(result.extractedUrls.any { it.startsWith("https://example.com") })
         assertTrue(result.extractedHosts.any { it == "example.com" })
     }
@@ -96,14 +96,14 @@ class Phase2InputTest {
     fun normalizerExtractsPhoneNumbers() {
         val text = "Call +1-234-567-7890 or (234) 567-7890."
         val result = InputNormalizer.normalize(text)
-        assertTrue(result.extractedPhones.isNotEmpty(), "Expected phone extraction, got $result")
+        assertTrue("Expected phone extraction, got $result", result.extractedPhones.isNotEmpty())
     }
 
     @Test
     fun normalizerDetectsZeroWidthCharacters() {
         val text = "Hello\u200BWorld" // zero-width space between
         val result = InputNormalizer.normalize(text)
-        assertTrue(result.warnings.any { it.contains("Zero-width") }, "Expected zero-width warning, got $result")
+        assertTrue("Expected zero-width warning, got $result", result.warnings.any { it.contains("Zero-width") })
         // Character must not be silently removed.
         assertTrue(result.normalizedText.contains("\u200B"))
     }

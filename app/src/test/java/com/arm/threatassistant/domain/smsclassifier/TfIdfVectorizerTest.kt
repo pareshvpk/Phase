@@ -100,7 +100,7 @@ class TfIdfVectorizerTest {
         val terms = listOf("urgent", "otp", "safe", "urgent", "otp", "urgent")
         val v1 = TfIdfVectorizer.vectorize(terms, model)
         val v2 = TfIdfVectorizer.vectorize(terms, model)
-        assertContentEquals(v1, v2)
+        assertArrayEquals(v1, v2, 0.0)
     }
 
     // ---- Empty input ----

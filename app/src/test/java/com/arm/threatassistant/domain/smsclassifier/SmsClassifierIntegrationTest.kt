@@ -50,7 +50,7 @@ class SmsClassifierIntegrationTest {
         val classifierResult = classifier.classify(normalized)
 
         // Rule engine should find signals.
-        assertTrue(ruleResult.hasSignals(), "Expected rule signals, got none")
+        assertTrue("Expected rule signals, got none", ruleResult.hasSignals())
 
         // Classifier should produce a result.
         assertEquals(SmsClassifierStatus.AVAILABLE, classifierResult.status)
@@ -64,7 +64,7 @@ class SmsClassifierIntegrationTest {
         val classifier = SmsSpecialistClassifier.unavailable("Model missing")
         val result = classifier.classify(AnalysisInput(messageText = "This is a completely safe message from your bank."))
         assertEquals(SmsClassifierStatus.UNAVAILABLE, result.status)
-        assertNull(result.predictedLabel, "Unavailable classifier must not return SAFE")
+        assertNull("Unavailable classifier must not return SAFE", result.predictedLabel)
         assertNull(result.threatScore)
     }
 
@@ -81,7 +81,7 @@ class SmsClassifierIntegrationTest {
             message = "Analysis completed"
         )
 
-        assertNull(result.verdict, "AnalysisResult.verdict must remain null after Phase 3B")
+        assertNull("AnalysisResult.verdict must remain null after Phase 3B", result.verdict)
 
         // Run both detectors - neither modifies AnalysisResult.
         val ruleResult = FastRuleEngine.detect(input)
@@ -138,9 +138,9 @@ class SmsClassifierIntegrationTest {
         val before = FastRuleEngine.detect(input)
 
         val classifier = SmsSpecialistClassifier.fromModel(threatModel())
-        val _ = classifier.classify(input)
+        val ignored = classifier.classify(input)
 
         val after = FastRuleEngine.detect(input)
-        assertEquals(before.signalCount, after.signalCount, "Rule engine output must be unchanged by classifier")
+        assertEquals("Rule engine output must be unchanged by classifier", before.signalCount, after.signalCount)
     }
 }

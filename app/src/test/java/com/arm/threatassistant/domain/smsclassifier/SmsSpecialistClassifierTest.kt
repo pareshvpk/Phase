@@ -158,7 +158,7 @@ class SmsSpecialistClassifierTest {
         val result = classifier.classify(AnalysisInput(messageText = "urgent otp suspend"))
         assertTrue(result.status == SmsClassifierStatus.AVAILABLE)
         val score = result.threatScore ?: -1.0
-        assertTrue(score >= 0.0 && score <= 1.0, "Score $score out of range [0,1]")
+        assertTrue("Score $score out of range [0,1]", score >= 0.0 && score <= 1.0)
     }
 
     // ---- Deterministic repeated predictions ----
@@ -215,8 +215,8 @@ class SmsSpecialistClassifierTest {
         assertTrue(result.status == SmsClassifierStatus.AVAILABLE)
         val features = result.contributingFeatures
         assertNotNull(features)
-        assertTrue(features.isNotEmpty())
+        assertTrue(features!!.isNotEmpty())
         // At least one feature should have positive contribution (pushing toward THREAT).
-        assertTrue(features.any { it.contribution > 0 }, "Expected positive contribution, got $features")
+        assertTrue("Expected positive contribution, got $features", features!!.any { it.contribution > 0 })
     }
 }

@@ -20,7 +20,7 @@ class SmsTextPreprocessorTest {
     fun preprocessAppliesNfcNormalization() {
         // "e" + combining acute accent (U+0301) should compose to é (U+00E9).
         val terms = SmsTextPreprocessor.preprocess("e\u0301")
-        assertTrue(terms.any { it.contains("\u00E9") }, "Expected NFC-composed é, got $terms")
+        assertTrue("Expected NFC-composed é, got $terms", terms.any { it.contains("\u00E9") })
     }
 
     // ---- Lowercase handling ----
@@ -28,8 +28,8 @@ class SmsTextPreprocessorTest {
     @Test
     fun preprocessLowercases() {
         val terms = SmsTextPreprocessor.preprocess("URGENT Action Required")
-        assertTrue(terms.any { it == "urgent" }, "Expected 'urgent', got $terms")
-        assertFalse(terms.any { it == "URGENT" }, "Should not retain uppercase, got $terms")
+        assertTrue("Expected 'urgent', got $terms", terms.any { it == "urgent" })
+        assertFalse("Should not retain uppercase, got $terms", terms.any { it == "URGENT" })
     }
 
     // ---- Tokenization ----
@@ -37,17 +37,17 @@ class SmsTextPreprocessorTest {
     @Test
     fun preprocessTokenizesOnNonAlphanumeric() {
         val terms = SmsTextPreprocessor.preprocess("Hello, world! Test-123.")
-        assertTrue(terms.contains("hello"), "Expected 'hello', got $terms")
-        assertTrue(terms.contains("world"), "Expected 'world', got $terms")
-        assertTrue(terms.contains("test"), "Expected 'test', got $terms")
-        assertTrue(terms.contains("123"), "Expected '123', got $terms")
+        assertTrue("Expected 'hello', got $terms", terms.contains("hello"))
+        assertTrue("Expected 'world', got $terms", terms.contains("world"))
+        assertTrue("Expected 'test', got $terms", terms.contains("test"))
+        assertTrue("Expected '123', got $terms", terms.contains("123"))
     }
 
     @Test
     fun preprocessDropsSingleCharacterTokens() {
         // "a b c" should produce no tokens (all length < 2).
         val terms = SmsTextPreprocessor.preprocess("a b c")
-        assertTrue(terms.isEmpty(), "Expected no tokens for single-char input, got $terms")
+        assertTrue("Expected no tokens for single-char input, got $terms", terms.isEmpty())
     }
 
     // ---- N-grams ----
@@ -55,17 +55,17 @@ class SmsTextPreprocessorTest {
     @Test
     fun preprocessProducesUnigramsAndBigrams() {
         val terms = SmsTextPreprocessor.preprocess("share your otp")
-        assertTrue(terms.contains("share"), "Expected unigram 'share', got $terms")
-        assertTrue(terms.contains("your"), "Expected unigram 'your', got $terms")
-        assertTrue(terms.contains("otp"), "Expected unigram 'otp', got $terms")
-        assertTrue(terms.contains("share your"), "Expected bigram 'share your', got $terms")
-        assertTrue(terms.contains("your otp"), "Expected bigram 'your otp', got $terms")
+        assertTrue("Expected unigram 'share', got $terms", terms.contains("share"))
+        assertTrue("Expected unigram 'your', got $terms", terms.contains("your"))
+        assertTrue("Expected unigram 'otp', got $terms", terms.contains("otp"))
+        assertTrue("Expected bigram 'share your', got $terms", terms.contains("share your"))
+        assertTrue("Expected bigram 'your otp', got $terms", terms.contains("your otp"))
     }
 
     @Test
     fun preprocessSingleWordProducesOnlyUnigram() {
         val terms = SmsTextPreprocessor.preprocess("urgent")
-        assertEquals(listOf("urgent"), terms, "Expected only 'urgent', got $terms")
+        assertEquals("Expected only 'urgent', got $terms", listOf("urgent"), terms)
     }
 
     // ---- Empty input ----
@@ -82,19 +82,19 @@ class SmsTextPreprocessorTest {
     @Test
     fun preprocessHandlesUrls() {
         val terms = SmsTextPreprocessor.preprocess("Click https://example.com now")
-        assertTrue(terms.contains("click"), "Expected 'click', got $terms")
-        assertTrue(terms.contains("example"), "Expected 'example', got $terms")
-        assertTrue(terms.contains("com"), "Expected 'com', got $terms")
-        assertTrue(terms.contains("now"), "Expected 'now', got $terms")
+        assertTrue("Expected 'click', got $terms", terms.contains("click"))
+        assertTrue("Expected 'example', got $terms", terms.contains("example"))
+        assertTrue("Expected 'com', got $terms", terms.contains("com"))
+        assertTrue("Expected 'now', got $terms", terms.contains("now"))
     }
 
     @Test
     fun preprocessHandlesPhoneNumbers() {
         val terms = SmsTextPreprocessor.preprocess("Call +1-234-567-7890 now")
-        assertTrue(terms.contains("call"), "Expected 'call', got $terms")
-        assertTrue(terms.contains("234"), "Expected '234', got $terms")
-        assertTrue(terms.contains("567"), "Expected '567', got $terms")
-        assertTrue(terms.contains("7890"), "Expected '7890', got $terms")
+        assertTrue("Expected 'call', got $terms", terms.contains("call"))
+        assertTrue("Expected '234', got $terms", terms.contains("234"))
+        assertTrue("Expected '567', got $terms", terms.contains("567"))
+        assertTrue("Expected '7890', got $terms", terms.contains("7890"))
     }
 
     // ---- Hinglish and mixed Unicode ----
@@ -104,10 +104,9 @@ class SmsTextPreprocessorTest {
         // Hinglish: English + Devanagari. Devanagari characters are alphanumeric
         // in Unicode, so they form tokens.
         val terms = SmsTextPreprocessor.preprocess("Your account \u092E\u0930\u094D\u092A\u093E\u0924 will be blocked")
-        assertTrue(terms.any { it == "your" || it == "account" || it == "will" || it == "be" || it == "blocked" },
-            "Expected English tokens, got $terms")
+        assertTrue("Expected English tokens, got $terms", terms.any { it == "your" || it == "account" || it == "will" || it == "be" || it == "blocked" })
         // Devanagari word "bank" (\u092E\u0930\u094D\u092A\u093E\u0924) should be a token.
-        assertTrue(terms.any { it.contains("\u092E") }, "Expected Devanagari token, got $terms")
+        assertTrue("Expected Devanagari token, got $terms", terms.any { it.contains("\u092E") })
     }
 
     // ---- Long messages ----
@@ -116,8 +115,8 @@ class SmsTextPreprocessorTest {
     fun preprocessHandlesLongMessageWithoutCrash() {
         val longText = "urgent otp verify account suspend ".repeat(5000)
         val terms = SmsTextPreprocessor.preprocess(longText)
-        assertTrue(terms.isNotEmpty(), "Expected tokens for long message")
-        assertTrue(terms.contains("urgent"), "Expected 'urgent' in long message, got $terms")
+        assertTrue("Expected tokens for long message", terms.isNotEmpty())
+        assertTrue("Expected 'urgent' in long message, got $terms", terms.contains("urgent"))
     }
 
     // ---- termFrequencies ----
