@@ -1,6 +1,6 @@
 # ARM Digital Safety Guardian
 
-Android Threat Assistant is an on-device tool for inspecting suspicious messages (for example SMS text) for potential threats. No network requests, no SMS collection, and no analytics are used. User-entered text stays on the device.
+Android Threat Assistant is an on-device tool for inspecting suspicious messages (for example SMS text) for potential threats. No network requests and no analytics are used. User-entered text stays on the device. Incoming-SMS protection is optional and opt-in; when enabled, messages are analyzed on-device only and never stored.
 
 ## Project Status
 
@@ -23,6 +23,7 @@ Android Threat Assistant is an on-device tool for inspecting suspicious messages
 - **Manual text entry**: Type or paste a suspicious message for analysis
 - **Android Share Sheet**: Receive shared text from other apps via `ACTION_SEND`
 - **Android Process Text**: Receive selected text from other apps via `ACTION_PROCESS_TEXT`
+- **Optional SMS protection**: Opt-in receiver analyzes newly received SMS on-device and posts a local alert for SUSPICIOUS or HIGH_RISK verdicts. Safe messages stay silent; the receiver exits immediately when the feature is off.
 - **Offline detection**: All analysis runs locally on the device — no network required
 - **URL analysis**: Detects IP-based URLs, shorteners, homograph attacks, suspicious TLDs, unusual ports, encoded characters, and misleading structures
 - **Rule-based detection**: 37 deterministic rules across 5 categories (urgency/coercion, credential requests, financial impersonation, payment demands, account suspension)
@@ -33,8 +34,8 @@ Android Threat Assistant is an on-device tool for inspecting suspicious messages
 
 ## Privacy & Security
 
-- No permissions are declared in `AndroidManifest.xml` — no `INTERNET`, no `READ_SMS` / `RECEIVE_SMS`, no storage access
-- No network requests
+- No `INTERNET` permission and no network requests
+- `RECEIVE_SMS` and `POST_NOTIFICATIONS` are optional and used only by the opt-in SMS protection feature
 - No analytics and no message-content logging
 - Extracted links are never opened or executed automatically
 - The original message is always preserved

@@ -10,10 +10,16 @@ import androidx.compose.runtime.setValue
 import com.arm.threatassistant.domain.adapters.ProcessTextAdapter
 import com.arm.threatassistant.domain.adapters.ShareSheetAdapter
 import com.arm.threatassistant.domain.model.AnalysisInput
+import com.arm.threatassistant.domain.model.InputSource
 import com.arm.threatassistant.presentation.screens.ThreatAssistantScreen
 import com.arm.threatassistant.presentation.theme.ThreatAssistantTheme
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        /** Marks an ACTION_SEND intent that originated from an SMS alert. */
+        const val EXTRA_FROM_SMS_ALERT = "com.arm.threatassistant.extra.FROM_SMS_ALERT"
+    }
 
     private var ingestedInput by mutableStateOf<IngestedInput?>(null)
     private var ingestRequestId = 0L
@@ -49,6 +55,13 @@ class MainActivity : ComponentActivity() {
 
         val adapted = when (intent.action) {
             Intent.ACTION_SEND -> ShareSheetAdapter().adaptFromIntent(intent)
+                ?.let { input ->
+                    if (intent.getBooleanExtra(EXTRA_FROM_SMS_ALERT, false)) {
+                        input.copy(source = InputSource.SMS)
+                    } else {
+                        input
+                    }
+                }
             Intent.ACTION_PROCESS_TEXT -> ProcessTextAdapter().adaptFromIntent(intent)
             else -> null
         } ?: return

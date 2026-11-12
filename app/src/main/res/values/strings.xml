@@ -6,7 +6,7 @@
     <string name="status_analyzing">Analyzing&#8230;</string>
     <string name="section_app_info">About</string>
     <string name="app_info_body">Android Threat Assistant &#8226; Fully offline pipeline: input normalization, rule detection, URL and SMS classification, and risk assessment.</string>
-    <string name="privacy_note">No network, SMS, or analytics. User-entered text stays on the device.</string>
+    <string name="privacy_note">No network or analytics. All analysis is on-device. Incoming-SMS protection is optional and opt-in.</string>
     <string name="content_description_analyze_button">Start analyzing the entered message</string>
     <string name="content_description_result_area">Threat analysis result</string>
     <string name="section_normalized_preview">Normalized input preview</string>
@@ -14,6 +14,7 @@
     <string name="section_extracted_phones">Extracted phone numbers</string>
     <string name="section_normalization_warnings">Normalization warnings</string>
     <string name="info_input_source">Input received via share sheet or process text.</string>
+    <string name="info_input_source_sms">Input received from an SMS threat alert.</string>
     <string name="section_rule_detection_title">Rule detection signals (development)</string>
     <string name="content_description_rule_detection">Rule detection signals</string>
     <string name="section_sms_classifier_title">SMS classifier signals (development)</string>
@@ -29,12 +30,22 @@
     <string name="settings_title">Settings &amp; Privacy</string>
     <string name="settings_privacy_title">Privacy &amp; Data Handling</string>
     <string name="privacy_no_network">No network requests. All analysis runs entirely on the device.</string>
-    <string name="privacy_no_sms_permission">No READ_SMS or RECEIVE_SMS permissions. Messages are never read from the SMS inbox.</string>
+    <string name="privacy_no_sms_permission">SMS protection is optional and off by default. When enabled, incoming SMS is analyzed on-device only and never stored or uploaded.</string>
     <string name="privacy_no_analytics">No analytics and no message-content logging.</string>
-    <string name="privacy_local_processing">User-entered text stays on the device. Nothing is uploaded to a server.</string>
+    <string name="privacy_local_processing">User-entered and received text stays on the device. Nothing is uploaded to a server.</string>
     <string name="privacy_no_url_auto_open">Extracted links are never opened or executed automatically.</string>
     <string name="privacy_original_preserved">The original message is always preserved; nothing is silently modified.</string>
     <string name="settings_permissions_title">Permissions</string>
-    <string name="settings_permissions_body">This app requests no permissions at all: no INTERNET, no SMS, no storage access. All analysis runs locally.</string>
+    <string name="settings_permissions_body">RECEIVE_SMS and POST_NOTIFICATIONS are optional and only used for the opt-in SMS protection feature. The app requests no INTERNET or storage access, and all analysis runs locally.</string>
     <string name="settings_app_version">Android Threat Assistant v1.0.0</string>
+    <string name="sms_protection_title">Protect incoming SMS</string>
+    <string name="sms_protection_description">Analyze new text messages fully on-device. Safe messages stay silent.</string>
+    <string name="sms_protection_enabled">SMS protection is on. Suspicious messages will trigger a local alert.</string>
+    <string name="sms_protection_disabled">SMS protection is off. Messages are only analyzed when you enter or share them.</string>
+    <string name="sms_protection_permission_denied">SMS permission is required to protect incoming messages.</string>
+    <string name="sms_alert_channel_name">SMS threat alerts</string>
+    <string name="sms_alert_channel_description">Alerts for suspicious or high-risk incoming text messages.</string>
+    <string name="sms_alert_title">Possible scam SMS from %1$s</string>
+    <string name="sms_alert_text">Do not open links, reply, or share OTPs. Verdict: %1$s</string>
+    <string name="sms_alert_unknown_sender">unknown sender</string>
 </resources>

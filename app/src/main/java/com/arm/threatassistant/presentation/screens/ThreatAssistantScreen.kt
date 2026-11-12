@@ -49,6 +49,7 @@ import com.arm.threatassistant.presentation.components.ResultArea
 import com.arm.threatassistant.presentation.components.RiskVerdictSection
 import com.arm.threatassistant.presentation.components.RuleDetectionSection
 import com.arm.threatassistant.presentation.components.SmsClassifierSection
+import com.arm.threatassistant.presentation.components.SmsProtectionCard
 import com.arm.threatassistant.presentation.components.UrlDetectionSection
 import com.arm.threatassistant.presentation.viewmodel.ThreatAnalysisViewModel
 import com.arm.threatassistant.presentation.viewmodel.ThreatAnalysisUiState
@@ -256,6 +257,8 @@ private fun MainScreenContent(
                     enabled = true
                 )
 
+                SmsProtectionCard()
+
                 state.errorMessage?.let { error ->
                     Text(
                         text = error,
@@ -311,6 +314,13 @@ private fun MainScreenContent(
                     InputSource.PROCESS_TEXT -> {
                         Text(
                             text = stringResource(R.string.info_input_source),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                    InputSource.SMS -> {
+                        Text(
+                            text = stringResource(R.string.info_input_source_sms),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )

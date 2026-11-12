@@ -3,21 +3,17 @@ package com.arm.threatassistant.presentation.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arm.threatassistant.domain.ThreatAnalyzer
 import com.arm.threatassistant.domain.adapters.InputAdapter
 import com.arm.threatassistant.domain.adapters.ManualInputAdapter
-import com.arm.threatassistant.domain.detection.ruleengine.FastRuleEngine
-import com.arm.threatassistant.domain.detection.ruleengine.RuleDetectionResult
 import com.arm.threatassistant.domain.detection.riskpolicy.RiskAssessment
-import com.arm.threatassistant.domain.detection.riskpolicy.RiskPolicyEngine
 import com.arm.threatassistant.domain.detection.riskpolicy.ThreatVerdictLevel
+import com.arm.threatassistant.domain.detection.ruleengine.RuleDetectionResult
 import com.arm.threatassistant.domain.detection.smsclassifier.SmsClassifierResult
-import com.arm.threatassistant.domain.detection.smsclassifier.SmsSpecialistClassifier
 import com.arm.threatassistant.domain.detection.urldetection.UrlDetectionResult
-import com.arm.threatassistant.domain.detection.urldetection.UrlSpecialistDetector
 import com.arm.threatassistant.domain.model.AnalysisInput
 import com.arm.threatassistant.domain.model.AnalysisStatus
 import com.arm.threatassistant.domain.model.InputSource
-import com.arm.threatassistant.domain.normalization.InputNormalizer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,12 +24,10 @@ import kotlinx.coroutines.launch
 /**
  * View model for the main threat-analysis screen.
  *
- * Phase 2 connects the real input ingestion and normalization flow:
- * manual text is validated by [ManualInputAdapter], then normalized by
- * [InputNormalizer]. Phase 3A adds deterministic rule detection via
- * [FastRuleEngine]; detected signals are exposed in the UI state for
- * development/testing. No authoritative security verdict is produced here;
- * verdict determination remains with the RiskPolicyEngine (Phase 5).
+ * Manual text is validated by [ManualInputAdapter], then handed to the shared
+ * [ThreatAnalyzer], which runs the full offline pipeline (normalization, rule
+ * detection, URL detection, SMS classification and risk policy) on a
+ * background thread. Intent-sourced input follows the same path.
  */
 class ThreatAnalysisViewModel : ViewModel() {
 
@@ -45,12 +39,6 @@ class ThreatAnalysisViewModel : ViewModel() {
     }
 
     private val adapter: InputAdapter = ManualInputAdapter()
-
-    /** SMS specialist classifier — lazily initialized on first analysis. */
-    private var smsClassifier: SmsSpecialistClassifier? = null
-
-    /** Risk policy engine — authoritative verdict component. */
-    private val riskEngine = RiskPolicyEngine
 
     private val _uiState = MutableStateFlow(ThreatAnalysisUiState())
     val uiState: StateFlow<ThreatAnalysisUiState> = _uiState.asStateFlow()
@@ -141,30 +129,16 @@ class ThreatAnalysisViewModel : ViewModel() {
     }
 
     private fun ingest(context: Context, input: AnalysisInput) {
-        val normalized = InputNormalizer.normalize(input)
-
-        // Phase 3A: run deterministic rule detection on the normalized input.
-        val detectionResult = FastRuleEngine.detect(normalized)
-
-        // Phase 3: run URL specialist detection on the normalized input.
-        val urlDetectionResult = UrlSpecialistDetector.detect(normalized)
-
-        // Phase 3B: run SMS specialist classifier on the normalized input.
-        // Everything below runs off the main thread on Dispatchers.Default,
-        // including model loading (asset I/O) and inference.
+        // The complete offline pipeline runs off the main thread. The shared
+        // ThreatAnalyzer loads and caches the classifier model exactly once.
         viewModelScope.launch(Dispatchers.Default) {
-            val classifier = getOrCreateClassifier(context)
-            val classifierResult = classifier.classify(normalized)
+            val analysis = ThreatAnalyzer.analyze(context, input.messageText, input.source)
+            val normalized = analysis.normalizedInput
 
-            // Phase 4: run risk policy engine to produce the authoritative verdict.
-            val assessment = riskEngine.assess(
-                ruleResult = detectionResult,
-                classifierResult = classifierResult,
-                urlResult = urlDetectionResult,
-                inputStatus = AnalysisStatus.COMPLETED
+            val resultMessage = buildResultMessage(
+                analysis.riskAssessment,
+                analysis.classifierResult
             )
-
-            val resultMessage = buildResultMessage(assessment, classifierResult)
 
             _uiState.update {
                 it.copy(
@@ -176,10 +150,10 @@ class ThreatAnalysisViewModel : ViewModel() {
                     extractedPhones = normalized.extractedPhones,
                     normalizationWarnings = normalized.normalizationWarnings,
                     inputSource = normalized.source,
-                    ruleDetectionResult = detectionResult,
-                    smsClassifierResult = classifierResult,
-                    urlDetectionResult = urlDetectionResult,
-                    riskAssessment = assessment
+                    ruleDetectionResult = analysis.ruleDetectionResult,
+                    smsClassifierResult = analysis.classifierResult,
+                    urlDetectionResult = analysis.urlDetectionResult,
+                    riskAssessment = analysis.riskAssessment
                 )
             }
         }
@@ -228,22 +202,6 @@ class ThreatAnalysisViewModel : ViewModel() {
                 "Do not share sensitive information unless you initiated the contact."
             )
         }
-    }
-
-    /**
-     * Lazily creates and caches the SMS specialist classifier. The model is
-     * loaded from assets once and reused for the lifetime of the ViewModel.
-     * If the model asset is missing or corrupt, the classifier reports
-     * [SmsClassifierStatus.UNAVAILABLE] rather than crashing.
-     */
-    private fun getOrCreateClassifier(context: Context): SmsSpecialistClassifier {
-        if (smsClassifier == null) {
-            smsClassifier = SmsSpecialistClassifier.fromAssets(
-                context,
-                "sms_classifier_model_test_fixture.json"
-            )
-        }
-        return smsClassifier!!
     }
 }
 
