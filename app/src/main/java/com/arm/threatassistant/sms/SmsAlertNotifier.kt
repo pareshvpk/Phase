@@ -56,6 +56,12 @@ internal object SmsAlertNotifier {
         val displaySender = sender?.takeIf { it.isNotBlank() }
             ?: context.getString(R.string.sms_alert_unknown_sender)
 
+        val alertLabel = if (verdict == ThreatVerdictLevel.HIGH_RISK) {
+            context.getString(R.string.sms_alert_label_high_risk)
+        } else {
+            context.getString(R.string.sms_alert_label_suspicious)
+        }
+
         val contentIntent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_SEND
             type = "text/plain"
@@ -76,10 +82,10 @@ internal object SmsAlertNotifier {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_warning_sms)
             .setContentTitle(context.getString(R.string.sms_alert_title, displaySender))
-            .setContentText(context.getString(R.string.sms_alert_text, verdict.name))
+            .setContentText(context.getString(R.string.sms_alert_text, alertLabel))
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText(context.getString(R.string.sms_alert_text, verdict.name))
+                    .bigText(context.getString(R.string.sms_alert_text, alertLabel))
             )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)

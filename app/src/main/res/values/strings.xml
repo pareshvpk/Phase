@@ -46,6 +46,8 @@
     <string name="sms_alert_channel_name">SMS threat alerts</string>
     <string name="sms_alert_channel_description">Alerts for suspicious or high-risk incoming text messages.</string>
     <string name="sms_alert_title">Possible scam SMS from %1$s</string>
-    <string name="sms_alert_text">Do not open links, reply, or share OTPs. Verdict: %1$s</string>
+    <string name="sms_alert_text">Do not open links, reply, or share OTPs. Result: %1$s</string>
+    <string name="sms_alert_label_high_risk">Dangerous</string>
+    <string name="sms_alert_label_suspicious">Suspicious (possible spam or scam)</string>
     <string name="sms_alert_unknown_sender">unknown sender</string>
 </resources>
