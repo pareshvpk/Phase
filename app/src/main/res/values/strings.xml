@@ -39,7 +39,7 @@
     <string name="settings_permissions_body">RECEIVE_SMS and POST_NOTIFICATIONS are optional and only used for the opt-in SMS protection feature. The app requests no INTERNET or storage access, and all analysis runs locally.</string>
     <string name="settings_app_version">Android Threat Assistant v1.0.0</string>
     <string name="sms_protection_title">Protect incoming SMS</string>
-    <string name="sms_protection_description">Analyze new text messages fully on-device. Safe messages stay silent.</string>
+    <string name="sms_protection_description">Analyze new text messages fully on-device. OTP, transaction and login messages are skipped. Safe messages stay silent.</string>
     <string name="sms_protection_enabled">SMS protection is on. Suspicious messages will trigger a local alert.</string>
     <string name="sms_protection_disabled">SMS protection is off. Messages are only analyzed when you enter or share them.</string>
     <string name="sms_protection_permission_denied">SMS permission is required to protect incoming messages.</string>

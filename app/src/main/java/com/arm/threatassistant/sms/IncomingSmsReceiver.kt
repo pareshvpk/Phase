@@ -14,7 +14,8 @@ import java.util.concurrent.Executors
  * Exits immediately unless the user enabled SMS protection. Multipart bodies
  * are joined per originating address, then analyzed off the main thread via
  * [ThreatAnalyzer]. Analysis is fully on-device; message text is neither
- * stored nor logged.
+ * stored nor logged. OTP, transaction and credential messages are skipped
+ * before analysis.
  */
 class IncomingSmsReceiver : BroadcastReceiver() {
 
@@ -38,6 +39,7 @@ class IncomingSmsReceiver : BroadcastReceiver() {
         executor.execute {
             try {
                 for ((sender, body) in bySender) {
+                    if (SensitiveSmsFilter.shouldSkip(body)) continue
                     val analysis = ThreatAnalyzer.analyze(context, body, InputSource.SMS)
                     val verdict = analysis.riskAssessment.verdict
                     if (SmsAlertPolicy.shouldAlert(verdict)) {
