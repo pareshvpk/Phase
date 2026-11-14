@@ -92,25 +92,6 @@ Details: [`docs/PRIVACY_SECURITY.md`](docs/PRIVACY_SECURITY.md)
 | `SmsAlertPolicyTest` | Alert only for SUSPICIOUS / HIGH_RISK | 4 | 0 |
 | **Total** | **11 suites** | **179** | **0** |
 
-```mermaid
-xychart-beta horizontal
-    title "Unit tests per suite (all passing)"
-    x-axis ["FastRuleEngine", "SensitiveSmsFilter", "Phase2Input", "SmsClassifier", "RiskPolicy", "UrlDetector", "Preprocessor", "TfIdf", "Integration", "ThreatVerdict", "SmsAlertPolicy"]
-    y-axis "Tests" 0 --> 55
-    bar [51, 31, 20, 15, 14, 13, 13, 7, 6, 5, 4]
-```
-
-### Test count over the project
-
-```mermaid
-xychart-beta
-    title "JVM unit tests (all passing at each stage)"
-    x-axis ["Core engines", "+ SMS alert policy", "+ Sensitive SMS filter"]
-    y-axis "Tests" 0 --> 200
-    bar [144, 148, 179]
-    line [144, 148, 179]
-```
-
 ### Instrumented tests on a real device
 
 First run on a vivo V2338 (Android 16) on 2026-11-13, then re-run on 2026-11-14 with the latest code (11 of 11 passed).
@@ -119,13 +100,6 @@ First run on a vivo V2338 (Android 16) on 2026-11-13, then re-run on 2026-11-14 
 |---|---:|---|---|
 | `IntentIngestionTest` | 3 | Share and process-text intents open the app without crashing, including a share with no text | ✅ |
 | `DeviceBenchmarkTest` | 8 | Cold first analysis, filter correctness, verdicts, filter and analyzer latency, receiver path, long messages, memory | ✅ |
-
-```mermaid
-pie showData
-    title Device tests (11 total, all passed)
-    "IntentIngestionTest" : 3
-    "DeviceBenchmarkTest" : 8
-```
 
 Device fixes found during this run (both committed):
 - `androidx.test:core` pinned to 1.6.1, because the transitive 1.5.0 crashed `ActivityScenario` on the device
@@ -147,14 +121,6 @@ Raw logs: [`benchmarks/device_benchmark_2026-11-14.txt`](benchmarks/device_bench
 | Full analysis, normal messages | 498 | 1.82 ms | 1.52 ms | 5.45 ms | 6.81 ms |
 | Full analysis, OTP/bank messages | 664 | 2.04 ms | 1.74 ms | 3.33 ms | 7.68 ms |
 | Long message (1,600 characters) | 200 | 7.04 ms | 6.35 ms | 10.65 ms | 14.90 ms |
-
-```mermaid
-xychart-beta
-    title "Median latency on device (ms)"
-    x-axis ["SMS filter", "SMS path", "Full analysis", "Scam", "Normal", "OTP/bank", "1600 chars"]
-    y-axis "Milliseconds" 0 --> 8
-    bar [0.05, 1.51, 1.73, 1.83, 1.52, 1.74, 6.35]
-```
 
 | Other measurement | Value |
 |---|---|
