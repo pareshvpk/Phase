@@ -66,5 +66,7 @@ dependencies {
 
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
+    // Pin core to match runner/monitor; the transitive 1.5.0 crashes ActivityScenario on device.
+    androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.ext.junit)
 }
