@@ -19,9 +19,15 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class IntentIngestionTest {
 
+    // Explicit component: on a real device an implicit SEND/PROCESS_TEXT
+    // intent resolves to the system chooser instead of this app.
+    private val targetContext =
+        androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().targetContext
+
     @Test
     fun sendIntentWithPlainTextDoesNotCrash() {
         val intent = Intent(Intent.ACTION_SEND).apply {
+            setClass(targetContext, MainActivity::class.java)
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, "Shared SMS: https://example.com free money")
         }
@@ -31,6 +37,7 @@ class IntentIngestionTest {
     @Test
     fun processTextIntentWithSelectedTextDoesNotCrash() {
         val intent = Intent(Intent.ACTION_PROCESS_TEXT).apply {
+            setClass(targetContext, MainActivity::class.java)
             type = "text/plain"
             putExtra(Intent.EXTRA_PROCESS_TEXT, "Selected text from another app")
         }
@@ -40,6 +47,7 @@ class IntentIngestionTest {
     @Test
     fun sendIntentWithoutTextIsHandledSafely() {
         val intent = Intent(Intent.ACTION_SEND).apply {
+            setClass(targetContext, MainActivity::class.java)
             type = "text/plain"
         }
         ActivityScenario.launch<MainActivity>(intent).close()
