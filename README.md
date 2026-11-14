@@ -70,7 +70,8 @@ Details: [`docs/PRIVACY_SECURITY.md`](docs/PRIVACY_SECURITY.md)
 | Test level | Where it ran | Tests | Result |
 |---|---|---:|---|
 | JVM unit tests | Windows, JDK 21 (Android Studio JBR) | **179** | ✅ 179 passed, 0 failed, 0 skipped |
-| Instrumented tests | vivo V2338, Android 16 (ARM device) | **11** | ✅ 11 passed |
+| Instrumented tests | vivo V2338, Android 16, arm64 (2026-11-14) | **11** | ✅ 11 passed |
+| Device benchmark | same device | 24 samples, 24,200 timed runs | ✅ completed, measured below |
 | Debug build | `assembleDebug` | — | ✅ builds (APK 8.9 MB) |
 | Lint | `lint` | — | ✅ 0 errors |
 
@@ -112,7 +113,7 @@ xychart-beta
 
 ### Instrumented tests on a real device
 
-Run on a vivo V2338 (Android 16) on 2026-11-13.
+First run on a vivo V2338 (Android 16) on 2026-11-13, then re-run on 2026-11-14 with the latest code (11 of 11 passed).
 
 | Suite | Tests | What it checks | Result |
 |---|---:|---|---|
@@ -130,9 +131,64 @@ Device fixes found during this run (both committed):
 - `androidx.test:core` pinned to 1.6.1, because the transitive 1.5.0 crashed `ActivityScenario` on the device
 - The intent tests target `MainActivity` explicitly, because on a real phone an implicit intent opens the system chooser
 
-### Benchmark numbers
+### Device benchmark results (measured)
 
-`DeviceBenchmarkTest` writes its timings to logcat under the `ARMBENCH` tag. No timing numbers from the device run were saved yet, so **no latency figures are claimed here**. To record them:
+Measured on **vivo V2338, Android 16, arm64-v8a**, debug build, on **2026-11-14**. All 11 instrumented tests passed in 15.7 s.
+Raw logs: [`benchmarks/device_benchmark_2026-11-14.txt`](benchmarks/device_benchmark_2026-11-14.txt) and [`benchmarks/instrumented_tests_2026-11-14.txt`](benchmarks/instrumented_tests_2026-11-14.txt).
+
+#### Latency
+
+| Stage | Runs | Mean | Median | p95 | p99 |
+|---|---:|---:|---:|---:|---:|
+| Sensitive SMS filter | 20,000 | 0.06 ms | 0.05 ms | 0.11 ms | 0.15 ms |
+| Incoming SMS path (filter + analysis) | 2,000 | 1.36 ms | 1.51 ms | 2.10 ms | 7.88 ms |
+| Full analysis, any message | 2,000 | 2.06 ms | 1.73 ms | 5.26 ms | 7.91 ms |
+| Full analysis, scam messages | 838 | 2.22 ms | 1.83 ms | 5.72 ms | 8.11 ms |
+| Full analysis, normal messages | 498 | 1.82 ms | 1.52 ms | 5.45 ms | 6.81 ms |
+| Full analysis, OTP/bank messages | 664 | 2.04 ms | 1.74 ms | 3.33 ms | 7.68 ms |
+| Long message (1,600 characters) | 200 | 7.04 ms | 6.35 ms | 10.65 ms | 14.90 ms |
+
+```mermaid
+xychart-beta
+    title "Median latency on device (ms)"
+    x-axis ["SMS filter", "SMS path", "Full analysis", "Scam", "Normal", "OTP/bank", "1600 chars"]
+    y-axis "Milliseconds" 0 --> 8
+    bar [0.05, 1.51, 1.73, 1.83, 1.52, 1.74, 6.35]
+```
+
+| Other measurement | Value |
+|---|---|
+| First analysis after app start (cold) | 33.8 ms |
+| Second analysis (warm) | 5.8 ms |
+| Incoming SMS throughput | ~738 messages per second |
+| Java heap in use | 4.6 MB |
+| Native heap | 15.1 MB |
+| Debug APK size | 8.9 MB |
+
+#### Filter accuracy on device
+
+The sensitive SMS filter got all **24 of 24** samples right: 10 scams and 6 normal messages were sent on for analysis, and 3 OTP plus 5 bank transaction messages were skipped.
+
+#### Verdicts on 24 sample messages
+
+| Group | Messages | Alerted | Verdicts |
+|---|---:|---:|---|
+| Scam | 10 | **6** (60%) | 1 HIGH_RISK, 5 SUSPICIOUS, 3 SAFE, 1 INSUFFICIENT_EVIDENCE |
+| Normal | 6 | **0** (0% false alarms) | 6 INSUFFICIENT_EVIDENCE |
+| OTP / bank | 8 | **0** | 8 skipped by the filter |
+
+```mermaid
+pie showData
+    title Scam samples (10)
+    "Alerted: HIGH_RISK" : 1
+    "Alerted: SUSPICIOUS" : 5
+    "Missed: SAFE" : 3
+    "Missed: INSUFFICIENT_EVIDENCE" : 1
+```
+
+**Known gap:** 4 of the 10 scams were missed. They were the "Rs 5000 credited, click this link", "lottery prize, claim at …top", "you won Rs 50000 prize" and "electricity will be disconnected, call officer" messages. These lure and threat patterns aren't covered well by the current rules or by the small test-fixture model. No normal message caused a false alarm.
+
+To repeat the benchmark:
 
 ```bash
 adb logcat -c
@@ -141,14 +197,12 @@ adb shell am instrument -w -e class com.arm.threatassistant.benchmark.DeviceBenc
 adb logcat -d -s ARMBENCH > armbench.txt
 ```
 
-Each `STAT|...` line gives the mean, median, p95, p99, min and max in microseconds.
-
 ### Not tested yet
 
 | Item | Status |
 |---|---|
-| Detection accuracy (precision, recall, F1) | ⏳ Needs a real labelled SMS dataset. The bundled model is a small test fixture. |
-| Device latency numbers | ⏳ Harness ready, numbers not recorded yet |
+| Detection accuracy on a real dataset (precision, recall, F1) | ⏳ Needs a real labelled SMS dataset. The bundled model is a small test fixture. |
+| Missed scam types (prize lures, utility disconnection) | ⏳ Need new rules or a trained model |
 | Release build signing | ⏳ Not set up |
 
 ---
