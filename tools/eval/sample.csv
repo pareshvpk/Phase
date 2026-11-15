@@ -1,0 +1,11 @@
+text,label
+"Urgent OTP required, verify your account now",scam
+"Suspend account: pay processing fee immediately",scam
+"Your SIM blocked, verify password",scam
+"Your KYC expired, verify account password",scam
+"Urgent transfer payment fee required",scam
+"Hello, thanks for meeting me yesterday",safe
+"Your balance was credited",safe
+"Thanks for the meeting",safe
+"Hello, are we still meeting tomorrow?",safe
+"Your account balance is credited",safe

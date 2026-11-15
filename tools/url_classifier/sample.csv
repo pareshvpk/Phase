@@ -1,0 +1,13 @@
+url,label
+http://paypal.com-secure.verify-account.banking-login.tk/login,malicious
+http://192.168.0.45:8080/verify/account/update,malicious
+http://bit.ly/2xYz9Ab,malicious
+http://xn--pypal-4ve.com/confirm?user=someone@bank.example,malicious
+http://secure-login.paypal.com.a8b9c1d2e3.xyz/signin%3Femail=me@mail.com,malicious
+http://sub.sub.sub.sub.sub.evil-example.cf/pay/prize/winner/bonus,malicious
+https://www.google.com/search?q=weather,benign
+https://github.com/numpy/numpy/releases,benign
+https://developer.android.com/docs,benign
+https://www.wikipedia.org,benign
+https://docs.python.org/3/library/urllib.parse.html,benign
+https://open.spotify.com/playlist/abc123,benign

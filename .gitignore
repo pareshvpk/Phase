@@ -5,3 +5,6 @@ app/build/
 local.properties
 *.iml
 .idea/
+
+# URL classifier training output
+tools/url_classifier/out/
