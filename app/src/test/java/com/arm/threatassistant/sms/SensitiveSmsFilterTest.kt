@@ -78,9 +78,8 @@ class SensitiveSmsFilterTest {
     }
 
     @Test
-    fun `transaction with callback number is still transaction`() {
-        assertEquals(
-            SensitiveSmsKind.TRANSACTION,
+    fun `transaction with callback number and threat is not skippable`() {
+        assertNull(
             SensitiveSmsFilter.classify(
                 "Your a/c will be blocked. Rs 10 debited. Call 9876543210 now"
             )
@@ -280,6 +279,33 @@ class SensitiveSmsFilterTest {
             SensitiveSmsKind.TRANSACTION,
             SensitiveSmsFilter.classify(
                 "You have received Rs 500.00 from RAMESH K in your a/c XX1234. UPI Ref 431298765432. Details: https://hdfc.bk/a1b2"
+            )
+        )
+    }
+
+    @Test
+    fun `digital arrest scam is not skippable`() {
+        assertNull(
+            SensitiveSmsFilter.classify(
+                "Threatened with Digital Arrest? There is nothing like Digital Arrest in law. Don't share personal/financial information or pay money. Call 1930 for help. -RBI"
+            )
+        )
+    }
+
+    @Test
+    fun `legal action with callback number is not skippable`() {
+        assertNull(
+            SensitiveSmsFilter.classify(
+                "Your account will face legal action. Call 9876543210 immediately to avoid penalty."
+            )
+        )
+    }
+
+    @Test
+    fun `account will be suspended with callback is not skippable`() {
+        assertNull(
+            SensitiveSmsFilter.classify(
+                "Your a/c will be suspended. Rs 5000 debited. Call 9876543210 to verify now."
             )
         )
     }

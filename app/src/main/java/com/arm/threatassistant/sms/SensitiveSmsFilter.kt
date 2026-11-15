@@ -3,12 +3,18 @@ package com.arm.threatassistant.sms
 /**
  * Classifies legitimate private SMS that can be dropped before analysis.
  *
- * OTP, transaction and credential messages are always dropped before
- * analysis. There are two exceptions, and such a message is still
- * analyzed:
+ * Genuine OTP, transaction and credential messages are dropped before
+ * analysis. Borderline or scammy messages are moved into analysis instead
+ * of being dropped outright. There are two exceptions, and such a message
+ * is still analyzed:
  * 1. the message asks the user to share/send a code, PIN or password;
  * 2. the message contains a link together with reward wording
  *    (receive, claim, win, prize...).
+ *
+ * A scam override takes precedence over every skip rule: messages that
+ * pair account-threat/urgency language with a callback number, or that
+ * use explicit scam framing (digital arrest, legal action, etc.), are
+ * never skipped so the rule engine and classifier can evaluate them.
  */
 object SensitiveSmsFilter {
 
@@ -18,6 +24,15 @@ object SensitiveSmsFilter {
     private val NEGATED_PREFIX = Regex("""(do not|don't|dont|never|not)\s+$""")
     private val LINK = Regex("""https?://|www\.|\b[a-z0-9-]+\.(com|in|net|org|info|xyz|top|link|co|io|ly|me|app|site|online|click|live|shop|cc|ru|cn|tk)\b""")
     private val REWARD_LURE = Regex("""\b(receive|claim|redeem|collect|win|won|winner|prize|lottery|reward|rewards|gift|bonus|free|jackpot|lucky)\b""")
+
+    private val SCAM_PHRASES = Regex(
+        """\b(digital arrest|legal action|court case|police case|cyber crime|money mule|fraud alert|suspicious activity|unauthorized transaction|unauthorised transaction)\b"""
+    )
+    private val THREAT_WORDS = listOf(
+        "will be blocked", "will be suspended", "will be deactivated",
+        "account will be", "call officer"
+    )
+    private val CALLBACK_NUMBER = Regex("""\b\d{10}\b|\b\d{3}[- ]\d{7}\b|\b1800\d{7}\b|\b1930\b""")
 
     private val OTP_KEYWORDS = listOf(
         "otp",
@@ -67,6 +82,7 @@ object SensitiveSmsFilter {
         val lower = body.lowercase()
         if (hasSecretRequest(lower)) return null
         if (hasRewardLure(lower)) return null
+        if (hasScamOverride(lower)) return null
 
         if (hasOtpSignal(lower)) return SensitiveSmsKind.OTP
         if (CREDENTIALS.containsMatchIn(lower)) return SensitiveSmsKind.CREDENTIALS
@@ -87,6 +103,17 @@ object SensitiveSmsFilter {
     }
 
     private fun hasRewardLure(lower: String) = LINK.containsMatchIn(lower) && REWARD_LURE.containsMatchIn(lower)
+
+    /**
+     * Returns true when the message shows scam indicators that override the
+     * OTP / transaction skip rules, so the message is sent to analysis
+     * instead of being dropped outright.
+     */
+    private fun hasScamOverride(lower: String): Boolean {
+        if (SCAM_PHRASES.containsMatchIn(lower)) return true
+        val hasThreat = THREAT_WORDS.any { lower.contains(it) }
+        return hasThreat && CALLBACK_NUMBER.containsMatchIn(lower)
+    }
 
     private fun hasOtpSignal(lower: String): Boolean {
         val hasKeyword = OTP_KEYWORDS.any { lower.contains(it) } || OTP_CODE_WORD.containsMatchIn(lower)
