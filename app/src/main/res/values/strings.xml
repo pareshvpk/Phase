@@ -1,53 +1,112 @@
 <resources>
-    <string name="app_name">Android Threat Assistant</string>
-    <string name="analyze_button">Analyze</string>
-    <string name="hint_message">Paste an SMS or suspicious message here</string>
-    <string name="result_placeholder_title">Threat analysis</string>
-    <string name="status_analyzing">Analyzing&#8230;</string>
-    <string name="section_app_info">About</string>
-    <string name="app_info_body">Android Threat Assistant &#8226; Fully offline pipeline: input normalization, rule detection, URL and SMS classification, and risk assessment.</string>
-    <string name="privacy_note">No network or analytics. All analysis is on-device. Incoming-SMS protection is optional and opt-in.</string>
-    <string name="content_description_analyze_button">Start analyzing the entered message</string>
-    <string name="content_description_result_area">Threat analysis result</string>
-    <string name="section_normalized_preview">Normalized input preview</string>
-    <string name="section_extracted_urls">Extracted URLs</string>
-    <string name="section_extracted_phones">Extracted phone numbers</string>
-    <string name="section_normalization_warnings">Normalization warnings</string>
-    <string name="info_input_source">Input received via share sheet or process text.</string>
-    <string name="info_input_source_sms">Input received from an SMS threat alert.</string>
-    <string name="section_rule_detection_title">Rule detection signals (development)</string>
-    <string name="content_description_rule_detection">Rule detection signals</string>
-    <string name="section_sms_classifier_title">SMS classifier signals (development)</string>
-    <string name="sms_classifier_unavailable">SMS classifier model is not available. Detection evidence will not be produced.</string>
-    <string name="sms_classifier_error">SMS classifier inference failed.</string>
-    <string name="sms_classifier_unsupported_input">Input cannot be classified.</string>
-    <string name="sms_classifier_uncalibrated_note">Threat scores are not yet calibrated against validation data.</string>
-    <string name="sms_classifier_contributing_features">Top contributing features</string>
-    <string name="section_threat_verdict">Threat verdict</string>
-    <string name="section_evidence">Detection evidence</string>
-    <string name="section_recommended_actions">Recommended actions</string>
-    <string name="section_url_detection">URL detection signals</string>
-    <string name="settings_title">Settings &amp; Privacy</string>
-    <string name="settings_privacy_title">Privacy &amp; Data Handling</string>
-    <string name="privacy_no_network">No network requests. All analysis runs entirely on the device.</string>
-    <string name="privacy_no_sms_permission">SMS protection is optional and off by default. When enabled, incoming SMS is analyzed on-device only and never stored or uploaded.</string>
-    <string name="privacy_no_analytics">No analytics and no message-content logging.</string>
-    <string name="privacy_local_processing">User-entered and received text stays on the device. Nothing is uploaded to a server.</string>
-    <string name="privacy_no_url_auto_open">Extracted links are never opened or executed automatically.</string>
-    <string name="privacy_original_preserved">The original message is always preserved; nothing is silently modified.</string>
-    <string name="settings_permissions_title">Permissions</string>
-    <string name="settings_permissions_body">RECEIVE_SMS and POST_NOTIFICATIONS are optional and only used for the opt-in SMS protection feature. The app requests no INTERNET or storage access, and all analysis runs locally.</string>
-    <string name="settings_app_version">Android Threat Assistant v1.0.0</string>
+    <string name="app_name" translatable="false">ARM</string>
+    <string name="app_tagline">Scam safety that stays on your phone</string>
+
+    <string name="nav_check">Check</string>
+    <string name="nav_today">Today</string>
+    <string name="nav_protection">Protection</string>
+    <string name="nav_settings">Settings</string>
+
+    <string name="today_title">Today\'s alerts</string>
+    <string name="today_subtitle">Scam messages received today. This list clears at midnight.</string>
+    <string name="today_empty_title">No scam messages today</string>
+    <string name="today_empty_subtitle">You\'re all clear.</string>
+    <string name="today_protection_off_title">Turn on Protection to see scam messages here</string>
+    <string name="today_protection_off_button">Open Protection</string>
+    <string name="today_clear_all">Clear all</string>
+    <string name="today_clear_all_confirm_title">Clear today\'s alerts?</string>
+    <plurals name="today_clear_all_confirm_message">
+        <item quantity="one">Delete today\'s %1$d alert? This cannot be undone.</item>
+        <item quantity="other">Delete all %1$d of today\'s alerts? This cannot be undone.</item>
+    </plurals>
+    <string name="today_delete">Delete</string>
+    <string name="today_cancel">Cancel</string>
+    <string name="today_delete_content_description">Delete alert</string>
+    <string name="today_badge_overflow" translatable="false">99+</string>
+
+    <string name="check_title">Is this message safe?</string>
+    <string name="check_subtitle">Paste a message or share it to ARM. Everything stays on your phone.</string>
+    <string name="message_input_label">Your message</string>
+    <string name="hint_message">Paste the message here</string>
+    <string name="action_paste">Paste</string>
+    <string name="content_description_paste">Paste from clipboard</string>
+    <string name="action_check_message">Check message</string>
+    <string name="status_analyzing">Checking&#8230;</string>
+    <string name="check_another">Check another message</string>
+
+    <string name="verdict_safe_title">Looks safe</string>
+    <string name="verdict_safe_subtitle">We found no signs of a scam.</string>
+    <string name="verdict_suspicious_title">Be careful</string>
+    <string name="verdict_suspicious_subtitle">Some signs of a scam.</string>
+    <string name="verdict_high_risk_title">Likely scam</string>
+    <string name="verdict_high_risk_subtitle">Do not reply, click links or share codes.</string>
+
+    <string name="why_we_think_so">Why we think so</string>
+    <string name="reason_urgency">Creates panic or a deadline</string>
+    <string name="reason_credential">Asks for an OTP, PIN or password</string>
+    <string name="reason_financial">Pretends to be a bank or company</string>
+    <string name="reason_payment">Asks you to pay money</string>
+    <string name="reason_suspension">Threatens to block your account</string>
+    <string name="reason_fake_link">Contains a fake-looking link</string>
+    <string name="reason_short_link">Hides the real link behind a short link</string>
+    <string name="reason_unusual_link">Contains an unusual link</string>
+    <string name="reason_scam_wording">Wording matches known scams</string>
+
+    <string name="what_to_do">What to do</string>
+    <string name="action_safe_1">Still never share your OTP or PIN with anyone</string>
+    <string name="action_suspicious_1">Don\'t click links or reply</string>
+    <string name="action_suspicious_2">Never share your OTP or PIN</string>
+    <string name="action_suspicious_3">Check with the sender using an official number</string>
+    <string name="action_high_risk_1">Don\'t click links or reply</string>
+    <string name="action_high_risk_2">Never share your OTP or PIN</string>
+    <string name="action_high_risk_3">Block and report the sender</string>
+    <string name="action_insufficient_1">Check with the sender using an official number</string>
+    <string name="action_insufficient_2">Never share your OTP or PIN</string>
+
+    <string name="llm_explain_button">Explain in simple words</string>
+    <string name="llm_generating">Writing a simple explanation&#8230;</string>
+    <string name="llm_explanation_caption">Generated on your phone. The verdict comes from the detection engine.</string>
+    <string name="llm_try_again">Try again</string>
+    <string name="llm_unavailable">Explanation is not available right now.</string>
+    <string name="llm_preparing">Preparing AI explanations&#8230; %1$d%%</string>
+    <string name="llm_install_failed">AI explanations unavailable: %1$s</string>
+    <string name="llm_install_no_space">not enough storage</string>
+    <string name="llm_install_failed_generic">preparation failed</string>
+    <string name="llm_retry">Retry</string>
+    <string name="offline_explanation_template">This message %1$s. Never share your OTP or PIN with anyone.</string>
+    <string name="offline_explanation_separator">, </string>
+
+    <string name="protection_title">Protection</string>
+    <string name="protection_subtitle">Get an alert when a scam SMS arrives.</string>
+    <string name="privacy_offline_card">Works offline. Your messages never leave your phone.</string>
     <string name="sms_protection_title">Protect incoming SMS</string>
-    <string name="sms_protection_description">Analyze new text messages fully on-device. OTP, transaction and login messages are skipped. Safe messages stay silent.</string>
-    <string name="sms_protection_enabled">SMS protection is on. Suspicious messages will trigger a local alert.</string>
-    <string name="sms_protection_disabled">SMS protection is off. Messages are only analyzed when you enter or share them.</string>
-    <string name="sms_protection_permission_denied">SMS permission is required to protect incoming messages.</string>
+    <string name="sms_protection_description">Get an alert when a scam SMS arrives.</string>
+    <string name="sms_protection_enabled">SMS protection is on. You will get a local alert for suspicious messages.</string>
+    <string name="sms_protection_disabled">SMS protection is off. Messages are only checked when you paste or share them.</string>
+    <string name="sms_protection_permission_denied">SMS permission is needed to protect incoming messages.</string>
+
     <string name="sms_alert_channel_name">SMS threat alerts</string>
-    <string name="sms_alert_channel_description">Alerts for suspicious or high-risk incoming text messages.</string>
+    <string name="sms_alert_channel_description">Alerts for suspicious incoming text messages.</string>
     <string name="sms_alert_title">Possible scam SMS from %1$s</string>
     <string name="sms_alert_text">Do not open links, reply, or share OTPs. Result: %1$s</string>
     <string name="sms_alert_label_high_risk">Dangerous</string>
-    <string name="sms_alert_label_suspicious">Suspicious (possible spam or scam)</string>
+    <string name="sms_alert_label_suspicious">Suspicious</string>
     <string name="sms_alert_unknown_sender">unknown sender</string>
+
+    <string name="error_empty_input">Please enter a message to check.</string>
+    <string name="error_shared_empty">Shared content contained no usable text.</string>
+    <string name="error_explanation_failed">Could not write an explanation.</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_system">System default</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_hindi">हिन्दी</string>
+    <string name="settings_language_tamil">தமிழ்</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_about_title">About</string>
+    <string name="settings_version_format">Version %1$s</string>
 </resources>

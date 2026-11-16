@@ -50,13 +50,15 @@ The URL detector flags IP-based hosts, link shorteners, suspicious TLDs, homogra
 - **Optional SMS protection**: an opt-in receiver checks new SMS on-device and shows a local alert only for SUSPICIOUS or HIGH_RISK messages. Safe messages stay silent.
 - **Private SMS are skipped**: OTP, bank transaction and login messages are dropped before analysis. Two kinds are still analyzed: messages asking you to *share* a code/PIN/password, and messages that combine a link with prize or reward wording.
 - **Readable alerts**: notifications say "Dangerous" or "Suspicious" instead of internal codes
+- **Today tab**: flagged scam and suspicious SMS from the current day, with a live badge; the list clears at local midnight
 - **Explainable result**: matched rules, URL signals and evidence behind every verdict
 
 ## Privacy & security
 
 - No `INTERNET` permission, no network requests, no analytics
 - `RECEIVE_SMS` and `POST_NOTIFICATIONS` are optional and used only by SMS protection
-- Message text is never stored or logged; links are never opened automatically
+- Message text is never logged; links are never opened automatically. Flagged SMS that need the Today tab are kept in app-private storage only until the local day ends, excluded from backup and then deleted
+
 - The original message is kept unchanged; normalization works on a copy
 
 Details: [`docs/PRIVACY_SECURITY.md`](docs/PRIVACY_SECURITY.md)

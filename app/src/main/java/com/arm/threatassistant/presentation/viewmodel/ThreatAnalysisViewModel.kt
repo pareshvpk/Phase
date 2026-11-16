@@ -3,26 +3,44 @@ package com.arm.threatassistant.presentation.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arm.threatassistant.R
 import com.arm.threatassistant.domain.ThreatAnalyzer
 import com.arm.threatassistant.domain.adapters.InputAdapter
 import com.arm.threatassistant.domain.adapters.ManualInputAdapter
 import com.arm.threatassistant.domain.detection.riskpolicy.RiskAssessment
-import com.arm.threatassistant.domain.detection.riskpolicy.ThreatVerdictLevel
 import com.arm.threatassistant.domain.detection.ruleengine.RuleDetectionResult
 import com.arm.threatassistant.domain.detection.smsclassifier.SmsClassifierResult
 import com.arm.threatassistant.domain.detection.urldetection.UrlDetectionResult
 import com.arm.threatassistant.domain.model.AnalysisInput
 import com.arm.threatassistant.domain.model.AnalysisStatus
-import com.arm.threatassistant.domain.model.InputSource
+import com.arm.threatassistant.llm.ExplanationPromptBuilder
+import com.arm.threatassistant.llm.LlmExplainerProvider
+import com.arm.threatassistant.presentation.settings.AppSettings
+import com.arm.threatassistant.presentation.settings.explanationLanguageName
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 /**
- * View model for the main threat-analysis screen.
+ * State of the optional on-device Llama explanation. The explanation is always
+ * derived from the authoritative detection verdict and never changes it.
+ */
+sealed interface ExplanationState {
+    data object Hidden : ExplanationState
+    data object Ready : ExplanationState
+    data class Generating(val text: String) : ExplanationState
+    data class Done(val text: String) : ExplanationState
+    data class Failed(val message: String) : ExplanationState
+}
+
+/**
+ * View model for the message-checking screen.
  *
  * Manual text is validated by [ManualInputAdapter], then handed to the shared
  * [ThreatAnalyzer], which runs the full offline pipeline (normalization, rule
@@ -31,33 +49,26 @@ import kotlinx.coroutines.launch
  */
 class ThreatAnalysisViewModel : ViewModel() {
 
-    companion object {
-        /** Placeholder result text shown when analysis cannot proceed. */
-        internal const val NOT_IMPLEMENTED_MESSAGE =
-            "Threat detection is not yet implemented. Input has been ingested and " +
-            "normalized; detection will be delivered in a later phase."
-    }
-
     private val adapter: InputAdapter = ManualInputAdapter()
 
     private val _uiState = MutableStateFlow(ThreatAnalysisUiState())
     val uiState: StateFlow<ThreatAnalysisUiState> = _uiState.asStateFlow()
 
-    fun onMessageChanged(text: String) {
+    private var explanationJob: Job? = null
+
+    fun onMessageChanged(context: Context, text: String) {
+        stopExplanation(context)
         _uiState.update {
             it.copy(
                 inputText = text,
                 status = AnalysisStatus.IDLE,
                 errorMessage = null,
-                resultMessage = null,
                 normalizedText = null,
-                extractedUrls = emptyList(),
-                extractedPhones = emptyList(),
-                normalizationWarnings = emptyList(),
                 ruleDetectionResult = null,
                 smsClassifierResult = null,
                 urlDetectionResult = null,
-                riskAssessment = null
+                riskAssessment = null,
+                explanation = explanationAvailability(context)
             )
         }
     }
@@ -65,17 +76,19 @@ class ThreatAnalysisViewModel : ViewModel() {
     fun onAnalyze(context: Context) {
         val text = _uiState.value.inputText
 
+        stopExplanation(context)
+
         val adapted = adapter.adapt(text)
         if (adapted == null) {
             _uiState.update {
                 it.copy(
                     status = AnalysisStatus.IDLE,
-                    errorMessage = "Please enter a message to analyze.",
-                    resultMessage = null,
+                    errorMessage = context.getString(R.string.error_empty_input),
                     ruleDetectionResult = null,
                     smsClassifierResult = null,
                     urlDetectionResult = null,
-                    riskAssessment = null
+                    riskAssessment = null,
+                    explanation = explanationAvailability(context)
                 )
             }
             return
@@ -86,43 +99,39 @@ class ThreatAnalysisViewModel : ViewModel() {
 
     /**
      * Ingests input that arrived via an Android intent (share sheet or process
-     * text). The caller has already adapted the intent into an [AnalysisInput]
-     * with the correct [InputSource]; this method normalizes it and updates the
-     * UI state. No threat verdict is produced.
+     * text). The caller has already adapted the intent into an [AnalysisInput];
+     * this method populates the input field and runs the analysis pipeline.
      */
     fun onIngestedInput(context: Context, input: AnalysisInput) {
+        stopExplanation(context)
+
         if (input.messageText.isBlank()) {
             _uiState.update {
                 it.copy(
                     inputText = "",
                     status = AnalysisStatus.IDLE,
-                    errorMessage = "Shared content contained no usable text.",
-                    resultMessage = null,
+                    errorMessage = context.getString(R.string.error_shared_empty),
                     ruleDetectionResult = null,
                     smsClassifierResult = null,
                     urlDetectionResult = null,
-                    riskAssessment = null
+                    riskAssessment = null,
+                    explanation = explanationAvailability(context)
                 )
             }
             return
         }
 
-        // Populate the input field immediately so the shared text is visible,
-        // then run the same analysis pipeline used for manual input.
         _uiState.update {
             it.copy(
                 inputText = input.messageText,
                 errorMessage = null,
                 status = AnalysisStatus.ANALYZING,
-                resultMessage = null,
                 normalizedText = null,
-                extractedUrls = emptyList(),
-                extractedPhones = emptyList(),
-                normalizationWarnings = emptyList(),
                 ruleDetectionResult = null,
                 smsClassifierResult = null,
                 urlDetectionResult = null,
-                riskAssessment = null
+                riskAssessment = null,
+                explanation = explanationAvailability(context)
             )
         }
         ingest(context, input)
@@ -135,73 +144,84 @@ class ThreatAnalysisViewModel : ViewModel() {
             val analysis = ThreatAnalyzer.analyze(context, input.messageText, input.source)
             val normalized = analysis.normalizedInput
 
-            val resultMessage = buildResultMessage(
-                analysis.riskAssessment,
-                analysis.classifierResult
-            )
-
             _uiState.update {
                 it.copy(
                     status = AnalysisStatus.COMPLETED,
                     errorMessage = null,
-                    resultMessage = resultMessage,
                     normalizedText = normalized.normalizedText,
-                    extractedUrls = normalized.extractedUrls,
-                    extractedPhones = normalized.extractedPhones,
-                    normalizationWarnings = normalized.normalizationWarnings,
-                    inputSource = normalized.source,
                     ruleDetectionResult = analysis.ruleDetectionResult,
                     smsClassifierResult = analysis.classifierResult,
                     urlDetectionResult = analysis.urlDetectionResult,
-                    riskAssessment = analysis.riskAssessment
+                    riskAssessment = analysis.riskAssessment,
+                    explanation = explanationAvailability(context)
                 )
             }
         }
     }
 
-    private fun buildResultMessage(assessment: RiskAssessment, classifierResult: SmsClassifierResult?): String {
-        val sb = StringBuilder()
-        sb.append("Verdict: ${assessment.verdict} (risk score: ${"%.2f".format(assessment.riskScore)})\n")
-        sb.append("Evidence:\n")
-        for (line in assessment.evidenceSummary) {
-            sb.append("  • $line\n")
+    /**
+     * Generates a plain-language explanation for the current verdict. The
+     * explanation is advisory only; it never changes the verdict.
+     */
+    fun onExplain(context: Context) {
+        val current = _uiState.value
+        val assessment = current.riskAssessment ?: return
+        val explainer = LlmExplainerProvider.get(context.applicationContext) ?: run {
+            _uiState.update { it.copy(explanation = ExplanationState.Hidden) }
+            return
         }
-        if (classifierResult?.contributingFeatures?.isNotEmpty() == true) {
-            sb.append("Top contributing features:\n")
-            for (f in classifierResult.contributingFeatures!!.take(5)) {
-                sb.append("    - ${f.term}: contribution ${"%.3f".format(f.contribution)}\n")
+
+        val messageText = current.normalizedText ?: current.inputText
+        val language = AppSettings.get(context).state.value.language
+        val languageName = language.explanationLanguageName(Locale.getDefault().language)
+        val prompt = ExplanationPromptBuilder.build(
+            verdictLabel = assessment.verdict.name,
+            evidence = assessment.evidenceSummary,
+            messageText = messageText,
+            languageName = languageName
+        )
+
+        val fallbackErrorMessage = context.getString(R.string.error_explanation_failed)
+
+        stopExplanation(context)
+        _uiState.update { it.copy(explanation = ExplanationState.Generating("")) }
+
+        explanationJob = viewModelScope.launch {
+            try {
+                val text = explainer.explain(prompt) { token ->
+                    _uiState.update { state ->
+                        val generating = state.explanation as? ExplanationState.Generating
+                        if (generating == null) {
+                            state
+                        } else {
+                            state.copy(
+                                explanation = ExplanationState.Generating(generating.text + token)
+                            )
+                        }
+                    }
+                }
+                _uiState.update { it.copy(explanation = ExplanationState.Done(text)) }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (t: Throwable) {
+                val message = t.message?.takeIf { it.isNotBlank() }
+                    ?: fallbackErrorMessage
+                _uiState.update { it.copy(explanation = ExplanationState.Failed(message)) }
             }
         }
-        sb.append("Recommended actions:\n")
-        sb.append(recommendedActions(assessment.verdict).joinToString("\n") { "  • $it" })
-        return sb.toString()
     }
 
-    private fun recommendedActions(verdict: ThreatVerdictLevel): List<String> {
-        return when (verdict) {
-            ThreatVerdictLevel.SAFE -> listOf(
-                "Message appears safe. No action required.",
-                "Exercise normal caution with unexpected links or requests."
-            )
-            ThreatVerdictLevel.SUSPICIOUS -> listOf(
-                "Do not click any links in this message.",
-                "Do not reply with personal information, OTPs, or passwords.",
-                "Verify the sender through an official channel.",
-                "Consider reporting the message to your carrier."
-            )
-            ThreatVerdictLevel.HIGH_RISK -> listOf(
-                "DO NOT click any links or respond to this message.",
-                "DO NOT share OTPs, passwords, or banking details.",
-                "Block the sender immediately.",
-                "Report the message as spam/phishing to your carrier.",
-                "If you already shared credentials, change your passwords and contact your bank."
-            )
-            ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> listOf(
-                "Insufficient evidence for a determination.",
-                "Exercise caution with unexpected messages.",
-                "Do not share sensitive information unless you initiated the contact."
-            )
+    private fun explanationAvailability(context: Context): ExplanationState =
+        if (LlmExplainerProvider.get(context.applicationContext) != null) {
+            ExplanationState.Ready
+        } else {
+            ExplanationState.Hidden
         }
+
+    private fun stopExplanation(context: Context) {
+        explanationJob?.cancel()
+        explanationJob = null
+        LlmExplainerProvider.get(context.applicationContext)?.stop()
     }
 }
 
@@ -209,14 +229,10 @@ data class ThreatAnalysisUiState(
     val inputText: String = "",
     val normalizedText: String? = null,
     val status: AnalysisStatus = AnalysisStatus.IDLE,
-    val resultMessage: String? = null,
     val errorMessage: String? = null,
-    val extractedUrls: List<String> = emptyList(),
-    val extractedPhones: List<String> = emptyList(),
-    val normalizationWarnings: List<String> = emptyList(),
-    val inputSource: InputSource = InputSource.MANUAL,
     val ruleDetectionResult: RuleDetectionResult? = null,
     val smsClassifierResult: SmsClassifierResult? = null,
     val urlDetectionResult: UrlDetectionResult? = null,
-    val riskAssessment: RiskAssessment? = null
+    val riskAssessment: RiskAssessment? = null,
+    val explanation: ExplanationState = ExplanationState.Hidden
 )

@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_tagline">सुरक्षा जो आपके फ़ोन पर ही रहती है</string>
+
+    <string name="nav_check">जाँच</string>
+    <string name="nav_today">आज</string>
+    <string name="nav_protection">सुरक्षा</string>
+    <string name="nav_settings">सेटिंग्स</string>
+
+    <string name="today_title">आज के अलर्ट</string>
+    <string name="today_subtitle">आज मिले धोखाधड़ी वाले संदेश। यह सूची आधी रात को साफ़ हो जाती है।</string>
+    <string name="today_empty_title">आज कोई धोखाधड़ी वाला संदेश नहीं</string>
+    <string name="today_empty_subtitle">आप पूरी तरह सुरक्षित हैं।</string>
+    <string name="today_protection_off_title">यहाँ धोखाधड़ी वाले संदेश देखने के लिए सुरक्षा चालू करें</string>
+    <string name="today_protection_off_button">सुरक्षा खोलें</string>
+    <string name="today_clear_all">सभी साफ़ करें</string>
+    <string name="today_clear_all_confirm_title">आज के अलर्ट साफ़ करें?</string>
+    <plurals name="today_clear_all_confirm_message">
+        <item quantity="one">आज का %1$d अलर्ट हटाएँ? इसे वापस नहीं लाया जा सकता।</item>
+        <item quantity="other">आज के सभी %1$d अलर्ट हटाएँ? इन्हें वापस नहीं लाया जा सकता।</item>
+    </plurals>
+    <string name="today_delete">हटाएँ</string>
+    <string name="today_cancel">रद्द करें</string>
+    <string name="today_delete_content_description">अलर्ट हटाएँ</string>
+
+    <string name="check_title">क्या यह संदेश सुरक्षित है?</string>
+    <string name="check_subtitle">संदेश पेस्ट करें या ARM को भेजें। सब कुछ आपके फ़ोन पर ही रहता है।</string>
+    <string name="message_input_label">आपका संदेश</string>
+    <string name="hint_message">संदेश यहाँ पेस्ट करें</string>
+    <string name="action_paste">पेस्ट करें</string>
+    <string name="content_description_paste">क्लिपबोर्ड से पेस्ट करें</string>
+    <string name="action_check_message">संदेश जाँचें</string>
+    <string name="status_analyzing">जाँच हो रही है&#8230;</string>
+    <string name="check_another">दूसरा संदेश जाँचें</string>
+
+    <string name="verdict_safe_title">सुरक्षित लगता है</string>
+    <string name="verdict_safe_subtitle">हमें धोखाधड़ी के कोई संकेत नहीं मिले।</string>
+    <string name="verdict_suspicious_title">सावधान रहें</string>
+    <string name="verdict_suspicious_subtitle">धोखाधड़ी के कुछ संकेत मिले हैं।</string>
+    <string name="verdict_high_risk_title">धोखाधड़ी की संभावना</string>
+    <string name="verdict_high_risk_subtitle">जवाब न दें, लिंक पर क्लिक न करें और कोड साझा न करें।</string>
+
+    <string name="why_we_think_so">हमें ऐसा क्यों लगता है</string>
+    <string name="reason_urgency">डर या समय-सीमा बनाता है</string>
+    <string name="reason_credential">OTP, PIN या पासवर्ड माँगता है</string>
+    <string name="reason_financial">बैंक या कंपनी होने का दिखावा करता है</string>
+    <string name="reason_payment">आपसे पैसे देने के लिए कहता है</string>
+    <string name="reason_suspension">आपका खाता बंद करने की धमकी देता है</string>
+    <string name="reason_fake_link">नकली दिखने वाला लिंक है</string>
+    <string name="reason_short_link">असली लिंक को छोटे लिंक में छिपाता है</string>
+    <string name="reason_unusual_link">असामान्य लिंक है</string>
+    <string name="reason_scam_wording">जानी-पहचानी धोखाधड़ी जैसी भाषा है</string>
+
+    <string name="what_to_do">क्या करें</string>
+    <string name="action_safe_1">फिर भी अपना OTP या PIN किसी से साझा न करें</string>
+    <string name="action_suspicious_1">लिंक पर क्लिक न करें और जवाब न दें</string>
+    <string name="action_suspicious_2">अपना OTP या PIN कभी साझा न करें</string>
+    <string name="action_suspicious_3">आधिकारिक नंबर पर भेजने वाले से पुष्टि करें</string>
+    <string name="action_high_risk_1">लिंक पर क्लिक न करें और जवाब न दें</string>
+    <string name="action_high_risk_2">अपना OTP या PIN कभी साझा न करें</string>
+    <string name="action_high_risk_3">भेजने वाले को ब्लॉक करें और रिपोर्ट करें</string>
+    <string name="action_insufficient_1">आधिकारिक नंबर पर भेजने वाले से पुष्टि करें</string>
+    <string name="action_insufficient_2">अपना OTP या PIN कभी साझा न करें</string>
+
+    <string name="llm_explain_button">आसान शब्दों में समझाएँ</string>
+    <string name="llm_generating">आसान भाषा में समझाया जा रहा है&#8230;</string>
+    <string name="llm_explanation_caption">आपके फ़ोन पर तैयार किया गया। निर्णय पहचान इंजन से आता है।</string>
+    <string name="llm_try_again">फिर से कोशिश करें</string>
+    <string name="llm_unavailable">स्पष्टीकरण अभी उपलब्ध नहीं है।</string>
+    <string name="llm_preparing">AI स्पष्टीकरण तैयार हो रहे हैं&#8230; %1$d%%</string>
+    <string name="llm_install_failed">AI स्पष्टीकरण उपलब्ध नहीं: %1$s</string>
+    <string name="llm_install_no_space">पर्याप्त संग्रहण नहीं है</string>
+    <string name="llm_install_failed_generic">तैयारी विफल रही</string>
+    <string name="llm_retry">फिर से कोशिश करें</string>
+    <string name="offline_explanation_template">यह संदेश %1$s। अपना OTP या PIN किसी से साझा न करें।</string>
+    <string name="offline_explanation_separator">, </string>
+
+    <string name="protection_title">सुरक्षा</string>
+    <string name="protection_subtitle">धोखाधड़ी वाला SMS आने पर चेतावनी पाएँ।</string>
+    <string name="privacy_offline_card">ऑफ़लाइन काम करता है। आपके संदेश आपके फ़ोन से बाहर नहीं जाते।</string>
+    <string name="sms_protection_title">आने वाले SMS की सुरक्षा</string>
+    <string name="sms_protection_description">धोखाधड़ी वाला SMS आने पर चेतावनी पाएँ।</string>
+    <string name="sms_protection_enabled">SMS सुरक्षा चालू है। संदिग्ध संदेशों पर आपको स्थानीय चेतावनी मिलेगी।</string>
+    <string name="sms_protection_disabled">SMS सुरक्षा बंद है। संदेशों की जाँच तभी होती है जब आप उन्हें पेस्ट या साझा करते हैं।</string>
+    <string name="sms_protection_permission_denied">आने वाले संदेशों की सुरक्षा के लिए SMS अनुमति चाहिए।</string>
+
+    <string name="sms_alert_channel_name">SMS खतरा अलर्ट</string>
+    <string name="sms_alert_channel_description">संदिग्ध आने वाले संदेशों के लिए अलर्ट।</string>
+    <string name="sms_alert_title">%1$s से संभावित धोखाधड़ी वाला SMS</string>
+    <string name="sms_alert_text">लिंक न खोलें, जवाब न दें और OTP साझा न करें। परिणाम: %1$s</string>
+    <string name="sms_alert_label_high_risk">खतरनाक</string>
+    <string name="sms_alert_label_suspicious">संदिग्ध</string>
+    <string name="sms_alert_unknown_sender">अज्ञात भेजने वाला</string>
+
+    <string name="error_empty_input">जाँच के लिए कृपया एक संदेश दर्ज करें।</string>
+    <string name="error_shared_empty">साझा की गई सामग्री में उपयोगी टेक्स्ट नहीं था।</string>
+    <string name="error_explanation_failed">स्पष्टीकरण नहीं बन सका।</string>
+
+    <string name="settings_title">सेटिंग्स</string>
+    <string name="settings_language_title">भाषा</string>
+    <string name="settings_language_system">सिस्टम डिफ़ॉल्ट</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_hindi">हिन्दी</string>
+    <string name="settings_language_tamil">தமிழ்</string>
+    <string name="settings_theme_title">थीम</string>
+    <string name="settings_theme_system">सिस्टम डिफ़ॉल्ट</string>
+    <string name="settings_theme_light">लाइट</string>
+    <string name="settings_theme_dark">डार्क</string>
+    <string name="settings_about_title">परिचय</string>
+    <string name="settings_version_format">संस्करण %1$s</string>
+</resources>

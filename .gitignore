@@ -8,3 +8,6 @@ local.properties
 
 # URL classifier training output
 tools/url_classifier/out/
+
+# Local LLM model files (too large for git)
+models/

@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_tagline">உங்கள் தொலைபேசியிலேயே இருக்கும் பாதுகாப்பு</string>
+
+    <string name="nav_check">சரிபார்</string>
+    <string name="nav_today">இன்று</string>
+    <string name="nav_protection">பாதுகாப்பு</string>
+    <string name="nav_settings">அமைப்புகள்</string>
+
+    <string name="today_title">இன்றைய எச்சரிக்கைகள்</string>
+    <string name="today_subtitle">இன்று வந்த மோசடிச் செய்திகள். இந்தப் பட்டியல் நள்ளிரவில் அழிக்கப்படும்.</string>
+    <string name="today_empty_title">இன்று மோசடிச் செய்திகள் இல்லை</string>
+    <string name="today_empty_subtitle">நீங்கள் முழுவதும் பாதுகாப்பாக உள்ளீர்கள்.</string>
+    <string name="today_protection_off_title">மோசடிச் செய்திகளை இங்கே பார்க்க பாதுகாப்பை இயக்கவும்</string>
+    <string name="today_protection_off_button">பாதுகாப்பைத் திற</string>
+    <string name="today_clear_all">அனைத்தையும் அழி</string>
+    <string name="today_clear_all_confirm_title">இன்றைய எச்சரிக்கைகளை அழிக்கவா?</string>
+    <plurals name="today_clear_all_confirm_message">
+        <item quantity="one">இன்றைய %1$d எச்சரிக்கையை நீக்கவா? இதை மீட்டெடுக்க முடியாது.</item>
+        <item quantity="other">இன்றைய %1$d எச்சரிக்கைகளை நீக்கவா? இவற்றை மீட்டெடுக்க முடியாது.</item>
+    </plurals>
+    <string name="today_delete">நீக்கு</string>
+    <string name="today_cancel">ரத்துசெய்</string>
+    <string name="today_delete_content_description">எச்சரிக்கையை நீக்கு</string>
+
+    <string name="check_title">இந்தச் செய்தி பாதுகாப்பானதா?</string>
+    <string name="check_subtitle">செய்தியை ஒட்டவும் அல்லது ARM-க்கு பங்கிடவும். எல்லாமே உங்கள் தொலைபேசியிலேயே இருக்கும்.</string>
+    <string name="message_input_label">உங்கள் செய்தி</string>
+    <string name="hint_message">செய்தியை இங்கே ஒட்டவும்</string>
+    <string name="action_paste">ஒட்டு</string>
+    <string name="content_description_paste">கிளிப்போர்டிலிருந்து ஒட்டு</string>
+    <string name="action_check_message">செய்தியைச் சரிபார்</string>
+    <string name="status_analyzing">சரிபார்க்கப்படுகிறது&#8230;</string>
+    <string name="check_another">மற்றொரு செய்தியைச் சரிபார்</string>
+
+    <string name="verdict_safe_title">பாதுகாப்பாகத் தெரிகிறது</string>
+    <string name="verdict_safe_subtitle">மோசடிக்கான அறிகுறிகள் ஏதும் கிடைக்கவில்லை.</string>
+    <string name="verdict_suspicious_title">கவனமாக இருங்கள்</string>
+    <string name="verdict_suspicious_subtitle">சில மோசடி அறிகுறிகள் உள்ளன.</string>
+    <string name="verdict_high_risk_title">மோசடி வாய்ப்பு</string>
+    <string name="verdict_high_risk_subtitle">பதிலளிக்காதீர்கள், இணைப்புகளை அழுத்தாதீர்கள், குறியீடுகளைப் பங்கிடாதீர்கள்.</string>
+
+    <string name="why_we_think_so">ஏன் இப்படி நினைக்கிறோம்</string>
+    <string name="reason_urgency">பயம் அல்லது கால அவகாசத்தை உருவாக்குகிறது</string>
+    <string name="reason_credential">OTP, PIN அல்லது கடவுச்சொல்லைக் கேட்கிறது</string>
+    <string name="reason_financial">வங்கி அல்லது நிறுவனம் போல் நடிக்கிறது</string>
+    <string name="reason_payment">பணம் செலுத்தச் சொல்கிறது</string>
+    <string name="reason_suspension">உங்கள் கணக்கை முடக்குவதாக மிரட்டுகிறது</string>
+    <string name="reason_fake_link">போலியாகத் தெரியும் இணைப்பு உள்ளது</string>
+    <string name="reason_short_link">உண்மையான இணைப்பைச் சிறு இணைப்பில் மறைக்கிறது</string>
+    <string name="reason_unusual_link">வழக்கத்திற்கு மாறான இணைப்பு உள்ளது</string>
+    <string name="reason_scam_wording">தெரிந்த மோசடி மொழி போலவே உள்ளது</string>
+
+    <string name="what_to_do">என்ன செய்ய வேண்டும்</string>
+    <string name="action_safe_1">இருந்தாலும் உங்கள் OTP அல்லது PIN-ஐ யாருடனும் பங்கிடாதீர்கள்</string>
+    <string name="action_suspicious_1">இணைப்புகளை அழுத்தாதீர்கள், பதிலளிக்காதீர்கள்</string>
+    <string name="action_suspicious_2">உங்கள் OTP அல்லது PIN-ஐ ஒருபோதும் பங்கிடாதீர்கள்</string>
+    <string name="action_suspicious_3">அதிகாரப்பூர்வ எண்ணில் அனுப்பியவரிடம் உறுதிப்படுத்துங்கள்</string>
+    <string name="action_high_risk_1">இணைப்புகளை அழுத்தாதீர்கள், பதிலளிக்காதீர்கள்</string>
+    <string name="action_high_risk_2">உங்கள் OTP அல்லது PIN-ஐ ஒருபோதும் பங்கிடாதீர்கள்</string>
+    <string name="action_high_risk_3">அனுப்பியவரைத் தடுத்து புகாரளியுங்கள்</string>
+    <string name="action_insufficient_1">அதிகாரப்பூர்வ எண்ணில் அனுப்பியவரிடம் உறுதிப்படுத்துங்கள்</string>
+    <string name="action_insufficient_2">உங்கள் OTP அல்லது PIN-ஐ ஒருபோதும் பங்கிடாதீர்கள்</string>
+
+    <string name="llm_explain_button">எளிய சொற்களில் விளக்கு</string>
+    <string name="llm_generating">எளிய விளக்கம் எழுதப்படுகிறது&#8230;</string>
+    <string name="llm_explanation_caption">உங்கள் தொலைபேசியில் உருவாக்கப்பட்டது. தீர்ப்பு கண்டறிதல் இயந்திரத்திலிருந்து வருகிறது.</string>
+    <string name="llm_try_again">மீண்டும் முயற்சி செய்</string>
+    <string name="llm_unavailable">விளக்கம் இப்போது கிடைக்கவில்லை.</string>
+    <string name="llm_preparing">AI விளக்கங்கள் தயாராகின்றன&#8230; %1$d%%</string>
+    <string name="llm_install_failed">AI விளக்கங்கள் கிடைக்கவில்லை: %1$s</string>
+    <string name="llm_install_no_space">போதுமான சேமிப்பு இல்லை</string>
+    <string name="llm_install_failed_generic">தயாரிப்பு தோல்வியடைந்தது</string>
+    <string name="llm_retry">மீண்டும் முயற்சி செய்</string>
+    <string name="offline_explanation_template">இந்தச் செய்தி %1$s. உங்கள் OTP அல்லது PIN-ஐ யாருடனும் பங்கிடாதீர்கள்.</string>
+    <string name="offline_explanation_separator">, </string>
+
+    <string name="protection_title">பாதுகாப்பு</string>
+    <string name="protection_subtitle">மோசடி SMS வரும்போது எச்சரிக்கை பெறுங்கள்.</string>
+    <string name="privacy_offline_card">இணையம் இல்லாமல் செயல்படுகிறது. உங்கள் செய்திகள் உங்கள் தொலைபேசியை விட்டு வெளியே போவதில்லை.</string>
+    <string name="sms_protection_title">வரும் SMS-ஐப் பாதுகாக்கவும்</string>
+    <string name="sms_protection_description">மோசடி SMS வரும்போது எச்சரிக்கை பெறுங்கள்.</string>
+    <string name="sms_protection_enabled">SMS பாதுகாப்பு இயக்கத்தில் உள்ளது. சந்தேகத்திற்குரிய செய்திகளுக்கு உள்ளூர் எச்சரிக்கை கிடைக்கும்.</string>
+    <string name="sms_protection_disabled">SMS பாதுகாப்பு நிறுத்தப்பட்டுள்ளது. நீங்கள் ஒட்டும் அல்லது பங்கிடும் போது மட்டுமே செய்திகள் சரிபார்க்கப்படும்.</string>
+    <string name="sms_protection_permission_denied">வரும் செய்திகளைப் பாதுகாக்க SMS அனுமதி தேவை.</string>
+
+    <string name="sms_alert_channel_name">SMS அச்சுறுத்தல் எச்சரிக்கைகள்</string>
+    <string name="sms_alert_channel_description">சந்தேகத்திற்குரிய வரும் செய்திகளுக்கான எச்சரிக்கைகள்.</string>
+    <string name="sms_alert_title">%1$s இலிருந்து சாத்தியமான மோசடி SMS</string>
+    <string name="sms_alert_text">இணைப்புகளைத் திறக்காதீர்கள், பதிலளிக்காதீர்கள், OTPகளைப் பங்கிடாதீர்கள். முடிவு: %1$s</string>
+    <string name="sms_alert_label_high_risk">ஆபத்தானது</string>
+    <string name="sms_alert_label_suspicious">சந்தேகத்திற்குரியது</string>
+    <string name="sms_alert_unknown_sender">தெரியாத அனுப்புநர்</string>
+
+    <string name="error_empty_input">சரிபார்க்க ஒரு செய்தியை உள்ளிடவும்.</string>
+    <string name="error_shared_empty">பங்கிடப்பட்ட உள்ளடக்கத்தில் பயன்படுத்தக்கூடிய உரை இல்லை.</string>
+    <string name="error_explanation_failed">விளக்கத்தை எழுத முடியவில்லை.</string>
+
+    <string name="settings_title">அமைப்புகள்</string>
+    <string name="settings_language_title">மொழி</string>
+    <string name="settings_language_system">கணினி இயல்புநிலை</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_hindi">हिन्दी</string>
+    <string name="settings_language_tamil">தமிழ்</string>
+    <string name="settings_theme_title">தோற்றம்</string>
+    <string name="settings_theme_system">கணினி இயல்புநிலை</string>
+    <string name="settings_theme_light">ஒளி</string>
+    <string name="settings_theme_dark">இருள்</string>
+    <string name="settings_about_title">பற்றி</string>
+    <string name="settings_version_format">பதிப்பு %1$s</string>
+</resources>

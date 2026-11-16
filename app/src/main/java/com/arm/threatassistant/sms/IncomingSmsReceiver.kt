@@ -6,6 +6,8 @@ import android.content.Intent
 import android.provider.Telephony
 import com.arm.threatassistant.domain.ThreatAnalyzer
 import com.arm.threatassistant.domain.model.InputSource
+import com.arm.threatassistant.presentation.result.ReasonMapper
+import java.util.UUID
 import java.util.concurrent.Executors
 
 /**
@@ -13,9 +15,13 @@ import java.util.concurrent.Executors
  *
  * Exits immediately unless the user enabled SMS protection. Multipart bodies
  * are joined per originating address, then analyzed off the main thread via
- * [ThreatAnalyzer]. Analysis is fully on-device; message text is neither
- * stored nor logged. OTP, transaction and credential messages are skipped
- * before analysis.
+ * [ThreatAnalyzer]. Analysis is fully on-device and message text is never
+ * logged. OTP, transaction and credential messages are skipped before
+ * analysis.
+ *
+ * Flagged (scam or suspicious) message text is kept in app-private storage
+ * only until the end of the local day so it can appear in the Today list, and
+ * is then deleted. Safe messages are never stored.
  */
 class IncomingSmsReceiver : BroadcastReceiver() {
 
@@ -43,6 +49,22 @@ class IncomingSmsReceiver : BroadcastReceiver() {
                     val analysis = ThreatAnalyzer.analyze(context, body, InputSource.SMS)
                     val verdict = analysis.riskAssessment.verdict
                     if (SmsAlertPolicy.shouldAlert(verdict)) {
+                        val reasons = ReasonMapper.map(
+                            ruleResult = analysis.ruleDetectionResult,
+                            urlResult = analysis.urlDetectionResult,
+                            classifierResult = analysis.classifierResult
+                        )
+                        TodayAlertsStore.add(
+                            context,
+                            TodayAlert(
+                                id = UUID.randomUUID().toString(),
+                                sender = sender,
+                                body = body,
+                                verdict = verdict,
+                                receivedAtMillis = System.currentTimeMillis(),
+                                reasonIds = reasons.map { it.stableId }
+                            )
+                        )
                         SmsAlertNotifier.notify(context, sender, verdict, body)
                     }
                 }

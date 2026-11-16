@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Shield body with purple-to-magenta brand gradient. -->
+    <path android:pathData="M54,4 L98,20 L98,52 C98,80 79,99 54,106 C29,99 10,80 10,52 L10,20 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="18"
+                android:startY="14"
+                android:endX="94"
+                android:endY="102"
+                android:startColor="#FF8A1C62"
+                android:endColor="#FFC72A87" />
+        </aapt:attr>
+    </path>
+
+    <!-- Soft top-left highlight, kept subtle. -->
+    <path
+        android:pathData="M30,22 C42,28 48,42 46,58 C37,44 31,34 30,22 Z"
+        android:fillColor="#1FFFFFFF" />
+
+    <!-- Lock shackle. -->
+    <path
+        android:pathData="M44,50 L44,43 A10,10 0 0 1 64,43 L64,50"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Lock body. -->
+    <path
+        android:pathData="M40,50 L68,50 A6,6 0 0 1 74,56 L74,74 A6,6 0 0 1 68,80 L40,80 A6,6 0 0 1 34,74 L34,56 A6,6 0 0 1 40,50 Z"
+        android:fillColor="#FFFFFFFF" />
+
+    <!-- Keyhole. -->
+    <path
+        android:pathData="M54,58 A4,4 0 1 0 54,66 A4,4 0 1 0 54,58 Z M52,64 L56,64 L56,73 L52,73 Z"
+        android:fillColor="#33000000" />
+</vector>

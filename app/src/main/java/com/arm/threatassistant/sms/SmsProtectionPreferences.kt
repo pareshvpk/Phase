@@ -5,7 +5,8 @@ import android.content.Context
 /**
  * Persists the user's opt-in choice for incoming-SMS protection.
  *
- * Only this single boolean is stored. Message content is never persisted.
+ * Only this single boolean is stored here. Flagged message text is kept
+ * separately in app-private same-day storage for the Today tab.
  */
 object SmsProtectionPreferences {
 

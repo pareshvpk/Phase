@@ -3,6 +3,7 @@
     <cloud-backup>
         <exclude domain="root" path="." />
         <exclude domain="file" path="." />
+        <exclude domain="file" path="today_alerts.json" />
         <exclude domain="database" path="." />
         <exclude domain="sharedpref" path="." />
         <exclude domain="external" path="." />
@@ -10,6 +11,7 @@
     <device-transfer>
         <exclude domain="root" path="." />
         <exclude domain="file" path="." />
+        <exclude domain="file" path="today_alerts.json" />
         <exclude domain="database" path="." />
         <exclude domain="sharedpref" path="." />
         <exclude domain="external" path="." />

@@ -7,7 +7,6 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 
-import com.arm.threatassistant.presentation.viewmodel.ThreatAnalysisUiState
 import com.arm.threatassistant.presentation.viewmodel.ThreatAnalysisViewModel
 
 /**
@@ -67,7 +66,6 @@ class ThreatVerdictTest {
         assertEquals(AnalysisStatus.IDLE, state.status)
         assertEquals("", state.inputText)
         assertNull(state.errorMessage)
-        assertNull(state.resultMessage)
         assertFalse(state.inputText.isNotBlank())
     }
 }
