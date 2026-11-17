@@ -101,7 +101,7 @@ class AdviceGuardTest {
     @Test
     fun urlAndPhoneSentencesAreDropped() {
         val text = "Visit http://scam.example.com now. Call +91-9876543210 immediately. " +
-            "Your account needs attention."
+            "Your account needs attention. The sender is pretending to be your bank."
         val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
 
         assertFalse(result.contains("http://scam.example.com"))
@@ -130,7 +130,7 @@ class AdviceGuardTest {
     @Test
     fun safeStepsAreAppendedOnlyOnce() {
         val text = "This message threatens to block your SBI account and asks for your OTP. " +
-            "Your account needs attention."
+            "Your account needs attention. The sender is pretending to be your bank."
         val first = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
         val second = AdviceGuard.guard(first, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
 
@@ -147,6 +147,48 @@ class AdviceGuardTest {
     @Test
     fun tooFewSentencesReturnsFallback() {
         val text = "Click here now."
+        assertEquals(fallback, AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps))
+    }
+
+    @Test
+    fun realBulletAnswerIsKeptAndCleaned() {
+        val text = "This message is HIGH_RISK because it:  * Threatens you with a serious situation (your KYC is about " +
+            "to expire and your account will be blocked) * Requests sensitive information (your OTP) to update your " +
+            "KYC * Uses a URL that may be fake or malicious (http://sbi-kyc-update.in/verify)  To stay safe, you " +
+            "should:  * Do not respond to the message by sharing your OTP or clicking any links * Delete the message"
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
+
+        assertFalse(result == fallback)
+        assertFalse(result.contains("*"))
+        assertFalse(result.contains("http"))
+        assertFalse(result.contains("HIGH_RISK"))
+        assertTrue(result.contains("Threatens you with a serious situation"))
+        assertTrue(result.contains("Delete the message"))
+    }
+
+    @Test
+    fun cutOffBulletAnswerKeepsAbbreviationsAndQuotes() {
+        val text = "This message is SUSPICIOUS because it: * Requests money for a prize you never entered " +
+            "(e.g. \"Congratulations! You won Rs. 5,000\") * Pushes you to act quickly before a deadline *"
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.SUSPICIOUS, "en", fallback, safeSteps)
+
+        assertFalse(result == fallback)
+        assertFalse(result.contains("*"))
+        assertFalse(result.contains("SUSPICIOUS"))
+        assertTrue(result.contains("e.g. \"Congratulations! You won Rs. 5,000\""))
+        assertTrue(result.contains("Pushes you to act quickly before a deadline."))
+    }
+
+    @Test
+    fun stayingSafeIsNotAVerdictContradiction() {
+        val text = "This message asks for your OTP. To stay safe, delete it and block the sender."
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
+        assertTrue(result.startsWith("This message asks for your OTP."))
+    }
+
+    @Test
+    fun claimThatMessageIsSafeIsReplacedByFallback() {
+        val text = "This message is safe. You can ignore the warning."
         assertEquals(fallback, AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps))
     }
 

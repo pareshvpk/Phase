@@ -24,7 +24,7 @@ class ExplanationPromptBuilderTest {
         assertTrue(system > begin)
         assertTrue(user > system)
         assertTrue(assistant > user)
-        assertTrue(prompt.contains("Verdict: HIGH_RISK"))
+        assertTrue(prompt.contains("Verdict: Dangerous - likely a scam"))
         assertTrue(prompt.contains("Reasons found: Suspicious link"))
         assertTrue(prompt.contains("Message: \"Click this link now\""))
         assertTrue(prompt.endsWith("\n\n"))
@@ -96,6 +96,26 @@ class ExplanationPromptBuilderTest {
         )
 
         assertTrue(prompt.contains("Write the explanation in Hindi."))
+    }
+
+
+    @Test
+    fun verdictEnumsAreMappedToPlainWordsAndBulletsDiscouraged() {
+        val expected = mapOf(
+            "SUSPICIOUS" to "Verdict: Suspicious",
+            "INSUFFICIENT_EVIDENCE" to "Verdict: Not sure",
+            "SAFE" to "Verdict: Looks safe"
+        )
+        for ((label, line) in expected) {
+            val prompt = ExplanationPromptBuilder.build(
+                verdictLabel = label,
+                evidence = listOf("Asks for an OTP"),
+                messageText = "Share OTP now",
+                languageName = "English"
+            )
+            assertTrue(prompt.contains(line))
+            assertTrue(prompt.contains("no bullet points, no links"))
+        }
     }
 
     private fun assertEqualsCount(expected: Int, text: String, needle: String) {

@@ -39,18 +39,26 @@ object ExplanationPromptBuilder {
             .map { it.sanitize() }
         val safeLanguageName = languageName.sanitize()
 
+        val mappedVerdict = when (val raw = verdictLabel.replace("<|", "").replace("|>", "").trim()) {
+            "HIGH_RISK" -> "Dangerous - likely a scam"
+            "SUSPICIOUS" -> "Suspicious"
+            "INSUFFICIENT_EVIDENCE" -> "Not sure"
+            "SAFE" -> "Looks safe"
+            else -> raw
+        }
+
         val userPrompt = buildString {
             append("I received this SMS and my phone's security app warned me about it. ")
             append("Please help me understand the warning.\n")
             append("Verdict: ")
-            append(verdictLabel.replace("<|", "").replace("|>", ""))
+            append(mappedVerdict)
             append("\nReasons found: ")
             append(safeEvidence.joinToString("; "))
             append("\nMessage: \"")
             append(safeMessage)
             append("\"")
             append("\nIn 2-4 short, simple sentences, tell me why this message is or is not ")
-            append("dangerous and what I should do to stay safe.")
+            append("dangerous and what I should do to stay safe. Answer in plain sentences, no bullet points, no links.")
         }
 
         return buildString {

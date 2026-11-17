@@ -38,7 +38,8 @@ object AdviceGuard {
         fallback: String,
         safeSteps: List<String>
     ): String {
-        val cleaned = removeSpecialTokens(text)
+        val cleaned = replaceVerdictEnums(removeSpecialTokens(text))
+            .replace(urlRegex, "the link")
         if (cleaned.isBlank()) return fallback
 
         val lower = cleaned.lowercase()
@@ -48,21 +49,35 @@ object AdviceGuard {
         }
 
         val kept = splitIntoSentences(cleaned)
-            .filter { it.isNotBlank() }
             .map { it.trim() }
+            .filter { it.any(Char::isLetter) }
             .filter { keepSentence(it, languageTag) }
             .map { softenClaims(it) }
+            .filter { it.any(Char::isLetter) }
             .distinct()
             .take(MAX_SENTENCES)
 
         if (kept.size < MIN_SENTENCES) return fallback
 
-        val body = kept.joinToString(" ")
+        val stop = if (languageTag.startsWith("hi")) "।" else "."
+        val body = kept.joinToString(" ") { s ->
+            if (s.last() in ".!?।:\"”'") s else s + stop
+        }
         return appendSafeStepsIfMissing(body, safeSteps)
     }
 
+    /** Removes chat special tokens; keeps line breaks so bullets can be detected. */
     private fun removeSpecialTokens(text: String): String =
-        text.replace(specialTokenRegex, " ").replace(Regex("\\s+"), " ").trim()
+        text.replace("\r\n", "\n")
+            .replace(specialTokenRegex, " ")
+            .replace(Regex("[ \\t]+\\n"), "\n")
+            .trim()
+
+    private fun replaceVerdictEnums(text: String): String =
+        text.replace("HIGH_RISK", "dangerous")
+            .replace("INSUFFICIENT_EVIDENCE", "unclear")
+            .replace("SUSPICIOUS", "suspicious")
+            .replace(Regex("\\bSAFE\\b"), "safe")
 
     private fun isRefusal(lower: String): Boolean =
         listOf(
@@ -71,7 +86,9 @@ object AdviceGuard {
         ).any { lower.contains(it) }
 
     private fun contradictsVerdict(lower: String, languageTag: String): Boolean {
-        val common = listOf("safe", "not a scam", "not suspicious", "legitimate", "not dangerous")
+        // Only claims that the message itself is fine; "to stay safe" must not count.
+        if (englishSafeClaim.containsMatchIn(lower)) return true
+        val common = listOf("not a scam", "not suspicious", "not dangerous", "nothing to worry")
         val hindi = listOf("संदिग्ध नहीं", "सुरक्षित है")
         val tamil = listOf("பாதுகாப்பானது", "மோசடி இல்லை")
         val keywords = common + when (languageTag.take(2)) {
@@ -82,9 +99,46 @@ object AdviceGuard {
         return keywords.any { lower.contains(it) }
     }
 
+    private val englishSafeClaim = Regex(
+        """\b(is|looks|seems|appears|appears to be)\s+(safe|legitimate|genuine|harmless)\b(?!\s+to\b)"""
+    )
+
+    // "*" / "•" start a bullet anywhere; "-" and "1." only at line start or after 2+ spaces.
+    private val bulletRegex = Regex("""(?:^|\s)[*•]+\s*|(?:^|\n|\s{2,})(?:-|\d{1,2}[.)])\s+""")
+    private val abbreviations = listOf("e.g.", "E.g.", "i.e.", "I.e.", "Rs.", "etc.", "approx.", "No.")
+    private const val DOT_MARK = '\u0000'
+
+    /**
+     * Splits on bullets, line breaks and sentence-ending punctuation. Dots inside
+     * known abbreviations or numbers, and punctuation inside quotes, never split.
+     */
     private fun splitIntoSentences(text: String): List<String> {
-        val normalized = text.replace(Regex("[.!?।]"), "\n")
-        return normalized.lines().map { it.trim() }
+        var protectedText = text
+        for (abbr in abbreviations) {
+            protectedText = protectedText.replace(abbr, abbr.replace('.', DOT_MARK))
+        }
+        val pieces = mutableListOf<String>()
+        for (line in protectedText.replace(bulletRegex, "\n").split('\n')) {
+            val current = StringBuilder()
+            var inQuote = false
+            for (i in line.indices) {
+                val c = line[i]
+                current.append(c)
+                when {
+                    c == '"' -> inQuote = !inQuote
+                    c == '“' -> inQuote = true
+                    c == '”' -> inQuote = false
+                    !inQuote && c in ".!?।" && (i + 1 == line.length || line[i + 1].isWhitespace()) -> {
+                        pieces += current.toString()
+                        current.clear()
+                    }
+                }
+            }
+            pieces += current.toString()
+        }
+        return pieces
+            .map { it.replace(DOT_MARK, '.').trim().trimEnd('*', '•', '-').trim() }
+            .filter { it.isNotEmpty() }
     }
 
     private fun keepSentence(sentence: String, languageTag: String): Boolean {
@@ -99,7 +153,7 @@ object AdviceGuard {
 
     private fun softenClaims(sentence: String): String =
         sentence
-            .replace(Regex("\\b100%\\b", RegexOption.IGNORE_CASE), "")
+            .replace(Regex("\\b100\\s?%"), "")
             .replace(Regex("\\bdefinitely\\b", RegexOption.IGNORE_CASE), "")
             .replace(Regex("\\bguaranteed\\b", RegexOption.IGNORE_CASE), "")
             .replace(Regex("\\s+"), " ")
