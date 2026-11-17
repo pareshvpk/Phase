@@ -43,7 +43,14 @@ enum class AppTheme(val storageValue: String) {
  */
 data class AppSettingsState(
     val language: AppLanguage = AppLanguage.SYSTEM,
-    val theme: AppTheme = AppTheme.SYSTEM
+    val theme: AppTheme = AppTheme.SYSTEM,
+    /** Auto-run a simple explanation for likely scams when the model is ready. */
+    val explainAutomatically: Boolean = true,
+    /**
+     * Use the on-device model for Hindi/Tamil explanations (experimental).
+     * Shown only when the app language is Hindi or Tamil.
+     */
+    val explanationsInLocalLanguage: Boolean = false
 )
 
 /**
@@ -102,15 +109,29 @@ class AppSettings private constructor(context: Context) {
         AppCompatDelegate.setDefaultNightMode(theme.toNightMode())
     }
 
+    fun setExplainAutomatically(enabled: Boolean) {
+        preferences.edit().putBoolean(KEY_AUTO_EXPLAIN, enabled).apply()
+        _state.update { it.copy(explainAutomatically = enabled) }
+    }
+
+    fun setExplanationsInLocalLanguage(enabled: Boolean) {
+        preferences.edit().putBoolean(KEY_LOCAL_LANGUAGE_EXPLANATIONS, enabled).apply()
+        _state.update { it.copy(explanationsInLocalLanguage = enabled) }
+    }
+
     private fun load(): AppSettingsState = AppSettingsState(
         language = AppLanguage.fromStorageValue(preferences.getString(KEY_LANGUAGE, null)),
-        theme = AppTheme.fromStorageValue(preferences.getString(KEY_THEME, null))
+        theme = AppTheme.fromStorageValue(preferences.getString(KEY_THEME, null)),
+        explainAutomatically = preferences.getBoolean(KEY_AUTO_EXPLAIN, true),
+        explanationsInLocalLanguage = preferences.getBoolean(KEY_LOCAL_LANGUAGE_EXPLANATIONS, false)
     )
 
     companion object {
         private const val PREFS_NAME = "app_settings"
         private const val KEY_LANGUAGE = "app_language"
         private const val KEY_THEME = "app_theme"
+        private const val KEY_AUTO_EXPLAIN = "explain_automatically"
+        private const val KEY_LOCAL_LANGUAGE_EXPLANATIONS = "explanations_in_local_language"
 
         @Volatile
         private var instance: AppSettings? = null

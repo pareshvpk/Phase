@@ -30,9 +30,11 @@ import kotlin.math.roundToInt
 /**
  * Optional explanation of the verdict.
  *
- * In English the on-device model is offered behind a quiet tonal button. In
- * Hindi and Tamil the model is not used; a fixed local paragraph built from the
- * same reason strings is shown instead.
+ * When [useLlama] is false the fixed local paragraph built from the reason
+ * strings is shown (Hindi/Tamil without the experimental switch, or any
+ * language when the device CPU cannot run the model). When [useLlama] is true
+ * the on-device model is offered behind a quiet tonal button, auto-started for
+ * likely scams.
  *
  * The bundled model is prepared in the background. While it is being installed
  * a small progress card replaces the button; if preparation fails the section
@@ -42,13 +44,13 @@ import kotlin.math.roundToInt
 fun LlmExplanationSection(
     state: ExplanationState,
     installState: LlmInstallStatus,
-    isEnglish: Boolean,
+    useLlama: Boolean,
     offlineText: String,
     onExplain: () -> Unit,
     onRetryInstall: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (!isEnglish) {
+    if (!useLlama) {
         if (offlineText.isNotBlank()) {
             ExplanationCard(
                 text = offlineText,
@@ -80,6 +82,14 @@ fun LlmExplanationSection(
                 onExplain = onExplain,
                 modifier = modifier
             )
+        }
+
+        LlmInstallStatus.Unsupported -> {
+            // The CPU cannot run the stock ExecuTorch AAR: show the fixed
+            // explanation silently, no error and no retry.
+            if (offlineText.isNotBlank()) {
+                ExplanationCard(text = offlineText, modifier = modifier)
+            }
         }
 
         is LlmInstallStatus.Failed -> {

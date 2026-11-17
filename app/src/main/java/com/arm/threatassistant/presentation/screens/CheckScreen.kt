@@ -32,9 +32,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arm.threatassistant.R
+import com.arm.threatassistant.domain.detection.riskpolicy.ThreatVerdictLevel
 import com.arm.threatassistant.domain.model.AnalysisInput
 import com.arm.threatassistant.domain.model.AnalysisStatus
 import com.arm.threatassistant.llm.LlmInstallState
+import com.arm.threatassistant.llm.LlmInstallStatus
 import com.arm.threatassistant.presentation.components.ActionsCard
 import com.arm.threatassistant.presentation.components.CheckMessageButton
 import com.arm.threatassistant.presentation.components.LlmExplanationSection
@@ -42,11 +44,13 @@ import com.arm.threatassistant.presentation.components.MessageInput
 import com.arm.threatassistant.presentation.components.ReasonCard
 import com.arm.threatassistant.presentation.components.ShieldHero
 import com.arm.threatassistant.presentation.components.VerdictCard
+import com.arm.threatassistant.presentation.result.OfflineExplanation
 import com.arm.threatassistant.presentation.result.ReasonId
 import com.arm.threatassistant.presentation.result.ReasonMapper
 import com.arm.threatassistant.presentation.result.labelRes
 import com.arm.threatassistant.presentation.settings.AppLanguage
 import com.arm.threatassistant.presentation.settings.AppSettings
+import com.arm.threatassistant.presentation.viewmodel.ExplanationState
 import com.arm.threatassistant.presentation.viewmodel.ThreatAnalysisUiState
 import com.arm.threatassistant.presentation.viewmodel.ThreatAnalysisViewModel
 import kotlinx.coroutines.delay
@@ -60,7 +64,8 @@ fun CheckScreen(
     modifier: Modifier = Modifier,
     viewModel: ThreatAnalysisViewModel = viewModel(),
     ingestedInput: AnalysisInput? = null,
-    ingestRequestId: Long = 0L
+    ingestRequestId: Long = 0L,
+    isActive: Boolean = true
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
@@ -74,6 +79,9 @@ fun CheckScreen(
         AppLanguage.HINDI, AppLanguage.TAMIL -> false
         AppLanguage.SYSTEM -> deviceLanguage != "hi" && deviceLanguage != "ta"
     }
+    // Hindi/Tamil use the on-device model only behind the experimental switch;
+    // otherwise the fixed localized explanation is shown.
+    val useLlama = isEnglish || settingsState.explanationsInLocalLanguage
 
     val reasons = remember(
         state.ruleDetectionResult,
@@ -87,7 +95,7 @@ fun CheckScreen(
         )
     }
     val offlineExplanation = remember(reasons) {
-        buildOfflineExplanation(context, reasons)
+        OfflineExplanation.build(context, reasons)
     }
 
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -95,6 +103,32 @@ fun CheckScreen(
         if (state.riskAssessment != null) {
             delay(120)
             runCatching { bringIntoViewRequester.bringIntoView() }
+        }
+    }
+
+    LaunchedEffect(isActive) {
+        if (!isActive) {
+            viewModel.cancelExplanation(context)
+        }
+    }
+
+    LaunchedEffect(
+        state.riskAssessment,
+        llmInstallState,
+        settingsState.explainAutomatically
+    ) {
+        val result = state.riskAssessment ?: return@LaunchedEffect
+        val verdict = result.verdict
+        val needsAuto = settingsState.explainAutomatically &&
+            (verdict == ThreatVerdictLevel.HIGH_RISK ||
+                verdict == ThreatVerdictLevel.SUSPICIOUS ||
+                verdict == ThreatVerdictLevel.INSUFFICIENT_EVIDENCE)
+        if (!needsAuto) return@LaunchedEffect
+        if (llmInstallState is LlmInstallStatus.Ready &&
+            state.explanation !is ExplanationState.Done &&
+            state.explanation !is ExplanationState.Generating
+        ) {
+            viewModel.startAutoExplanation(context)
         }
     }
 
@@ -208,7 +242,7 @@ fun CheckScreen(
                 LlmExplanationSection(
                     state = state.explanation,
                     installState = llmInstallState,
-                    isEnglish = isEnglish,
+                    useLlama = useLlama,
                     offlineText = offlineExplanation,
                     onExplain = { viewModel.onExplain(context) },
                     onRetryInstall = { LlmInstallState.retry(context) }
@@ -225,14 +259,4 @@ fun CheckScreen(
             }
         }
     }
-}
-
-private fun buildOfflineExplanation(
-    context: android.content.Context,
-    reasons: List<ReasonId>
-): String {
-    if (reasons.isEmpty()) return ""
-    val separator = context.getString(R.string.offline_explanation_separator)
-    val joined = reasons.joinToString(separator) { context.getString(it.labelRes) }
-    return context.getString(R.string.offline_explanation_template, joined)
 }

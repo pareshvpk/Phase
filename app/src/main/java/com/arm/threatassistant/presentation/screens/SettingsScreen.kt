@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -70,6 +71,27 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     label = stringResource(theme.labelRes),
                     selected = settingsState.theme == theme,
                     onClick = { settings.setTheme(theme) }
+                )
+            }
+        }
+
+        SettingsGroup(title = stringResource(R.string.settings_explanations_title)) {
+            SettingsSwitchRow(
+                label = stringResource(R.string.settings_auto_explain_title),
+                summary = stringResource(R.string.settings_auto_explain_summary),
+                selected = settingsState.explainAutomatically,
+                onClick = { settings.setExplainAutomatically(!settingsState.explainAutomatically) }
+            )
+            if (settingsState.language == AppLanguage.HINDI ||
+                settingsState.language == AppLanguage.TAMIL
+            ) {
+                SettingsSwitchRow(
+                    label = stringResource(R.string.settings_local_language_explanations_title),
+                    summary = stringResource(R.string.settings_local_language_explanations_summary),
+                    selected = settingsState.explanationsInLocalLanguage,
+                    onClick = {
+                        settings.setExplanationsInLocalLanguage(!settingsState.explanationsInLocalLanguage)
+                    }
                 )
             }
         }
@@ -150,3 +172,34 @@ private val AppTheme.labelRes: Int
         AppTheme.LIGHT -> R.string.settings_theme_light
         AppTheme.DARK -> R.string.settings_theme_dark
     }
+
+@Composable
+private fun SettingsSwitchRow(
+    label: String,
+    summary: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = summary,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Switch(checked = selected, onCheckedChange = { onClick() })
+    }
+}

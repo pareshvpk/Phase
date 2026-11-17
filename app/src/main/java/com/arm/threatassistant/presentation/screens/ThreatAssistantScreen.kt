@@ -149,7 +149,8 @@ fun ThreatAssistantScreen(
                 Destination.CHECK -> CheckScreen(
                     viewModel = viewModel,
                     ingestedInput = ingestedInput,
-                    ingestRequestId = ingestRequestId
+                    ingestRequestId = ingestRequestId,
+                    isActive = destination == Destination.CHECK
                 )
                 Destination.TODAY -> TodayScreen(
                     onOpenAlert = { alert ->

@@ -107,4 +107,10 @@
     <string name="settings_theme_dark">இருள்</string>
     <string name="settings_about_title">பற்றி</string>
     <string name="settings_version_format">பதிப்பு %1$s</string>
+
+    <string name="settings_explanations_title">AI விளக்கங்கள்</string>
+    <string name="settings_auto_explain_title">மோசடிகளை தானாக விளக்குக</string>
+    <string name="settings_auto_explain_summary">சாத்தியமான மோசடியான செய்திக்கான எளிய விளக்கத்தை முடிவு தயாரானவுடன் எழுதுக.</string>
+    <string name="settings_local_language_explanations_title">ஹிந்தி/தமிழில் AI விளக்கங்கள் (பரிசோதனை)</string>
+    <string name="settings_local_language_explanations_summary">ஹிந்தி மற்றும் தமிழுக்கு சாதனத்தில் உள்ள மாடலைப் பயன்படுத்துக, நிலையான விளக்கத்திற்குப் பதிலாக.</string>
 </resources>

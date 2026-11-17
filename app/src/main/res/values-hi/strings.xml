@@ -107,4 +107,10 @@
     <string name="settings_theme_dark">डार्क</string>
     <string name="settings_about_title">परिचय</string>
     <string name="settings_version_format">संस्करण %1$s</string>
+
+    <string name="settings_explanations_title">AI स्पष्टीकरण</string>
+    <string name="settings_auto_explain_title">संभावित घोटालों को अपने आप समझाएँ</string>
+    <string name="settings_auto_explain_summary">परिणाम तैयार होने पर आसान भाषा में व्याख्या लिखें।</string>
+    <string name="settings_local_language_explanations_title">हिन्दी/तमिल में AI स्पष्टीकरण (प्रयोगात्मक)</string>
+    <string name="settings_local_language_explanations_summary">निश्चित व्याख्या के बजाय हिन्दी और तमिल के लिए ऑन-डिवाइस मॉडल का उपयोग करें।</string>
 </resources>

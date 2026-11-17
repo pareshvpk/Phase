@@ -18,6 +18,8 @@ sealed interface LlmInstallStatus {
     data object NotBundled : LlmInstallStatus
     data class Installing(val progress: Float) : LlmInstallStatus
     data object Ready : LlmInstallStatus
+    /** The device CPU cannot run the stock ExecuTorch AAR (no Armv8.1 atomics). */
+    data object Unsupported : LlmInstallStatus
     data class Failed(val message: String) : LlmInstallStatus
 }
 
@@ -41,6 +43,11 @@ object LlmInstallState {
         if (job?.isActive == true) return
         if (_state.value is LlmInstallStatus.Ready) return
         if (started.get() && _state.value !is LlmInstallStatus.Failed) return
+        if (!CpuSupport.isSupported(context)) {
+            started.set(true)
+            _state.value = LlmInstallStatus.Unsupported
+            return
+        }
         started.set(true)
         launchInstall(context.applicationContext)
     }
@@ -50,6 +57,11 @@ object LlmInstallState {
     fun retry(context: Context) {
         if (job?.isActive == true) return
         if (_state.value is LlmInstallStatus.Installing) return
+        if (!CpuSupport.isSupported(context)) {
+            started.set(true)
+            _state.value = LlmInstallStatus.Unsupported
+            return
+        }
         started.set(true)
         launchInstall(context.applicationContext)
     }

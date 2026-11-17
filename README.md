@@ -52,6 +52,7 @@ The URL detector flags IP-based hosts, link shorteners, suspicious TLDs, homogra
 - **Readable alerts**: notifications say "Dangerous" or "Suspicious" instead of internal codes
 - **Today tab**: flagged scam and suspicious SMS from the current day, with a live badge; the list clears at local midnight
 - **Explainable result**: matched rules, URL signals and evidence behind every verdict
+- **On-device Llama explanations**: a SpinQuant INT4 Llama-3.2-1B model (ExecuTorch, `llama3_2_1b.pte` + `tokenizer.model`) runs fully on the phone to write a simple explanation in plain words. Explanations start automatically for likely scams (streaming with a progress indicator), can be triggered manually for any result, and always pass through an advice guard that strips click/call/reply/share advice, URLs and phone numbers, and falls back to the fixed localized explanation when the model output refuses or contradicts the verdict. Available in English, and experimentally in Hindi/Tamil. On older Arm CPUs without the Armv8.1 atomics feature the model install is skipped and the fixed explanation is shown silently.
 
 ## Privacy & security
 
@@ -207,7 +208,7 @@ On phones that freeze background apps (such as vivo), run `adb shell cmd devicei
 | 3B | SMS classifier | ✅ Complete (test fixture model) |
 | 3B+ | URL detector | ✅ Complete |
 | 4 | Risk policy engine | ✅ Complete |
-| 5 | ExecuTorch | Evaluated, not needed (pure Kotlin is enough) |
+| 5 | ExecuTorch + Llama | Complete (SpinQuant INT4 bundled model, explanations behind the advice guard; Armv8.0 CPU fallback) |
 | 6 | Jetpack Compose UI | ✅ Complete; new theme added, simpler layout in progress |
 | 7 | Privacy & security | ✅ Verified |
 | 8 | Testing | ✅ 179 unit + 11 device tests pass |

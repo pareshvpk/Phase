@@ -11,11 +11,17 @@ import com.arm.threatassistant.domain.detection.riskpolicy.RiskAssessment
 import com.arm.threatassistant.domain.detection.ruleengine.RuleDetectionResult
 import com.arm.threatassistant.domain.detection.smsclassifier.SmsClassifierResult
 import com.arm.threatassistant.domain.detection.urldetection.UrlDetectionResult
+import com.arm.threatassistant.domain.detection.riskpolicy.ThreatVerdictLevel
 import com.arm.threatassistant.domain.model.AnalysisInput
 import com.arm.threatassistant.domain.model.AnalysisStatus
+import com.arm.threatassistant.llm.AdviceGuard
 import com.arm.threatassistant.llm.ExplanationPromptBuilder
 import com.arm.threatassistant.llm.LlmExplainerProvider
+import com.arm.threatassistant.presentation.result.OfflineExplanation
+import com.arm.threatassistant.presentation.result.ReasonMapper
+import com.arm.threatassistant.presentation.settings.AppLanguage
 import com.arm.threatassistant.presentation.settings.AppSettings
+import com.arm.threatassistant.presentation.settings.AppSettingsState
 import com.arm.threatassistant.presentation.settings.explanationLanguageName
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -161,11 +167,28 @@ class ThreatAnalysisViewModel : ViewModel() {
 
     /**
      * Generates a plain-language explanation for the current verdict. The
-     * explanation is advisory only; it never changes the verdict.
+     * explanation is advisory only; it never changes the verdict. When [auto] is
+     * true the call is a no-op unless auto-explain is enabled for this verdict.
      */
     fun onExplain(context: Context) {
+        startExplanation(context, auto = false)
+    }
+
+    /** Starts an automatic explanation when the settings and verdict allow it. */
+    fun startAutoExplanation(context: Context) {
+        startExplanation(context, auto = true)
+    }
+
+    /** Cancels any in-flight generation and stops the native module. */
+    fun cancelExplanation(context: Context) {
+        stopExplanation(context)
+    }
+
+    private fun startExplanation(context: Context, auto: Boolean) {
         val current = _uiState.value
         val assessment = current.riskAssessment ?: return
+        if (auto && !shouldAutoExplain(assessment.verdict, AppSettings.get(context).state.value)) return
+
         val explainer = LlmExplainerProvider.get(context.applicationContext) ?: run {
             _uiState.update { it.copy(explanation = ExplanationState.Hidden) }
             return
@@ -182,6 +205,15 @@ class ThreatAnalysisViewModel : ViewModel() {
         )
 
         val fallbackErrorMessage = context.getString(R.string.error_explanation_failed)
+        val fallback = OfflineExplanation.build(
+            context,
+            ReasonMapper.map(
+                ruleResult = current.ruleDetectionResult,
+                urlResult = current.urlDetectionResult,
+                classifierResult = current.smsClassifierResult
+            )
+        )
+        val safeSteps = OfflineExplanation.safeStepsFor(context, assessment.verdict)
 
         stopExplanation(context)
         _uiState.update { it.copy(explanation = ExplanationState.Generating("")) }
@@ -200,13 +232,44 @@ class ThreatAnalysisViewModel : ViewModel() {
                         }
                     }
                 }
-                _uiState.update { it.copy(explanation = ExplanationState.Done(text)) }
+                val guarded = AdviceGuard.guard(
+                    text = text,
+                    verdict = assessment.verdict,
+                    languageTag = languageTag(context),
+                    fallback = fallback,
+                    safeSteps = safeSteps
+                )
+                _uiState.update { it.copy(explanation = ExplanationState.Done(guarded)) }
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (t: Throwable) {
                 val message = t.message?.takeIf { it.isNotBlank() }
                     ?: fallbackErrorMessage
                 _uiState.update { it.copy(explanation = ExplanationState.Failed(message)) }
+            }
+        }
+    }
+
+    private fun shouldAutoExplain(verdict: ThreatVerdictLevel, settings: AppSettingsState): Boolean {
+        if (!settings.explainAutomatically) return false
+        return when (verdict) {
+            ThreatVerdictLevel.HIGH_RISK, ThreatVerdictLevel.SUSPICIOUS -> true
+            // The verdict card shows "Be careful" for INSUFFICIENT_EVIDENCE too.
+            ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> true
+            ThreatVerdictLevel.SAFE -> false
+        }
+    }
+
+    private fun languageTag(context: Context): String {
+        val language = AppSettings.get(context).state.value.language
+        return when (language) {
+            AppLanguage.HINDI -> "hi"
+            AppLanguage.TAMIL -> "ta"
+            AppLanguage.ENGLISH -> "en"
+            AppLanguage.SYSTEM -> {
+                val locales = context.resources.configuration.locales
+                val tag = if (locales.size() > 0) locales.get(0).language else null
+                tag?.lowercase() ?: "en"
             }
         }
     }
