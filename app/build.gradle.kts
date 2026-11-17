@@ -34,7 +34,7 @@ android {
 
         ndk {
             // Target hardware is Arm; shipping x86_64 doubles the native payload.
-            abiFilters += listOf("arm64-v8a")
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
         }
     }
 

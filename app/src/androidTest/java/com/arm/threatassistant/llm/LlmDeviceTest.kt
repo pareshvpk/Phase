@@ -35,6 +35,8 @@ class LlmDeviceTest {
         val ctx = InstrumentationRegistry.getInstrumentation().targetContext
         log("cpu_supported=${CpuSupport.isSupported(ctx)}")
         val explainer = LlmExplainerProvider.get(ctx)
+        // 32-bit Android / Armv8.0 phones never run Llama: skip instead of failing.
+        org.junit.Assume.assumeTrue("Llama unsupported on this CPU/ABI", CpuSupport.isSupported(ctx))
         assertNotNull("Model not installed - open the app once first", explainer)
         explainer!!
 

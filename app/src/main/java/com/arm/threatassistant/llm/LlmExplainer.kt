@@ -120,6 +120,9 @@ object LlmExplainerProvider {
 
     fun get(context: Context): LlmExplainer? {
         explainer?.let { return it }
+        // Never touch ExecuTorch's native code on a CPU/process that cannot run it
+        // (32-bit Android, Armv8.0): loading it would crash the app.
+        if (!CpuSupport.isSupported(context)) return null
         return synchronized(this) {
             explainer ?: LlmModelLocator.locate(context.applicationContext)
                 ?.let { files -> ExecuTorchLlmExplainer(files) }

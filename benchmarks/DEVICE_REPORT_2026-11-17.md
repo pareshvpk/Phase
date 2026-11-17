@@ -1,4 +1,4 @@
-# ARM v2.0.0 — on-device test, benchmark and stress report
+# ARM v2.0.0 — on-device test, benchmark and stress report (2 phones)
 
 **Date:** 2026-11-17 · **Device:** vivo V2338 (Android 16, arm64, 8 cores; 4 efficiency cores, ExecuTorch uses 3 threads) · **Build:** debug for instrumented tests, release (R8) for start-up and size
 **Model:** SMS classifier v2.0.0 (TF-IDF + logistic regression, 10k terms) · Llama 3.2 1B Instruct SpinQuant INT4 EO8 (ExecuTorch 1.5.1, XNNPACK)
@@ -87,10 +87,10 @@ Earlier the same day (already committed): Llama KV cache carried over between ex
 ## 6. Not measured / open
 
 - **Battery drain:** phone was on USB power (drain 0); measure with `dumpsys batterystats` on battery.
-- **Monkey (random UI) test:** skipped — the phone was on its PIN lock screen and random input would type into the PIN field. Run with the phone unlocked:
+- **Monkey (random UI) test on the vivo:** skipped (PIN lock screen). Done on the Samsung (section 8). To repeat with the phone unlocked:
   `adb shell monkey -p com.arm.threatassistant --throttle 80 --pct-syskeys 0 -v 5000`
 - **Real incoming SMS** end-to-end (roadmap 2.8) and **Armv8.0 phones** (roadmap 1.6).
-- **Only one device.** Benchmarks on 2–3 phones are roadmap 4.1.
+- **Two devices so far** (section 8). A third, e.g. a mid-range Snapdragon, would complete roadmap 4.1.
 
 ## 7. Recommended next steps
 
@@ -99,3 +99,35 @@ Earlier the same day (already committed): Llama KV cache carried over between ex
 3. Hinglish: 12 scams still skipped by the privacy filter; add Hinglish lure words ("jeeta", "inaam", "paise milenge").
 4. Collect ~300 real messages from other phones (roadmap 2.1), especially Tamil/Tanglish, and re-run section 2.
 5. Limit back-to-back Llama runs (e.g. auto-explain only the newest alert) to keep the phone cool.
+
+## 8. Second phone: Samsung Galaxy M13 5G (32-bit Android)
+
+**Device:** Samsung SM-M136B, MediaTek Dimensity 700 (2× Cortex-A76 + 6× A55), 6 GB RAM, Android 13.
+It runs a **32-bit-only Android** (`ro.zygote=zygote32`, ABI list `armeabi-v7a,armeabi`) even though the CPU is 64-bit. Samsung ships many budget models this way.
+
+**Critical finding:** v2.0.0 could not be installed at all on this phone: `INSTALL_FAILED_NO_MATCHING_ABIS`. The APK only had 64-bit native libraries, and ExecuTorch 1.5.1 has no `armeabi-v7a` build.
+
+**Fix (this commit):**
+- `abiFilters` now `arm64-v8a` + `armeabi-v7a`: the 32-bit phone gets the small 32-bit helper libraries (fbjni, libc++), so it installs. ExecuTorch stays 64-bit only. Release APK 12.5 → **13.5 MB**.
+- `CpuSupport.isSupported()` also requires a 64-bit process, and `LlmExplainerProvider.get()` checks it first. ExecuTorch native code is never loaded on 32-bit or Armv8.0 phones; the app shows the fixed explanation instead (the existing "Unsupported" state).
+- Llama device tests skip (instead of failing) on unsupported phones.
+
+**Results after the fix** (raw: `raw_2026-11-17/samsung_m13_*`):
+
+| | vivo V2338 (64-bit) | Samsung M13 5G (32-bit) |
+|---|---|---|
+| Installs | yes | **yes (was: fails)** |
+| Instrumented tests | 17 / 17 pass | **15 pass, 2 skipped (Llama, unsupported), 0 fail** |
+| Real scams caught / false alerts | 90.1 % / 0.7 % | **90.1 % / 0.7 %** (identical, detection is deterministic) |
+| 10-sample corpus | 10/10 scams, 0/6 benign | 10/10, 0/6 |
+| Analysis median / p95 / p99 | 2.24 / 3.04 / 3.66 ms | 3.54 / 4.91 / 6.62 ms |
+| SMS receiver path throughput | 551 msg/s | 413 msg/s |
+| 10k soak | 393 msg/s, heap +80 KB | 304 msg/s, heap +80 KB, PSS +0.7 MB |
+| 8-thread concurrency | 1,058 msg/s, 0 mismatches | 848 msg/s, 0 mismatches |
+| Hostile inputs (20) | all pass, worst 140 ms | all pass, worst 149 ms (50k letters) |
+| First analysis (cold process) | 820 ms | 469 ms |
+| Llama | ~10 tok/s, first token ~5 s | not available (32-bit), fixed explanation shown |
+| Monkey UI stress (5,000 random events, seed 42) | not run (PIN lock screen) | **5,000 events, 0 crashes, 0 ANRs** |
+| Temperature during tests | skin 41.0 → 46.4 °C (Llama) | AP 40.2 → 42.0 °C (no Llama) |
+
+Not completed on the Samsung: a second, faster monkey pass (10,000 events) and release cold-start timing. The phone disconnected from the PC before they ran.

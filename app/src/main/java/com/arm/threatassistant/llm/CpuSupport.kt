@@ -36,9 +36,17 @@ object CpuSupport {
         return foundFeatures
     }
 
+    /**
+     * Llama needs a 64-bit process (ExecuTorch ships arm64 only) and Armv8.1 atomics.
+     * Budget phones that run a 32-bit-only Android (e.g. Samsung Galaxy M13 5G, zygote32)
+     * install the app but never load ExecuTorch.
+     */
+    fun isSupported(cpuinfo: String, is64BitProcess: Boolean): Boolean =
+        is64BitProcess && isSupported(cpuinfo)
+
     /** Reads `/proc/cpuinfo` on the device and answers whether Llama is supported. */
     fun isSupported(context: Context): Boolean =
         runCatching { File(CPUINFO_PATH).readText() }
-            .map { isSupported(it) }
+            .map { isSupported(it, android.os.Process.is64Bit()) }
             .getOrDefault(false)
 }

@@ -166,4 +166,20 @@ CPU part : 0xd07
 CPU revision : 3""".trimIndent().replace("\n", "\r\n")
         assertTrue(CpuSupport.isSupported(crlf))
     }
+
+    @Test
+    fun thirtyTwoBitProcessIsNeverSupported() {
+        val armv82 = "processor\t: 0\nFeatures\t: fp asimd aes pmull sha1 sha2 crc32 atomics fphp asimdhp\n"
+        assertTrue(CpuSupport.isSupported(armv82, is64BitProcess = true))
+        assertFalse(CpuSupport.isSupported(armv82, is64BitProcess = false))
+    }
+
+    @Test
+    fun samsungM13ThirtyTwoBitCpuinfoIsUnsupported() {
+        // Real /proc/cpuinfo from a Galaxy M13 5G (Dimensity 700) running 32-bit Android.
+        val m13 = "processor\t: 0\nBogoMIPS\t: 26.00\nFeatures\t: half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 " +
+            "idiva idivt lpae evtstrm aes pmull sha1 sha2 crc32\nCPU part\t: 0xd05\n\nHardware\t: MT6833V/NZA\n"
+        assertFalse(CpuSupport.isSupported(m13, is64BitProcess = false))
+        assertFalse(CpuSupport.isSupported(m13))
+    }
 }
