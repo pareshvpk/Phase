@@ -72,6 +72,9 @@ class ExecuTorchLlmExplainer(
             }
 
             try {
+                // Each explanation is independent: without this the KV cache keeps
+                // previous prompts and the context fills up after a few messages.
+                llmModule.resetContext()
                 llmModule.generate(prompt, MAX_SEQ_LEN, callback, false)
             } catch (t: Throwable) {
                 throw Exception("The on-device explanation model failed to generate a response.", t)
