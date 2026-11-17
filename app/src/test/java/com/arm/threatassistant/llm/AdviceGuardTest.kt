@@ -192,6 +192,24 @@ class AdviceGuardTest {
         assertEquals(fallback, AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps))
     }
 
+    @Test
+    fun describingTheScamIsKeptButRealInstructionIsDropped() {
+        val text = "This message is dangerous because it asks you to share your OTP with a fake link. " +
+            "Share your OTP to keep your account. Delete the message and block the sender."
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
+        assertTrue(result.contains("asks you to share your OTP"))
+        assertFalse(result.contains("Share your OTP to keep your account"))
+    }
+
+    @Test
+    fun sentenceCutOffByTokenCapIsDropped() {
+        val text = "This message claims you won a lottery. It asks for a processing fee first. " +
+            "To stay safe, do not pay any money. Instead, you"
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.SUSPICIOUS, "en", fallback, safeSteps)
+        assertTrue(result.contains("do not pay any money."))
+        assertFalse(result.contains("Instead, you"))
+    }
+
     private fun countOccurrences(text: String, needle: String): Int {
         var count = 0
         var index = text.indexOf(needle)

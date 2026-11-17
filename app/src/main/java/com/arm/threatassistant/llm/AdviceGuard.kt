@@ -48,7 +48,7 @@ object AdviceGuard {
             if (contradictsVerdict(lower, languageTag)) return fallback
         }
 
-        val kept = splitIntoSentences(cleaned)
+        val kept = dropCutOffEnding(splitIntoSentences(cleaned), cleaned)
             .map { it.trim() }
             .filter { it.any(Char::isLetter) }
             .filter { keepSentence(it, languageTag) }
@@ -141,6 +141,20 @@ object AdviceGuard {
             .filter { it.isNotEmpty() }
     }
 
+    private val describingPhrases = listOf(
+        "asks you to", "asking you to", "wants you to", "tells you to", "telling you to",
+        "urges you to", "pressures you to", "tries to get you to", "trick you into", "tricks you into"
+    )
+
+    /** Drops the last piece when generation stopped mid-sentence (token cap). */
+    private fun dropCutOffEnding(pieces: List<String>, text: String): List<String> {
+        val last = text.trimEnd().lastOrNull() ?: return pieces
+        val complete = last in ".!?।\"”')"
+        // Bullet lists normally end without a full stop; only prose is checked.
+        val isList = bulletRegex.containsMatchIn(text)
+        return if (!complete && !isList && pieces.size > 1) pieces.dropLast(1) else pieces
+    }
+
     private fun keepSentence(sentence: String, languageTag: String): Boolean {
         val lower = sentence.lowercase()
         if (urlRegex.containsMatchIn(lower) || phoneRegex.containsMatchIn(lower)) {
@@ -148,6 +162,8 @@ object AdviceGuard {
         }
         val negations = negationWords(languageTag)
         if (negations.any { lower.contains(it) }) return true
+        // Describing what the scammer wants ("it asks you to share your OTP") is not advice.
+        if (languageTag.startsWith("en") && describingPhrases.any { lower.contains(it) }) return true
         return !triggerWords(languageTag).any { lower.contains(it) }
     }
 
