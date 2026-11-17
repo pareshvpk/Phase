@@ -18,20 +18,22 @@ object CpuSupport {
     private const val CPUINFO_PATH = "/proc/cpuinfo"
     private const val ATOMICS_FEATURE = "atomics"
 
-    /** True only when every core block has a `Features` line containing `atomics`. */
+    /** True only when every block that has a `Features` line contains `atomics`. */
     fun isSupported(cpuinfo: String): Boolean {
-        val blocks = cpuinfo.split("\n\n")
+        val text = cpuinfo.replace("\r\n", "\n")
+        val blocks = text.split("\n\n")
         if (blocks.isEmpty()) return false
-        var anyCore = false
+        var foundFeatures = false
         for (block in blocks) {
             val featuresLine = block.lines().firstOrNull { line ->
                 line.trimStart().startsWith("Features")
-            } ?: return false
+            }
+            if (featuresLine == null) continue
+            foundFeatures = true
             val features = featuresLine.substringAfter("Features").trim().removePrefix(":").trim().split(Regex("\\s+"))
             if (!features.contains(ATOMICS_FEATURE)) return false
-            anyCore = true
         }
-        return anyCore
+        return foundFeatures
     }
 
     /** Reads `/proc/cpuinfo` on the device and answers whether Llama is supported. */
