@@ -13,9 +13,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
-/** Lifecycle of the bundled-model installation, shared app-wide. */
+/** Lifecycle of the on-device model, shared app-wide. */
 sealed interface LlmInstallStatus {
+    /** No model on the phone and this build has no download source. */
     data object NotBundled : LlmInstallStatus
+    /** No model on the phone yet; the user can start a one-time download. */
+    data class DownloadAvailable(val totalBytes: Long) : LlmInstallStatus
     data class Installing(val progress: Float) : LlmInstallStatus
     data object Ready : LlmInstallStatus
     /** The device CPU cannot run the stock ExecuTorch AAR (no Armv8.1 atomics). */
@@ -24,8 +27,9 @@ sealed interface LlmInstallStatus {
 }
 
 /**
- * Process-wide install state. The install is started when the app process
- * starts and survives activity recreation, so rotation never restarts it.
+ * Process-wide install state. At app start it only checks what is on the
+ * phone; the large download runs only after the user asks for it ([retry]),
+ * and survives activity recreation, so rotation never restarts it.
  */
 object LlmInstallState {
 
@@ -37,7 +41,7 @@ object LlmInstallState {
     private val started = AtomicBoolean(false)
     private var job: Job? = null
 
-    /** Starts the install once per process; safe to call from any entry point. */
+    /** Checks the model once per process; safe to call from any entry point. */
     @Synchronized
     fun ensureStarted(context: Context) {
         if (job?.isActive == true) return
@@ -49,10 +53,11 @@ object LlmInstallState {
             return
         }
         started.set(true)
-        launchInstall(context.applicationContext)
+        val app = context.applicationContext
+        job = scope.launch { _state.value = currentStatus(app) }
     }
 
-    /** Re-runs the install after a failure. */
+    /** Starts (or resumes) the download, also after a failure. */
     @Synchronized
     fun retry(context: Context) {
         if (job?.isActive == true) return
@@ -68,12 +73,12 @@ object LlmInstallState {
 
     private fun launchInstall(context: Context) {
         job = scope.launch {
-            if (!LlmModelInstaller.isBundled(context)) {
-                _state.value = LlmInstallStatus.NotBundled
+            if (LlmModelLocator.locate(context) != null) {
+                markReady()
                 return@launch
             }
-            if (LlmModelInstaller.isInstalled(context)) {
-                markReady()
+            if (!LlmModelInstaller.isDownloadConfigured()) {
+                _state.value = LlmInstallStatus.NotBundled
                 return@launch
             }
 
@@ -88,12 +93,24 @@ object LlmInstallState {
             } catch (t: Throwable) {
                 val message = when (t) {
                     is InsufficientStorageException -> context.getString(R.string.llm_install_no_space)
+                    is CorruptDownloadException -> context.getString(R.string.llm_install_failed_generic)
+                    is java.io.IOException -> context.getString(R.string.llm_install_no_network)
                     else -> t.message?.takeIf { it.isNotBlank() }
                         ?: context.getString(R.string.llm_install_failed_generic)
                 }
                 _state.value = LlmInstallStatus.Failed(message)
             }
         }
+    }
+
+    private fun currentStatus(context: Context): LlmInstallStatus = when {
+        LlmModelLocator.locate(context) != null -> {
+            LlmExplainerProvider.refresh()
+            LlmInstallStatus.Ready
+        }
+        LlmModelInstaller.isDownloadConfigured() ->
+            LlmInstallStatus.DownloadAvailable(LlmModelInstaller.expectedDownloadBytes())
+        else -> LlmInstallStatus.NotBundled
     }
 
     private fun markReady() {

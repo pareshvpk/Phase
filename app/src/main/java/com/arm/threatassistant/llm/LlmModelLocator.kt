@@ -4,8 +4,8 @@ import android.content.Context
 import java.io.File
 
 /**
- * On-device Llama model files. The model and tokenizer are usually installed
- * from the APK assets, but previously side-loaded copies remain supported.
+ * On-device Llama model files. The model and tokenizer are usually downloaded
+ * once by [LlmModelInstaller]; copies placed on the phone by other means also work.
  */
 data class LlmModelFiles(val model: File, val tokenizer: File)
 
@@ -21,11 +21,11 @@ object LlmModelLocator {
 
     fun locate(context: Context): LlmModelFiles? {
         val directories = buildList {
-            // Preferred: files installed from the bundled assets.
+            // Preferred: files from a completed download (or an earlier bundled install).
             if (LlmModelInstaller.isInstalled(context)) {
                 add(LlmModelInstaller.installDir(context))
             }
-            // Backwards compatibility with side-loaded model files.
+            // Side-loaded model files.
             context.getExternalFilesDir("llm")?.let { add(it) }
             add(File(ADB_DIRECTORY))
         }

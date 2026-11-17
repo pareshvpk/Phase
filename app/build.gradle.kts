@@ -4,19 +4,16 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-// Optional bundled Llama model. The files are large and git-ignored, so the
-// task simply does nothing when they are absent; the app then has no AI
-// explanations but still builds and runs normally.
-val llmAssetsDir = layout.buildDirectory.dir("generated/llmAssets")
-val bundledModel = project.file("../models/llama3_2_1b.pte")
-val bundledTokenizer = project.file("../models/tokenizer.model")
-
-val prepareLlmAssets = tasks.register<Copy>("prepareLlmAssets") {
-    onlyIf { bundledModel.isFile && bundledTokenizer.isFile }
-    from(bundledModel) { into("llm") }
-    from(bundledTokenizer) { into("llm") }
-    into(llmAssetsDir.get().asFile)
-}
+// The Llama model is NOT bundled in the APK: ExecuTorch needs a real file, so a
+// bundled model ended up stored twice (APK + extracted copy, ~3.5 GB). The app
+// downloads it once instead. Set these in gradle.properties or with -P when a
+// public download location exists; when empty, no download is offered and a
+// copy placed on the phone (e.g. via adb) is still used.
+fun armProperty(name: String): String = (project.findProperty(name) as String?)?.trim().orEmpty()
+val llmModelUrl = armProperty("armLlmModelUrl")
+val llmTokenizerUrl = armProperty("armLlmTokenizerUrl")
+val llmModelSha256 = armProperty("armLlmModelSha256")
+val llmModelBytes = armProperty("armLlmModelBytes").toLongOrNull() ?: 0L
 
 android {
     namespace = "com.arm.threatassistant"
@@ -29,6 +26,11 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "LLM_MODEL_URL", "\"$llmModelUrl\"")
+        buildConfigField("String", "LLM_TOKENIZER_URL", "\"$llmTokenizerUrl\"")
+        buildConfigField("String", "LLM_MODEL_SHA256", "\"$llmModelSha256\"")
+        buildConfigField("long", "LLM_MODEL_BYTES", "${llmModelBytes}L")
 
         ndk {
             // Target hardware is Arm; shipping x86_64 doubles the native payload.
@@ -52,11 +54,6 @@ android {
         }
     }
 
-    androidResources {
-        // Store model files uncompressed so AssetManager.openFd can report their
-        // length and the installer can stream them without deflate overhead.
-        noCompress += listOf("pte", "model")
-    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -81,17 +78,6 @@ android {
             useLegacyPackaging = false
         }
     }
-}
-
-android.sourceSets.getByName("main").assets.srcDir(llmAssetsDir.get().asFile)
-
-tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
-    dependsOn(prepareLlmAssets)
-}
-
-// Lint reads the generated asset directory too, so it needs the same ordering.
-tasks.matching { it.name.contains("Lint", ignoreCase = true) }.configureEach {
-    dependsOn(prepareLlmAssets)
 }
 
 

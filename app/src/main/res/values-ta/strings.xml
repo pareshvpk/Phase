@@ -66,11 +66,15 @@
     <string name="llm_explanation_caption">உங்கள் தொலைபேசியில் உருவாக்கப்பட்டது. தீர்ப்பு கண்டறிதல் இயந்திரத்திலிருந்து வருகிறது.</string>
     <string name="llm_try_again">மீண்டும் முயற்சி செய்</string>
     <string name="llm_unavailable">விளக்கம் இப்போது கிடைக்கவில்லை.</string>
-    <string name="llm_preparing">AI விளக்கங்கள் தயாராகின்றன&#8230; %1$d%%</string>
+    <string name="llm_preparing">AI விளக்கங்கள் பதிவிறக்கப்படுகின்றன&#8230; %1$d%%</string>
     <string name="llm_install_failed">AI விளக்கங்கள் கிடைக்கவில்லை: %1$s</string>
     <string name="llm_install_no_space">போதுமான சேமிப்பு இல்லை</string>
     <string name="llm_install_failed_generic">தயாரிப்பு தோல்வியடைந்தது</string>
     <string name="llm_retry">மீண்டும் முயற்சி செய்</string>
+    <string name="llm_download_prompt">ஆபத்தான செய்திகளுக்கு எளிய AI விளக்கம் பெறுங்கள். ஒருமுறை %1$s பதிவிறக்கம் தேவை; வைஃபை நல்லது. அனைத்தும் உங்கள் ஃபோனிலேயே இருக்கும்.</string>
+    <string name="llm_download_size_unknown">1 GB-க்கு மேல்</string>
+    <string name="llm_download_button">பதிவிறக்கு</string>
+    <string name="llm_install_no_network">பதிவிறக்கம் தோல்வி, இணையத்தைச் சரிபார்க்கவும்</string>
     <string name="offline_explanation_template">இந்தச் செய்தி %1$s. உங்கள் OTP அல்லது PIN-ஐ யாருடனும் பங்கிடாதீர்கள்.</string>
     <string name="offline_explanation_separator">, </string>
 

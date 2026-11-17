@@ -3,55 +3,90 @@ package com.arm.threatassistant.llm
 import android.content.Context
 import android.os.StatFs
 import com.arm.threatassistant.BuildConfig
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
+import java.security.MessageDigest
 import java.util.Properties
+import kotlin.coroutines.coroutineContext
 
-/** Thrown when the device does not have room for the bundled model files. */
+/** Thrown when the device does not have room for the model files. */
 class InsufficientStorageException(message: String) : IOException(message)
+
+/** Thrown when a downloaded file does not match its expected size or checksum. */
+class CorruptDownloadException(message: String) : IOException(message)
 
 /**
  * Pure installation helpers. Kept free of Android APIs so the marker matching,
- * free-space requirement and progress maths can be unit-tested on the JVM.
+ * free-space requirement, resume offsets and progress maths can be unit-tested.
  */
 object LlmInstallLogic {
 
     const val RESERVE_BYTES = 50L * 1024L * 1024L
 
+    /** Sizes of the files a completed install wrote. */
     data class Marker(
         val modelBytes: Long,
-        val tokenizerBytes: Long,
-        val versionCode: Long
+        val tokenizerBytes: Long
     )
 
-    /** Asset bytes plus the 50 MB safety reserve. */
+    /** Download bytes plus the 50 MB safety reserve. */
     fun requiredFreeBytes(assetBytes: Long): Long = assetBytes + RESERVE_BYTES
 
     fun hasEnoughSpace(availableBytes: Long, assetBytes: Long): Boolean =
         availableBytes >= requiredFreeBytes(assetBytes)
 
-    /** Overall install progress in 0..1 across both asset files. */
+    /** Overall install progress in 0..1 across both files. */
     fun progress(copiedBytes: Long, totalBytes: Long): Float {
         if (totalBytes <= 0L) return 0f
         return (copiedBytes.toDouble() / totalBytes.toDouble()).toFloat().coerceIn(0f, 1f)
     }
 
-    fun markerMatches(installed: Marker?, expected: Marker): Boolean = installed == expected
+    /**
+     * True when the files on disk are exactly the ones a completed install wrote
+     * and, when the build names an expected model size, the model has that size.
+     * A different expected size (a new model) therefore forces a fresh download.
+     */
+    fun isCompleteInstall(
+        marker: Marker?,
+        actualModelBytes: Long,
+        actualTokenizerBytes: Long,
+        expectedModelBytes: Long
+    ): Boolean {
+        if (marker == null) return false
+        if (marker.modelBytes <= 0L || marker.tokenizerBytes <= 0L) return false
+        if (marker.modelBytes != actualModelBytes || marker.tokenizerBytes != actualTokenizerBytes) return false
+        return expectedModelBytes <= 0L || expectedModelBytes == actualModelBytes
+    }
+
+    /**
+     * Byte offset to resume a partial download from. Restarts from zero when the
+     * partial file is already as large as (or larger than) the expected total.
+     */
+    fun resumeOffset(partialBytes: Long, expectedTotalBytes: Long): Long = when {
+        partialBytes <= 0L -> 0L
+        expectedTotalBytes > 0L && partialBytes >= expectedTotalBytes -> 0L
+        else -> partialBytes
+    }
+
+    fun toHex(bytes: ByteArray): String = bytes.joinToString("") { "%02x".format(it) }
 }
 
 /**
- * Installs the Llama model and tokenizer that are bundled as APK assets into
- * `noBackupFilesDir/llm`, where the explainer can open them as regular files.
+ * Downloads the Llama model and tokenizer once into `noBackupFilesDir/llm`,
+ * where the explainer opens them as regular files. The model is no longer
+ * bundled inside the APK, so the phone keeps exactly one copy.
  *
- * The install runs at most once per process (guarded by [installMutex]) and is
- * skipped when the marker file proves a previous completed install for the
- * current APK version.
+ * The source URLs come from the build (`armLlmModelUrl`, `armLlmTokenizerUrl`
+ * Gradle properties). When they are empty the download is not offered and the
+ * app still uses a copy that was placed on the phone by other means.
  */
 object LlmModelInstaller {
 
@@ -59,12 +94,15 @@ object LlmModelInstaller {
     private const val MODEL_FILE_NAME = "llama3_2_1b.pte"
     private const val TOKENIZER_FILE_NAME = "tokenizer.model"
     private const val MARKER_FILE_NAME = "installed.properties"
-    private const val TMP_SUFFIX = ".tmp"
-    private const val BUFFER_SIZE = 1 shl 20
+    private const val PART_SUFFIX = ".part"
+    private const val BUFFER_SIZE = 1 shl 16
+    private const val TIMEOUT_MS = 30_000
 
     private const val KEY_MODEL_BYTES = "model.bytes"
     private const val KEY_TOKENIZER_BYTES = "tokenizer.bytes"
-    private const val KEY_VERSION_CODE = "versionCode"
+
+    /** Rough tokenizer size, used only before the server reports the real one. */
+    private const val TOKENIZER_ESTIMATE_BYTES = 2L * 1024L * 1024L
 
     private val installMutex = Mutex()
 
@@ -75,144 +113,172 @@ object LlmModelInstaller {
 
     fun tokenizerFile(context: Context): File = File(installDir(context), TOKENIZER_FILE_NAME)
 
-    /** True when both model assets are present inside the APK. */
-    fun isBundled(context: Context): Boolean = runCatching {
-        val entries = context.assets.list(DIR_NAME)?.toSet().orEmpty()
-        MODEL_FILE_NAME in entries && TOKENIZER_FILE_NAME in entries
-    }.getOrDefault(false)
+    /** True when this build knows where to download the model from. */
+    fun isDownloadConfigured(): Boolean =
+        BuildConfig.LLM_MODEL_URL.isNotBlank() && BuildConfig.LLM_TOKENIZER_URL.isNotBlank()
 
-    /** True when both files are installed and the marker matches this APK. */
+    /** Expected download size for display; 0 when the build does not state it. */
+    fun expectedDownloadBytes(): Long =
+        if (BuildConfig.LLM_MODEL_BYTES > 0L) BuildConfig.LLM_MODEL_BYTES + TOKENIZER_ESTIMATE_BYTES else 0L
+
+    /** True when both files are installed completely. */
     fun isInstalled(context: Context): Boolean {
-        val expected = expectedMarker(context) ?: return false
         val model = modelFile(context)
         val tokenizer = tokenizerFile(context)
         if (!model.isReadableFile() || !tokenizer.isReadableFile()) return false
-        if (model.length() != expected.modelBytes || tokenizer.length() != expected.tokenizerBytes) {
-            return false
-        }
-        val installed = readMarker(installDir(context)) ?: return false
-        return LlmInstallLogic.markerMatches(installed, expected)
+        return LlmInstallLogic.isCompleteInstall(
+            marker = readMarker(installDir(context)),
+            actualModelBytes = model.length(),
+            actualTokenizerBytes = tokenizer.length(),
+            expectedModelBytes = BuildConfig.LLM_MODEL_BYTES
+        )
     }
 
     /**
-     * Stream-copies both bundled assets into the install directory. Reports
-     * overall progress in 0..1. Throws [InsufficientStorageException] when the
-     * destination lacks the model size plus the safety reserve.
+     * Downloads both files (resuming partial downloads), verifies them and
+     * writes the install marker. Reports overall progress in 0..1.
      */
     suspend fun install(context: Context, onProgress: (Float) -> Unit) =
         withContext(Dispatchers.IO) {
             installMutex.withLock {
                 val app = context.applicationContext
                 onProgress(0f)
-
                 if (isInstalled(app)) {
                     onProgress(1f)
                     return@withLock
                 }
-
-                val modelBytes = assetLength(app, assetName(MODEL_FILE_NAME))
-                    ?: throw IOException("Bundled model asset is missing or compressed.")
-                val tokenizerBytes = assetLength(app, assetName(TOKENIZER_FILE_NAME))
-                    ?: throw IOException("Bundled tokenizer asset is missing or compressed.")
-                val totalBytes = modelBytes + tokenizerBytes
+                if (!isDownloadConfigured()) {
+                    throw IOException("No download source configured.")
+                }
 
                 val dir = installDir(app)
                 if (!dir.isDirectory && !dir.mkdirs()) {
                     throw IOException("Could not create the model directory.")
                 }
+                // Remove an outdated install before downloading a new one.
+                File(dir, MARKER_FILE_NAME).delete()
+                modelFile(app).delete()
+                tokenizerFile(app).delete()
 
+                val estimatedTotal = expectedDownloadBytes()
                 val available = StatFs(dir.absolutePath).availableBytes
-                if (!LlmInstallLogic.hasEnoughSpace(available, totalBytes)) {
-                    throw InsufficientStorageException(
-                        "Not enough free storage for the explanation model."
-                    )
+                if (estimatedTotal > 0L && !LlmInstallLogic.hasEnoughSpace(available, estimatedTotal)) {
+                    throw InsufficientStorageException("Not enough free storage for the explanation model.")
                 }
 
-                val tempFiles = mutableListOf<File>()
-                var completed = false
-                try {
-                    var copied = copyAsset(
-                        context = app,
-                        assetPath = assetName(MODEL_FILE_NAME),
-                        destination = modelFile(app),
-                        tempFiles = tempFiles,
-                        totalBytes = totalBytes,
-                        alreadyCopied = 0L,
-                        onProgress = onProgress
-                    )
-                    copied = copyAsset(
-                        context = app,
-                        assetPath = assetName(TOKENIZER_FILE_NAME),
-                        destination = tokenizerFile(app),
-                        tempFiles = tempFiles,
-                        totalBytes = totalBytes,
-                        alreadyCopied = copied,
-                        onProgress = onProgress
-                    )
-                    writeMarker(
-                        dir = dir,
-                        marker = LlmInstallLogic.Marker(
-                            modelBytes = modelBytes,
-                            tokenizerBytes = tokenizerBytes,
-                            versionCode = BuildConfig.VERSION_CODE.toLong()
-                        )
-                    )
-                    completed = true
-                    onProgress(1f)
-                } catch (cancelled: CancellationException) {
-                    throw cancelled
-                } finally {
-                    if (!completed) {
-                        tempFiles.forEach { runCatching { it.delete() } }
+                val tokenizerBytes = download(
+                    url = BuildConfig.LLM_TOKENIZER_URL,
+                    destination = tokenizerFile(app),
+                    expectedBytes = 0L,
+                    expectedSha256 = "",
+                    onBytes = { done, total ->
+                        onProgress(LlmInstallLogic.progress(done, (estimatedTotal.takeIf { it > 0 } ?: total)) * 0.01f)
                     }
-                }
+                )
+                val modelBytes = download(
+                    url = BuildConfig.LLM_MODEL_URL,
+                    destination = modelFile(app),
+                    expectedBytes = BuildConfig.LLM_MODEL_BYTES,
+                    expectedSha256 = BuildConfig.LLM_MODEL_SHA256,
+                    onBytes = { done, total ->
+                        onProgress(0.01f + LlmInstallLogic.progress(done, total) * 0.99f)
+                    }
+                )
+                writeMarker(dir, LlmInstallLogic.Marker(modelBytes, tokenizerBytes))
+                onProgress(1f)
             }
         }
 
-    private fun copyAsset(
-        context: Context,
-        assetPath: String,
+    /** Downloads `url` to `destination` via a resumable `.part` file. Returns the file size. */
+    private suspend fun download(
+        url: String,
         destination: File,
-        tempFiles: MutableList<File>,
-        totalBytes: Long,
-        alreadyCopied: Long,
-        onProgress: (Float) -> Unit
+        expectedBytes: Long,
+        expectedSha256: String,
+        onBytes: (done: Long, total: Long) -> Unit
     ): Long {
-        val temp = File(destination.parentFile, destination.name + TMP_SUFFIX)
-        tempFiles += temp
-        var copied = alreadyCopied
+        val part = File(destination.parentFile, destination.name + PART_SUFFIX)
+        var offset = LlmInstallLogic.resumeOffset(part.length(), expectedBytes)
+        if (offset == 0L) part.delete()
 
-        context.assets.open(assetPath).use { input ->
-            FileOutputStream(temp).use { output ->
-                val buffer = ByteArray(BUFFER_SIZE)
-                while (true) {
-                    val read = input.read(buffer)
-                    if (read < 0) break
-                    output.write(buffer, 0, read)
-                    copied += read
-                    onProgress(LlmInstallLogic.progress(copied, totalBytes))
-                }
-                output.flush()
-                output.fd.sync()
+        val connection = (URL(url).openConnection() as HttpURLConnection).apply {
+            connectTimeout = TIMEOUT_MS
+            readTimeout = TIMEOUT_MS
+            instanceFollowRedirects = true
+            if (offset > 0L) setRequestProperty("Range", "bytes=$offset-")
+        }
+        try {
+            val code = connection.responseCode
+            if (code == HttpURLConnection.HTTP_OK && offset > 0L) {
+                // Server ignored the range request: start over.
+                part.delete()
+                offset = 0L
+            } else if (code != HttpURLConnection.HTTP_OK && code != HttpURLConnection.HTTP_PARTIAL) {
+                throw IOException("Download failed (HTTP $code).")
             }
+            val total = when {
+                expectedBytes > 0L -> expectedBytes
+                connection.contentLengthLong > 0L -> offset + connection.contentLengthLong
+                else -> 0L
+            }
+
+            var done = offset
+            connection.inputStream.use { input ->
+                FileOutputStream(part, offset > 0L).use { output ->
+                    val buffer = ByteArray(BUFFER_SIZE)
+                    while (true) {
+                        coroutineContext.ensureActive()
+                        val read = input.read(buffer)
+                        if (read < 0) break
+                        output.write(buffer, 0, read)
+                        done += read
+                        onBytes(done, total)
+                    }
+                    output.flush()
+                    output.fd.sync()
+                }
+            }
+        } finally {
+            connection.disconnect()
         }
 
+        val size = part.length()
+        if (expectedBytes > 0L && size != expectedBytes) {
+            part.delete()
+            throw CorruptDownloadException("Downloaded file has the wrong size.")
+        }
+        if (expectedSha256.isNotBlank() && !sha256(part).equals(expectedSha256, ignoreCase = true)) {
+            part.delete()
+            throw CorruptDownloadException("Downloaded file is damaged.")
+        }
         if (destination.exists() && !destination.delete()) {
             throw IOException("Could not replace ${destination.name}.")
         }
-        if (!temp.renameTo(destination)) {
+        if (!part.renameTo(destination)) {
             throw IOException("Could not move ${destination.name} into place.")
         }
-        return copied
+        return size
+    }
+
+    private fun sha256(file: File): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        file.inputStream().use { input ->
+            val buffer = ByteArray(BUFFER_SIZE)
+            while (true) {
+                val read = input.read(buffer)
+                if (read < 0) break
+                digest.update(buffer, 0, read)
+            }
+        }
+        return LlmInstallLogic.toHex(digest.digest())
     }
 
     private fun writeMarker(dir: File, marker: LlmInstallLogic.Marker) {
         val target = File(dir, MARKER_FILE_NAME)
-        val temp = File(dir, MARKER_FILE_NAME + TMP_SUFFIX)
+        val temp = File(dir, "$MARKER_FILE_NAME.tmp")
         val properties = Properties().apply {
             setProperty(KEY_MODEL_BYTES, marker.modelBytes.toString())
             setProperty(KEY_TOKENIZER_BYTES, marker.tokenizerBytes.toString())
-            setProperty(KEY_VERSION_CODE, marker.versionCode.toString())
         }
         try {
             FileOutputStream(temp).use { output ->
@@ -228,6 +294,7 @@ object LlmModelInstaller {
         }
     }
 
+    /** Reads the marker; markers from the old bundled installer are still accepted. */
     private fun readMarker(dir: File): LlmInstallLogic.Marker? = runCatching {
         val file = File(dir, MARKER_FILE_NAME)
         if (!file.isReadableFile()) return null
@@ -235,26 +302,9 @@ object LlmModelInstaller {
         file.inputStream().use { properties.load(it) }
         LlmInstallLogic.Marker(
             modelBytes = properties.getProperty(KEY_MODEL_BYTES)?.toLongOrNull() ?: return null,
-            tokenizerBytes = properties.getProperty(KEY_TOKENIZER_BYTES)?.toLongOrNull() ?: return null,
-            versionCode = properties.getProperty(KEY_VERSION_CODE)?.toLongOrNull() ?: return null
+            tokenizerBytes = properties.getProperty(KEY_TOKENIZER_BYTES)?.toLongOrNull() ?: return null
         )
     }.getOrNull()
-
-    private fun expectedMarker(context: Context): LlmInstallLogic.Marker? {
-        if (!isBundled(context)) return null
-        val modelBytes = assetLength(context, assetName(MODEL_FILE_NAME)) ?: return null
-        val tokenizerBytes = assetLength(context, assetName(TOKENIZER_FILE_NAME)) ?: return null
-        return LlmInstallLogic.Marker(
-            modelBytes = modelBytes,
-            tokenizerBytes = tokenizerBytes,
-            versionCode = BuildConfig.VERSION_CODE.toLong()
-        )
-    }
-
-    private fun assetLength(context: Context, assetPath: String): Long? =
-        runCatching { context.assets.openFd(assetPath).use { it.length } }.getOrNull()
-
-    private fun assetName(fileName: String): String = "$DIR_NAME/$fileName"
 
     private fun File.isReadableFile(): Boolean = isFile && canRead()
 }

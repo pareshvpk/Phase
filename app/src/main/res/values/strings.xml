@@ -68,11 +68,15 @@
     <string name="llm_explanation_caption">Generated on your phone. The verdict comes from the detection engine.</string>
     <string name="llm_try_again">Try again</string>
     <string name="llm_unavailable">Explanation is not available right now.</string>
-    <string name="llm_preparing">Preparing AI explanations&#8230; %1$d%%</string>
+    <string name="llm_preparing">Downloading AI explanations&#8230; %1$d%%</string>
     <string name="llm_install_failed">AI explanations unavailable: %1$s</string>
     <string name="llm_install_no_space">not enough storage</string>
     <string name="llm_install_failed_generic">preparation failed</string>
     <string name="llm_retry">Retry</string>
+    <string name="llm_download_prompt">Get simple AI explanations of risky messages. One-time download of %1$s; Wi-Fi recommended. Everything stays on your phone.</string>
+    <string name="llm_download_size_unknown">over 1 GB</string>
+    <string name="llm_download_button">Download</string>
+    <string name="llm_install_no_network">download failed, check your internet</string>
     <string name="offline_explanation_template">This message %1$s. Never share your OTP or PIN with anyone.</string>
     <string name="offline_explanation_separator">, </string>
 

@@ -66,11 +66,15 @@
     <string name="llm_explanation_caption">आपके फ़ोन पर तैयार किया गया। निर्णय पहचान इंजन से आता है।</string>
     <string name="llm_try_again">फिर से कोशिश करें</string>
     <string name="llm_unavailable">स्पष्टीकरण अभी उपलब्ध नहीं है।</string>
-    <string name="llm_preparing">AI स्पष्टीकरण तैयार हो रहे हैं&#8230; %1$d%%</string>
+    <string name="llm_preparing">AI व्याख्या डाउनलोड हो रही है&#8230; %1$d%%</string>
     <string name="llm_install_failed">AI स्पष्टीकरण उपलब्ध नहीं: %1$s</string>
     <string name="llm_install_no_space">पर्याप्त संग्रहण नहीं है</string>
     <string name="llm_install_failed_generic">तैयारी विफल रही</string>
     <string name="llm_retry">फिर से कोशिश करें</string>
+    <string name="llm_download_prompt">जोखिम वाले संदेशों की आसान AI व्याख्या पाएँ। एक बार %1$s डाउनलोड करना होगा; वाई-फ़ाई बेहतर है। सब कुछ आपके फ़ोन पर ही रहता है।</string>
+    <string name="llm_download_size_unknown">1 GB से ज़्यादा</string>
+    <string name="llm_download_button">डाउनलोड करें</string>
+    <string name="llm_install_no_network">डाउनलोड नहीं हो सका, इंटरनेट जाँचें</string>
     <string name="offline_explanation_template">यह संदेश %1$s। अपना OTP या PIN किसी से साझा न करें।</string>
     <string name="offline_explanation_separator">, </string>
 

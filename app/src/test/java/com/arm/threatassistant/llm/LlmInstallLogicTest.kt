@@ -45,17 +45,40 @@ class LlmInstallLogicTest {
     }
 
     @Test
-    fun markerMatchesOnlyWhenEveryFieldMatches() {
-        val expected = LlmInstallLogic.Marker(
-            modelBytes = 1_700L * megabyte,
-            tokenizerBytes = 2L * megabyte,
-            versionCode = 7L
-        )
+    fun completeInstallNeedsMarkerMatchingFilesOnDisk() {
+        val marker = LlmInstallLogic.Marker(modelBytes = 1_100L * megabyte, tokenizerBytes = 2L * megabyte)
+        val model = marker.modelBytes
+        val tok = marker.tokenizerBytes
 
-        assertTrue(LlmInstallLogic.markerMatches(expected.copy(), expected))
-        assertFalse(LlmInstallLogic.markerMatches(null, expected))
-        assertFalse(LlmInstallLogic.markerMatches(expected.copy(modelBytes = 1L), expected))
-        assertFalse(LlmInstallLogic.markerMatches(expected.copy(tokenizerBytes = 1L), expected))
-        assertFalse(LlmInstallLogic.markerMatches(expected.copy(versionCode = 6L), expected))
+        assertTrue(LlmInstallLogic.isCompleteInstall(marker, model, tok, expectedModelBytes = 0L))
+        assertFalse(LlmInstallLogic.isCompleteInstall(null, model, tok, 0L))
+        assertFalse(LlmInstallLogic.isCompleteInstall(marker, model - 1, tok, 0L))
+        assertFalse(LlmInstallLogic.isCompleteInstall(marker, model, tok - 1, 0L))
+        assertFalse(LlmInstallLogic.isCompleteInstall(marker.copy(modelBytes = 0L), 0L, tok, 0L))
+    }
+
+    @Test
+    fun newExpectedModelSizeForcesFreshDownload() {
+        val oldModel = 1_700L * megabyte
+        val marker = LlmInstallLogic.Marker(modelBytes = oldModel, tokenizerBytes = 2L * megabyte)
+
+        assertTrue(LlmInstallLogic.isCompleteInstall(marker, oldModel, 2L * megabyte, expectedModelBytes = oldModel))
+        assertFalse(
+            LlmInstallLogic.isCompleteInstall(marker, oldModel, 2L * megabyte, expectedModelBytes = 1_100L * megabyte)
+        )
+    }
+
+    @Test
+    fun resumeOffsetContinuesPartialDownloadsOnly() {
+        assertEquals(0L, LlmInstallLogic.resumeOffset(partialBytes = 0L, expectedTotalBytes = 100L))
+        assertEquals(40L, LlmInstallLogic.resumeOffset(partialBytes = 40L, expectedTotalBytes = 100L))
+        assertEquals(40L, LlmInstallLogic.resumeOffset(partialBytes = 40L, expectedTotalBytes = 0L))
+        assertEquals(0L, LlmInstallLogic.resumeOffset(partialBytes = 100L, expectedTotalBytes = 100L))
+        assertEquals(0L, LlmInstallLogic.resumeOffset(partialBytes = 120L, expectedTotalBytes = 100L))
+    }
+
+    @Test
+    fun hexEncodingIsLowercaseAndPadded() {
+        assertEquals("00ff0a", LlmInstallLogic.toHex(byteArrayOf(0, -1, 10)))
     }
 }

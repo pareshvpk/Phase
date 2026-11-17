@@ -1,5 +1,6 @@
 package com.arm.threatassistant.presentation.components
 
+import android.text.format.Formatter
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.arm.threatassistant.R
@@ -64,6 +66,18 @@ fun LlmExplanationSection(
         LlmInstallStatus.NotBundled -> {
             if (state is ExplanationState.Done) {
                 ExplanationCard(text = state.text, modifier = modifier)
+            }
+        }
+
+        is LlmInstallStatus.DownloadAvailable -> {
+            if (state is ExplanationState.Done) {
+                ExplanationCard(text = state.text, modifier = modifier)
+            } else {
+                DownloadCard(
+                    totalBytes = installState.totalBytes,
+                    onDownload = onRetryInstall,
+                    modifier = modifier
+                )
             }
         }
 
@@ -220,6 +234,39 @@ private fun PreparingCard(
                 progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+    }
+}
+
+@Composable
+private fun DownloadCard(
+    totalBytes: Long,
+    onDownload: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val size = if (totalBytes > 0L) {
+        Formatter.formatShortFileSize(context, totalBytes)
+    } else {
+        stringResource(R.string.llm_download_size_unknown)
+    }
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = ArmTheme.colors.cardSurface
+        )
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text(
+                text = stringResource(R.string.llm_download_prompt, size),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            FilledTonalButton(onClick = onDownload) {
+                Text(text = stringResource(R.string.llm_download_button))
+            }
         }
     }
 }
