@@ -1,4 +1,4 @@
-# ARM v2.0.0 — on-device test, benchmark and stress report (2 phones)
+# ARM v2.0.0 — on-device test, benchmark and stress report (3 phones)
 
 **Date:** 2026-11-17 · **Device:** vivo V2338 (Android 16, arm64, 8 cores; 4 efficiency cores, ExecuTorch uses 3 threads) · **Build:** debug for instrumented tests, release (R8) for start-up and size
 **Model:** SMS classifier v2.0.0 (TF-IDF + logistic regression, 10k terms) · Llama 3.2 1B Instruct SpinQuant INT4 EO8 (ExecuTorch 1.5.1, XNNPACK)
@@ -131,3 +131,30 @@ It runs a **32-bit-only Android** (`ro.zygote=zygote32`, ABI list `armeabi-v7a,a
 | Temperature during tests | skin 41.0 → 46.4 °C (Llama) | AP 40.2 → 42.0 °C (no Llama) |
 
 Not completed on the Samsung: a second, faster monkey pass (10,000 events) and release cold-start timing. The phone disconnected from the PC before they ran.
+
+## 9. Third phone: vivo I2605 (Dimensity 7300, 64-bit)
+
+**Device:** vivo I2605, MediaTek Dimensity 7300 (MT6878: 4× Cortex-A78 + 4× A55), 8 GB RAM, Android 16, 64-bit (`zygote64`, Armv8.2 with atomics), so Llama is supported.
+Model copied once into app storage (1.14 GB SpinQuant + tokenizer). Raw: `raw_2026-11-17/vivo_i2605_*`.
+
+| | vivo V2338 | Samsung M13 5G (32-bit) | **vivo I2605** |
+|---|---|---|---|
+| Instrumented tests | 17/17 | 15 pass, 2 skipped | **17/17 pass** |
+| Real scams caught / false alerts | 90.1 % / 0.7 % | 90.1 % / 0.7 % | **90.1 % / 0.7 %** |
+| Analysis median / p95 / p99 | 2.24 / 3.04 / 3.66 ms | 3.54 / 4.91 / 6.62 ms | **2.03 / 2.63 / 3.30 ms** |
+| Receiver path throughput | 551 msg/s | 413 msg/s | **692 msg/s** |
+| 10k soak | 393 msg/s, heap +80 KB | 304 msg/s, +80 KB | **472 msg/s, +80 KB** |
+| 8-thread concurrency | 1,058 msg/s, 0 mismatches | 848 msg/s, 0 | 962 msg/s, 0 |
+| Hostile inputs | 20/20 | 20/20 | 20/20 (worst 83 ms) |
+| First analysis (cold process) | 820 ms | 469 ms | 190 ms |
+| Llama first token (warm) | 4.3–5.3 s | n/a | **3.5–4.4 s** |
+| Llama speed | 8.8–12.9 tok/s | n/a | **12.0–13.4 tok/s** |
+| Llama memory (PSS) | ~1.31 GB | n/a | ~1.33 GB (RSS after load 1.57 GB) |
+| Guard fallbacks (10 runs) | 1 | n/a | **0** |
+| Cancel → return | 47 ms | n/a | 25 ms |
+| Monkey UI stress | not run (PIN) | 5,000 events, 0 crash/ANR | **5,000 + 10,000 events, 0 crashes, 0 ANRs** |
+| Release cold start (5 runs) | 276–324 ms | not measured | **316–397 ms** (median 330 ms) |
+| Installed app size | 12 MB | 13.5 MB APK | 13 MB |
+| Temperature (full suite) | skin 41.0 → 46.4 °C (status 3) | AP 40.2 → 42.0 °C | CPU 46.2 → 51.1 °C, skin 39.1 → 44.4 °C (status 3) |
+
+**Conclusion across 3 phones:** detection results are identical on every device (deterministic pipeline). Latency stays under 7 ms at p99 even on the 32-bit budget phone. There are no leaks, no thread-safety problems and no UI crashes in 15,000 random events. Llama runs at 9–13 tok/s on 64-bit Dimensity/Snapdragon-class phones and is cleanly disabled where it can't run. The one consistent concern is heat under back-to-back Llama runs (thermal status 3 on both 64-bit phones).
