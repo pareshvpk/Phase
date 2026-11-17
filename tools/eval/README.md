@@ -22,14 +22,14 @@ vectorization, L2 normalization, and sigmoid scoring.
 
 ```bash
 python tools/eval/evaluate.py tools/eval/sample.csv \
-    --model app/src/main/assets/sms_classifier_model_test_fixture.json
+    --model app/src/main/assets/sms_classifier_model.json
 ```
 
 Write the same results as JSON:
 
 ```bash
 python tools/eval/evaluate.py tools/eval/sample.csv \
-    --model app/src/main/assets/sms_classifier_model_test_fixture.json \
+    --model app/src/main/assets/sms_classifier_model.json \
     --json tools/eval/report.json
 ```
 

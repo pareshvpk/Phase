@@ -210,6 +210,8 @@ def main(argv=None):
     parser.add_argument("--model", required=True, help="Classifier model JSON")
     parser.add_argument("--json", metavar="PATH", help="Write metrics as JSON to PATH")
     args = parser.parse_args(argv)
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252
 
     try:
         rows = load_dataset(args.csv)

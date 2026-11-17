@@ -11,3 +11,7 @@ tools/url_classifier/out/
 
 # Local LLM model files (too large for git)
 models/
+
+# SMS training data (downloaded; licences in tools/sms_classifier/data/manifest.json)
+tools/sms_classifier/data/
+__pycache__/

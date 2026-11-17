@@ -63,3 +63,21 @@ The model artifact is JSON with:
 - `training_info` — provenance metadata
 
 Never ship a synthetic or hand-crafted model as a production detector.
+
+## Building the shipped model (v2.0.0)
+
+```bash
+py tools/sms_classifier/build_dataset.py fetch   # downloads 8 licence-compatible sources into data/ (git-ignored)
+py tools/sms_classifier/build_dataset.py build   # clean, dedupe, template-group, split -> data/{train,val,test}.csv
+py tools/sms_classifier/train.py --data tools/sms_classifier/data/train.csv \
+    --val-data tools/sms_classifier/data/val.csv --test-data tools/sms_classifier/data/test.csv \
+    --output app/src/main/assets/sms_classifier_model.json --model-version 2.0.0 \
+    --optimizer lbfgs --min-df 2 --max-features 10000 --l2 0.1
+```
+
+`data/manifest.json` records URL, licence, SHA-256 and download date for every source.
+After retraining, regenerate the expected scores in `ShippedModelParityTest`.
+
+Test set (2,292 rows, no template shared with training): F1 0.960, precision 0.950, recall 0.971.
+Real messages only at the app's 0.60 classifier cutoff: recall 0.914, false-alarm rate 0.007.
+Weak spot: Tamil / Tanglish (only ~90 synthetic training rows; no licence-compatible real corpus).

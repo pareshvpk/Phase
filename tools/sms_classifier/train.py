@@ -145,8 +145,12 @@ def split_train_val_test(rows, train_frac=0.7, val_frac=0.15, seed=42):
 # Vocabulary and IDF
 # ---------------------------------------------------------------------------
 
-def build_vocabulary(train_rows, min_df=1):
-    """Build ordered vocabulary from training data, filtering by min_df."""
+def build_vocabulary(train_rows, min_df=1, max_features=0):
+    """Build ordered vocabulary from training data, filtering by min_df.
+
+    With max_features > 0 only the most frequent terms (by document frequency,
+    ties broken alphabetically) are kept, which bounds the model file size.
+    """
     doc_freq = Counter()
     for text, _ in train_rows:
         terms = set(preprocess(text))
@@ -155,6 +159,9 @@ def build_vocabulary(train_rows, min_df=1):
 
     n_docs = len(train_rows)
     vocab_terms = [t for t, df in doc_freq.items() if df >= min_df]
+    if max_features and len(vocab_terms) > max_features:
+        vocab_terms.sort(key=lambda t: (-doc_freq[t], t))
+        vocab_terms = vocab_terms[:max_features]
     vocab_terms.sort()  # deterministic ordering
 
     idf = {}
@@ -172,6 +179,22 @@ def term_to_index(vocab):
 # ---------------------------------------------------------------------------
 # TF-IDF vectorization (must match Kotlin TfIdfVectorizer exactly)
 # ---------------------------------------------------------------------------
+
+def vectorize_sparse(terms, idf, term_to_idx):
+    """Same maths as vectorize(), returned as (indices, values) for a sparse row."""
+    tf = Counter(terms)
+    idx, vals = [], []
+    for term, count in tf.items():
+        i = term_to_idx.get(term)
+        if i is None:
+            continue
+        idx.append(i)
+        vals.append(count * idf[term])
+    norm = math.sqrt(sum(v * v for v in vals))
+    if norm > 0.0:
+        vals = [v / norm for v in vals]
+    return idx, vals
+
 
 def vectorize(terms, vocab, idf, term_to_idx):
     """Raw-count TF * IDF, L2 normalized. Returns numpy array."""
@@ -220,6 +243,29 @@ def train_logistic_regression(X, y, lr=0.1, epochs=2000, l2_lambda=0.01, seed=42
         b -= lr * grad_b
 
     return w, b
+
+
+def train_logistic_regression_lbfgs(X, y, l2_lambda=1.0, max_iter=500):
+    """Same model (p = sigmoid(w.x + b), L2 on w) fitted with L-BFGS. Returns (w, b)."""
+    from scipy.optimize import minimize
+
+    n_samples, n_features = X.shape
+
+    def loss_grad(params):
+        w, b = params[:-1], params[-1]
+        z = X @ w + b
+        # log(1 + e^z) - y*z, numerically stable
+        loss = np.sum(np.logaddexp(0.0, z) - y * z) / n_samples + 0.5 * l2_lambda / n_samples * (w @ w)
+        r = (sigmoid(z) - y) / n_samples
+        grad = np.empty_like(params)
+        grad[:-1] = X.T @ r + l2_lambda / n_samples * w
+        grad[-1] = r.sum()
+        return loss, grad
+
+    res = minimize(loss_grad, np.zeros(n_features + 1), jac=True, method="L-BFGS-B",
+                   options={"maxiter": max_iter})
+    print(f"L-BFGS: {res.nit} iterations, loss={res.fun:.5f}, converged={res.success}")
+    return res.x[:-1], float(res.x[-1])
 
 
 # ---------------------------------------------------------------------------
@@ -338,7 +384,7 @@ def save_model(vocab, idf, weights, bias, threshold, is_calibrated,
     }
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(model, f, indent=2, ensure_ascii=False)
+        json.dump(model, f, ensure_ascii=False, separators=(",", ":"))
     print(f"Model saved to {output_path}")
 
 
@@ -346,57 +392,71 @@ def save_model(vocab, idf, weights, bias, threshold, is_calibrated,
 # Main
 # ---------------------------------------------------------------------------
 
+def load_rows(path):
+    """Like load_data() but keeps extra columns (language, real, ...) for reporting."""
+    with open(path, newline="", encoding="utf-8") as f:
+        return [r for r in csv.DictReader(f) if r["text"].strip()]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Train SMS Specialist Classifier")
-    parser.add_argument("--data", required=True, help="Path to labeled CSV (text,label)")
+    parser.add_argument("--data", required=True, help="Labeled CSV (text,label); the training set when --val-data/--test-data are given")
+    parser.add_argument("--val-data", help="Validation CSV (threshold + calibration); enables pre-split mode")
+    parser.add_argument("--test-data", help="Held-out test CSV; enables pre-split mode")
     parser.add_argument("--output", required=True, help="Output JSON model path")
     parser.add_argument("--model-version", default="1.0.0")
     parser.add_argument("--min-df", type=int, default=1)
+    parser.add_argument("--max-features", type=int, default=0, help="Keep only the N most frequent terms (0 = all)")
+    parser.add_argument("--optimizer", choices=["gd", "lbfgs"], default="gd")
     parser.add_argument("--epochs", type=int, default=2000)
     parser.add_argument("--lr", type=float, default=0.1)
     parser.add_argument("--l2", type=float, default=0.01)
     parser.add_argument("--calibrate", action="store_true", help="Enable Platt scaling calibration")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--dataset-note", default="Replace with real dataset provenance before production use.")
     args = parser.parse_args()
 
-    # Load data
-    rows = load_data(args.data)
-    if len(rows) < 10:
-        print("ERROR: Need at least 10 labeled examples.", file=sys.stderr)
-        sys.exit(1)
-
-    n_threat = sum(1 for _, l in rows if l == 1)
-    n_safe = len(rows) - n_threat
-    print(f"Loaded {len(rows)} examples: {n_safe} SAFE, {n_threat} THREAT")
-
-    # Split
-    train, val, test = split_train_val_test(rows, seed=args.seed)
-    print(f"Split: {len(train)} train, {len(val)} val, {len(test)} test")
+    pre_split = bool(args.val_data and args.test_data)
+    if pre_split:
+        train_meta, val_meta, test_meta = load_rows(args.data), load_rows(args.val_data), load_rows(args.test_data)
+        to_pairs = lambda rows: [(r["text"].strip(), int(r["label"])) for r in rows]
+        train, val, test = to_pairs(train_meta), to_pairs(val_meta), to_pairs(test_meta)
+    else:
+        rows = load_data(args.data)
+        if len(rows) < 10:
+            print("ERROR: Need at least 10 labeled examples.", file=sys.stderr)
+            sys.exit(1)
+        train, val, test = split_train_val_test(rows, seed=args.seed)
+        test_meta = None
+    print(f"Split: {len(train)} train ({sum(l for _, l in train)} THREAT), {len(val)} val, {len(test)} test")
 
     # Build vocabulary + IDF from training only
-    vocab, idf = build_vocabulary(train, min_df=args.min_df)
+    vocab, idf = build_vocabulary(train, min_df=args.min_df, max_features=args.max_features)
     term_idx = term_to_index(vocab)
     print(f"Vocabulary size: {len(vocab)}")
 
-    # Vectorize
     def vectorize_all(data_rows):
-        Xs = []
-        ys = []
+        from scipy.sparse import csr_matrix
+        indptr, indices, values, ys = [0], [], [], []
         for text, label in data_rows:
-            terms = preprocess(text)
-            vec = vectorize(terms, vocab, idf, term_idx)
-            Xs.append(vec)
+            idx, vals = vectorize_sparse(preprocess(text), idf, term_idx)
+            indices.extend(idx)
+            values.extend(vals)
+            indptr.append(len(indices))
             ys.append(label)
-        return np.array(Xs), np.array(ys, dtype=np.float64)
+        X = csr_matrix((values, indices, indptr), shape=(len(data_rows), len(vocab)), dtype=np.float64)
+        return X, np.array(ys, dtype=np.float64)
 
     X_train, y_train = vectorize_all(train)
     X_val, y_val = vectorize_all(val)
     X_test, y_test = vectorize_all(test)
 
-    # Train logistic regression
-    w, b = train_logistic_regression(
-        X_train, y_train, lr=args.lr, epochs=args.epochs, l2_lambda=args.l2, seed=args.seed
-    )
+    if args.optimizer == "lbfgs":
+        w, b = train_logistic_regression_lbfgs(X_train, y_train, l2_lambda=args.l2)
+    else:
+        w, b = train_logistic_regression(
+            X_train, y_train, lr=args.lr, epochs=args.epochs, l2_lambda=args.l2, seed=args.seed
+        )
 
     # Calibration (optional)
     A, B = None, None
@@ -417,6 +477,20 @@ def main():
     for k, v in metrics.items():
         print(f"  {k}: {v}")
 
+    breakdown = {}
+    if test_meta is not None:
+        print("\n=== Test breakdown ===")
+        slices = {"real_only": [i for i, r in enumerate(test_meta) if r.get("real") == "True"]}
+        for lang in sorted({r.get("language", "") for r in test_meta}):
+            slices[f"lang_{lang}"] = [i for i, r in enumerate(test_meta) if r.get("language") == lang]
+        for name, ids in slices.items():
+            if not ids:
+                continue
+            m = evaluate(X_test[ids], y_test[ids], w, b, threshold, A, B)
+            breakdown[name] = m
+            print(f"  {name:16s} n={m['total']:5d}  precision={m['precision']:.3f}  recall={m['recall']:.3f}  "
+                  f"f1={m['f1']:.3f}  false_alarm_rate={m['fpr']:.3f}")
+
     # Save model
     feature_config = {
         "ngram_range": [1, 2],
@@ -436,8 +510,10 @@ def main():
         "vocabulary_size": len(vocab),
         "threshold": threshold,
         "is_calibrated": is_calibrated,
+        "test_metrics": metrics,
+        "test_breakdown": breakdown,
         "created_by": "tools/sms_classifier/train.py",
-        "note": "Replace with real dataset provenance before production use.",
+        "note": args.dataset_note,
     }
     label_map = {"SAFE": 0, "THREAT": 1}
 

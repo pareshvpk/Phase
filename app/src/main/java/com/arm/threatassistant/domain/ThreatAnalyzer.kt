@@ -42,7 +42,7 @@ data class ThreatAnalysisResult(
  */
 object ThreatAnalyzer {
 
-    internal const val CLASSIFIER_ASSET = "sms_classifier_model_test_fixture.json"
+    internal const val CLASSIFIER_ASSET = "sms_classifier_model.json"
 
     @Volatile
     private var classifier: SmsSpecialistClassifier? = null

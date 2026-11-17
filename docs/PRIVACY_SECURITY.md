@@ -61,7 +61,7 @@ All steps execute in-process on the Android device. No data leaves the device.
 - Manual, shared and pasted input is held in memory only (ViewModel state). It is never written to disk.
 - The single persisted setting is the boolean `sms_protection_enabled` in the `sms_protection` preferences file.
 - **Same-day flagged SMS list**: when SMS protection is enabled and an incoming message is flagged as SUSPICIOUS or HIGH_RISK, its sender, text (truncated to 1,000 characters) and plain-language reason ids are written to the app-private file `filesDir/today_alerts.json`. This file feeds the "Today" tab. It is excluded from cloud backup and device transfer, never leaves the device, and is deleted automatically once the local day ends (the store prunes expired entries on every read or change). Safe messages and skipped OTP/bank/login messages are never written to this file.
-- Model asset: `sms_classifier_model_test_fixture.json` is bundled in the APK. It is a synthetic test fixture, not trained on real user data.
+- Model asset: `sms_classifier_model.json` is bundled in the APK. It is trained only on public, licence-compatible datasets (sources and licences in its `training_info.note`), never on user messages.
 - No caching of analyzed messages across app restarts beyond the same-day flagged list described above.
 
 ## URL Safety
