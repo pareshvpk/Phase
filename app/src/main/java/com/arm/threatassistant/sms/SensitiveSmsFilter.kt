@@ -28,6 +28,8 @@ object SensitiveSmsFilter {
     private val SCAM_PHRASES = Regex(
         """\b(digital arrest|legal action|court case|police case|cyber crime|money mule|fraud alert|suspicious activity|unauthorized transaction|unauthorised transaction)\b"""
     )
+    private val STRONG_LURE = Regex("""\b(won|winner|prize|lottery|jackpot|lucky draw)\b""")
+    private val LINK_CALL_TO_ACTION = Regex("""\b(join|activate|withdraw|withdrawal|claim|redeem|unlock)\b""")
     private val THREAT_WORDS = listOf(
         "will be blocked", "will be suspended", "will be deactivated",
         "account will be", "call officer"
@@ -54,7 +56,9 @@ object SensitiveSmsFilter {
         """\b(password|passwd|pwd|username|user id|userid|login id|mpin|tpin|temporary password|pin)\s*(is|:|-|=)\s*\S+"""
     )
     private val MONEY_AMOUNT = Regex(
-        """(?:rs\.?|inr|₹|usd|\$)\s?\d[\d,]*(?:\.\d+)?|\d[\d,]*(?:\.\d+)?\s?(?:rs\.?|inr|₹|usd|\$)"""
+        // Possessive [\d,]*+ and the lookbehind keep this linear: a long digit run
+        // used to be re-scanned from every position (5,000 digits took ~1 s).
+        """(?:rs\.?|inr|₹|usd|\$)\s?\d[\d,]*+(?:\.\d+)?|(?<![\d,])\d[\d,]*+(?:\.\d+)?\s?(?:rs\.?|inr|₹|usd|\$)"""
     )
     private val TRANSACTION_KEYWORDS = listOf(
         "debited",
@@ -111,6 +115,12 @@ object SensitiveSmsFilter {
      */
     private fun hasScamOverride(lower: String): Boolean {
         if (SCAM_PHRASES.containsMatchIn(lower)) return true
+        // Prize/lottery wording never appears in genuine OTP or bank alerts, link or not
+        // (e.g. "you won a £1000 prize ... call 0906...").
+        if (STRONG_LURE.containsMatchIn(lower)) return true
+        // "Rs.15,000 credited ... join now / activate / withdraw: sr3.in/..." looks like a
+        // transaction alert but asks the user to act through a link.
+        if (LINK.containsMatchIn(lower) && LINK_CALL_TO_ACTION.containsMatchIn(lower)) return true
         val hasThreat = THREAT_WORDS.any { lower.contains(it) }
         return hasThreat && CALLBACK_NUMBER.containsMatchIn(lower)
     }

@@ -1,0 +1,651 @@
+ COLD|first_analyze_ms=231.40
+ COLD|second_analyze_ms=14.63
+ FILTER|PASS|expected=null|actual=null|Rs 5000 will be credited to your a/c. Click this l
+ FILTER|PASS|expected=null|actual=null|Your a/c is credited with Rs 25,000 lottery prize.
+ FILTER|PASS|expected=null|actual=null|UPI cashback of Rs 2000 pending. Tap https://upi-r
+ FILTER|PASS|expected=null|actual=null|Dear customer share your OTP 445566 with our agent
+ FILTER|PASS|expected=null|actual=null|Congratulations you won Rs 50000 prize, click www.
+ FILTER|PASS|expected=null|actual=null|Your SBI account will be suspended today. Update K
+ FILTER|PASS|expected=null|actual=null|Electricity power will be disconnected tonight 9.3
+ FILTER|PASS|expected=null|actual=null|Your parcel is on hold due to incomplete address. 
+ FILTER|PASS|expected=null|actual=null|URGENT: You have been selected for a work from hom
+ FILTER|PASS|expected=null|actual=null|Your PAN card is blocked. Click http://pan-update.
+ FILTER|PASS|expected=null|actual=null|Hey are we still meeting at 5 today?
+ FILTER|PASS|expected=null|actual=null|Mom called, please ring her back when you are free
+ FILTER|PASS|expected=null|actual=null|Your order has been shipped and will arrive tomorr
+ FILTER|PASS|expected=null|actual=null|Happy birthday! Have a great year ahead
+ FILTER|PASS|expected=null|actual=null|Running 10 mins late, start without me
+ FILTER|PASS|expected=null|actual=null|Reminder: dentist appointment on Monday at 10am
+ FILTER|PASS|expected=OTP|actual=OTP|123456 is your OTP for txn of INR 2,499.00 at AMAZ
+ FILTER|PASS|expected=OTP|actual=OTP|Use 4821 as your login OTP for Paytm. Never share 
+ FILTER|PASS|expected=OTP|actual=OTP|OTP for your SBI internet banking login is 5544332
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Rs.1,250.00 debited from A/c XX4321 on 12-Nov-26 t
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Dear Customer, Rs 499 spent on your SBI Credit Car
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|You have received Rs 500.00 from RAMESH K in your 
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Dear Customer, your refund of Rs. 349.00 has been 
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Txn of USD 12.99 done on your Axis Bank card XX445
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Rs 5000 will be credited to your a/c. Click this l
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Your a/c is credited with Rs 25,000 lottery prize.
+ VERDICT|SCAM|HIGH_RISK|alert=true|UPI cashback of Rs 2000 pending. Tap https://upi-r
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Dear customer share your OTP 445566 with our agent
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Congratulations you won Rs 50000 prize, click www.
+ VERDICT|SCAM|HIGH_RISK|alert=true|Your SBI account will be suspended today. Update K
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Electricity power will be disconnected tonight 9.3
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Your parcel is on hold due to incomplete address. 
+ VERDICT|SCAM|SUSPICIOUS|alert=true|URGENT: You have been selected for a work from hom
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Your PAN card is blocked. Click http://pan-update.
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Hey are we still meeting at 5 today?
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Mom called, please ring her back when you are free
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Your order has been shipped and will arrive tomorr
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Happy birthday! Have a great year ahead
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Running 10 mins late, start without me
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Reminder: dentist appointment on Monday at 10am
+ VERDICT|SENSITIVE|SKIPPED|alert=false|123456 is your OTP for txn of INR 2,499.00 at AMAZ
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Use 4821 as your login OTP for Paytm. Never share 
+ VERDICT|SENSITIVE|SKIPPED|alert=false|OTP for your SBI internet banking login is 5544332
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Rs.1,250.00 debited from A/c XX4321 on 12-Nov-26 t
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Dear Customer, Rs 499 spent on your SBI Credit Car
+ VERDICT|SENSITIVE|SKIPPED|alert=false|You have received Rs 500.00 from RAMESH K in your 
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Dear Customer, your refund of Rs. 349.00 has been 
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Txn of USD 12.99 done on your Axis Bank card XX445
+ SUMMARY|scam_total=10|scam_alerted=10|benign_total=6|benign_alerted=0|sensitive_total=8|sensitive_skipped=8|sensitive_alerted=0
+ STAT|filter_classify|n=20000|mean_us=87.3|median_us=74.1|p95_us=157.5|p99_us=200.9|max_us=24188.3|min_us=31.9
+ STAT|analyze_full|n=2000|mean_us=2751.5|median_us=2528.5|p95_us=3692.8|p99_us=8990.6|max_us=13598.1|min_us=1983.8
+ STAT|analyze_SCAM|n=838|mean_us=2900.6|median_us=2650.1|p95_us=3839.9|p99_us=8204.8|max_us=13598.1|min_us=2101.8
+ STAT|analyze_BENIGN|n=498|mean_us=2433.1|median_us=2241.9|p95_us=3152.1|p99_us=8032.0|max_us=9844.4|min_us=1983.8
+ STAT|analyze_SENSITIVE|n=664|mean_us=2802.2|median_us=2543.6|p95_us=3692.8|p99_us=9374.3|max_us=13222.9|min_us=2147.0
+ STAT|receiver_path|n=2000|mean_us=1881.8|median_us=2286.7|p95_us=3118.8|p99_us=9540.9|max_us=28497.8|min_us=52.4
+ THROUGHPUT|receiver_path_msgs_per_sec=531
+ STAT|analyze_1600_chars|n=200|mean_us=8762.9|median_us=7804.3|p95_us=11641.5|p99_us=25390.1|max_us=38280.9|min_us=7513.1
+ MEM|java_used_kb=6540|native_heap_kb=14371
+ DONE|bench=DeviceBenchmarkTest|status=completed|sink=1160346954
+ DONE|logcat=ARMBENCH|records=COLD,FILTER,VERDICT,SUMMARY,STAT,THROUGHPUT,MEM
+ ACC|all|scam_n=625|scam_alerted=560|alert_recall=89.6%|scam_flagged=560|flag_recall=89.6%|scam_skipped_by_filter=27|safe_n=1667|false_alerts=41|false_alert_rate=2.5%|false_flags=41|false_flag_rate=2.5%
+ ACC|real_only|scam_n=324|scam_alerted=287|alert_recall=88.6%|scam_flagged=287|flag_recall=88.6%|scam_skipped_by_filter=8|safe_n=955|false_alerts=7|false_alert_rate=0.7%|false_flags=7|false_flag_rate=0.7%
+ ACC|synthetic_only|scam_n=301|scam_alerted=273|alert_recall=90.7%|scam_flagged=273|flag_recall=90.7%|scam_skipped_by_filter=19|safe_n=712|false_alerts=34|false_alert_rate=4.8%|false_flags=34|false_flag_rate=4.8%
+ ACC|lang_en|scam_n=443|scam_alerted=402|alert_recall=90.7%|scam_flagged=402|flag_recall=90.7%|scam_skipped_by_filter=12|safe_n=1464|false_alerts=34|false_alert_rate=2.3%|false_flags=34|false_flag_rate=2.3%
+ ACC|lang_hi|scam_n=60|scam_alerted=56|alert_recall=93.3%|scam_flagged=56|flag_recall=93.3%|scam_skipped_by_filter=3|safe_n=57|false_alerts=0|false_alert_rate=0.0%|false_flags=0|false_flag_rate=0.0%
+ ACC|lang_hinglish|scam_n=113|scam_alerted=94|alert_recall=83.2%|scam_flagged=94|flag_recall=83.2%|scam_skipped_by_filter=12|safe_n=132|false_alerts=4|false_alert_rate=3.0%|false_flags=4|false_flag_rate=3.0%
+ ACC|lang_ta|scam_n=5|scam_alerted=5|alert_recall=100.0%|scam_flagged=5|flag_recall=100.0%|scam_skipped_by_filter=0|safe_n=8|false_alerts=2|false_alert_rate=25.0%|false_flags=2|false_flag_rate=25.0%
+ ACC|lang_tanglish|scam_n=4|scam_alerted=3|alert_recall=75.0%|scam_flagged=3|flag_recall=75.0%|scam_skipped_by_filter=0|safe_n=6|false_alerts=1|false_alert_rate=16.7%|false_flags=1|false_flag_rate=16.7%
+ ACC_VERDICTS|SAFE->INSUFFICIENT_EVIDENCE|1537
+ ACC_VERDICTS|SAFE->SKIPPED|89
+ ACC_VERDICTS|SAFE->SUSPICIOUS|41
+ ACC_VERDICTS|SCAM->HIGH_RISK|1
+ ACC_VERDICTS|SCAM->INSUFFICIENT_EVIDENCE|38
+ ACC_VERDICTS|SCAM->SKIPPED|27
+ ACC_VERDICTS|SCAM->SUSPICIOUS|559
+ MISSED|en|SKIPPED|Dear User, Vistor Id - 7538XXX. Loan Application is ready to be Processed for Rs.2,50,000. Direct Transfer to 
+ MISSED|en|INSUFFICIENT_EVIDENCE|Rate Revsng soon.Xperience Beachside Living.Supertch Holiday Village.Xpandabl Villas at Yamuna XprswaySize 157
+ MISSED|en|INSUFFICIENT_EVIDENCE|Your PayPal account has been limited. Log in to resolve this issue using this official-looking link.
+ MISSED|en|INSUFFICIENT_EVIDENCE|Your WhatsApp has been hacked! To secure it, share this OTP with our support team immediately.
+ MISSED|en|INSUFFICIENT_EVIDENCE|Dear Customer, You have a missed call from +918431333249 The last missed call was at 03:42 PM on 15-Aug-2024 T
+ MISSED|en|INSUFFICIENT_EVIDENCE|Dear Customer, You have a missed call from +918062406779 The last missed call was at 05:14 PM on 20-Aug-2024 T
+ MISSED|en|INSUFFICIENT_EVIDENCE|0A$NETWORKS allow companies to bill for SMS, so they are responsible for their "suppliers", just as a shop has
+ MISSED|en|SKIPPED|Hi 9019XXXX40, Rs.15,OOO/- is Credited on your wallet account. Join Now to withdrawal directly: SR3.in/N439B-2
+ MISSED|en|INSUFFICIENT_EVIDENCE|As a Registered Subscriber yr draw 4 a £100 gift voucher will b entered on receipt of a correct ans. When are 
+ MISSED|en|INSUFFICIENT_EVIDENCE|My name is Theresa & I have 7.3milion Dollar to transfer to you for charity work to help the poor ones in ur p
+ MISSED|en|SKIPPED|URGENT! We are trying to contact you. Last weekends draw shows that you won a £1000 prize GUARANTEED. Call 090
+ MISSED|en|INSUFFICIENT_EVIDENCE|Good Luck! Draw takes place 28th Feb 06. Good Luck! For removal send STOP to 87239 customer services 087080344
+ MISSED|en|INSUFFICIENT_EVIDENCE|ASKED 3MOBILE IF 0870 CHATLINES INCLU IN FREE MINS. INDIA CUST SERVs SED YES. L8ER GOT MEGA BILL. 3 DONT GIV A
+ MISSED|en|SKIPPED|Hi Jithu, Your Birthday celebration has begun at shoppersstop.com Click bit.ly/SSMarBD Use code HB03 & get Rs.
+ MISSED|en|SKIPPED|URGENT We are trying to contact you Last weekends draw shows u have won a £1000 prize GUARANTEED Call 09064017
+ MISSED|en|INSUFFICIENT_EVIDENCE|you'hv completed a transaction for AUD 788.93 on 06/02/17 03-27-31 pm. Please follow the link if it is not don
+ MISSED|en|INSUFFICIENT_EVIDENCE|Dear Customer, You have a missed call from +911244451660 The last missed call was at 07:50 PM on 26-Aug-2024 T
+ MISSED|en|INSUFFICIENT_EVIDENCE|Sorry I missed your call let's talk when you have the time. I'm on 07090201529
+ MISSED|en|INSUFFICIENT_EVIDENCE|Monthly password for wap. mobsi.com is 391784. Use your wap phone not PC.
+ MISSED|en|SKIPPED|Your account has been credited with ₹500. To activate the credited amount, click on this phishing link - urgen
+ MISSED|en|INSUFFICIENT_EVIDENCE|Ur balance is now £500. Ur next question is: Who sang 'Uptown Girl' in the 80's ? 2 answer txt ur ANSWER to 83
+ MISSED|en|INSUFFICIENT_EVIDENCE|Refer to Pg 2 of todays Hindustan Times UNIVERSAL GROUP launches shops in MARKET SQUARE at Golf Course Extn Ro
+ MISSED|en|INSUFFICIENT_EVIDENCE|You won't believe it but it's true. It's Incredible Txts! Reply G now to learn truly amazing things that will 
+ MISSED|en|INSUFFICIENT_EVIDENCE|You won't believe it but it's true. It's Incredible Txts! Reply G now to learn truly amazing things that will 
+ MISSED|en|INSUFFICIENT_EVIDENCE|Hello darling how are you today? I would love to have a chat, why dont you tell me what you look like and what
+ FALSE_ALERT|en|SUSPICIOUS|Hi! You just spoke to DEEPAK. We'd like to know if you were satisfied with the experience. Reply Toll Free wit
+ FALSE_ALERT|en|SUSPICIOUS|Hi! You just spoke to TANUSHA. We'd like to know if you were satisfied with the experience. Reply Toll Free wi
+ FALSE_ALERT|en|SUSPICIOUS|I'm vivek:)i got call from your number.
+ FALSE_ALERT|en|SUSPICIOUS|Hi! You just spoke to MANEESHA V. We'd like to know if you were satisfied with the experience. Reply Toll Free
+ FALSE_ALERT|en|SUSPICIOUS|Logged in with desktop now
+ FALSE_ALERT|en|SUSPICIOUS|K..u also dont msg or reply to his msg..
+ FALSE_ALERT|en|SUSPICIOUS|Service now ?
+ STAT|soak_pipeline|n=10000|mean_us=2700.9|median_us=2414.5|p95_us=4589.9|p99_us=10457.7|max_us=218126.2
+ SOAK|n=10000|seconds=27.02|msgs_per_sec=370
+ SOAK_MEM|before=java_kb=6792,native_kb=10191,pss_kb=138519|after=java_kb=6872,native_kb=10192,pss_kb=128846|java_growth_kb=80|pss_growth_kb=-9673
+ CONCURRENCY|threads=8|analyses=4000|seconds=4.15|msgs_per_sec=965|verdict_mismatches=0
+ HOSTILE|empty|chars=0|ms=1.7|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|spaces|chars=9|ms=1.7|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|50k_letters|chars=50000|ms=79.5|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|20k_single_token|chars=20000|ms=22.7|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|5k_emoji|chars=10200|ms=40.3|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|zero_width_only|chars=2000|ms=19.5|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|zero_width_in_scam|chars=43|ms=2.5|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|rtl_arabic|chars=41|ms=2.3|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|mixed_scripts|chars=61|ms=2.7|ok=true|verdict=SUSPICIOUS
+ HOSTILE|unpaired_surrogate|chars=17|ms=2.4|ok=true|verdict=SUSPICIOUS
+ HOSTILE|nul_chars|chars=13|ms=2.3|ok=true|verdict=SUSPICIOUS
+ HOSTILE|500_urls|chars=13283|ms=140.0|ok=true|verdict=HIGH_RISK
+ HOSTILE|huge_url|chars=20012|ms=50.3|ok=true|verdict=SUSPICIOUS
+ HOSTILE|html_script|chars=68|ms=2.8|ok=true|verdict=SUSPICIOUS
+ HOSTILE|sql_like|chars=38|ms=2.4|ok=true|verdict=SUSPICIOUS
+ HOSTILE|digits_only|chars=5000|ms=1268.9|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|punctuation|chars=18000|ms=130.4|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|combining_marks|chars=10000|ms=39.3|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|tamil_long|chars=13600|ms=49.8|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|devanagari_long|chars=9200|ms=40.1|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 254    Generated Tokens: 68
+ 	Total inference time:		10.460000 (seconds)		 Rate: 	6.500956 (tokens/second)
+ 		Prompt evaluation:	4.769000 (seconds)		 Rate: 	53.260642 (tokens/second)
+ 		Generated 68 tokens:	5.691000 (seconds)		 Rate: 	11.948691 (tokens/second)
+ 	Time to first generated token:	4.769000 (seconds)
+ LLM_RUN|i=0|verdict=SUSPICIOUS|first_token_ms=8962|total_ms=14655|tokens=69|tok_per_s=11.94|pss_mb=1493|guard_fallback=true
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 249    Generated Tokens: 65
+ 	Total inference time:		11.182000 (seconds)		 Rate: 	5.812914 (tokens/second)
+ 		Prompt evaluation:	4.949000 (seconds)		 Rate: 	50.313195 (tokens/second)
+ 		Generated 65 tokens:	6.233000 (seconds)		 Rate: 	10.428365 (tokens/second)
+ 	Time to first generated token:	4.949000 (seconds)
+ LLM_RUN|i=1|verdict=SUSPICIOUS|first_token_ms=4952|total_ms=11188|tokens=66|tok_per_s=10.42|pss_mb=1316|guard_fallback=true
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 271    Generated Tokens: 72
+ 	Total inference time:		13.190000 (seconds)		 Rate: 	5.458681 (tokens/second)
+ 		Prompt evaluation:	5.317000 (seconds)		 Rate: 	50.968591 (tokens/second)
+ 		Generated 72 tokens:	7.873000 (seconds)		 Rate: 	9.145180 (tokens/second)
+ 	Time to first generated token:	5.317000 (seconds)
+ LLM_RUN|i=2|verdict=SUSPICIOUS|first_token_ms=5318|total_ms=13194|tokens=73|tok_per_s=9.14|pss_mb=1316|guard_fallback=true
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 249    Generated Tokens: 82
+ 	Total inference time:		12.427000 (seconds)		 Rate: 	6.598535 (tokens/second)
+ 		Prompt evaluation:	4.936000 (seconds)		 Rate: 	50.445705 (tokens/second)
+ 		Generated 82 tokens:	7.491000 (seconds)		 Rate: 	10.946469 (tokens/second)
+ 	Time to first generated token:	4.936000 (seconds)
+ LLM_RUN|i=3|verdict=SUSPICIOUS|first_token_ms=4937|total_ms=12431|tokens=83|tok_per_s=10.94|pss_mb=1317|guard_fallback=true
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 255    Generated Tokens: 84
+ 	Total inference time:		14.448000 (seconds)		 Rate: 	5.813953 (tokens/second)
+ 		Prompt evaluation:	4.983000 (seconds)		 Rate: 	51.173992 (tokens/second)
+ 		Generated 84 tokens:	9.465000 (seconds)		 Rate: 	8.874802 (tokens/second)
+ 	Time to first generated token:	4.983000 (seconds)
+ LLM_RUN|i=4|verdict=SUSPICIOUS|first_token_ms=4984|total_ms=14452|tokens=85|tok_per_s=8.87|pss_mb=1319|guard_fallback=true
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 260    Generated Tokens: 50
+ 	Total inference time:		10.381000 (seconds)		 Rate: 	4.816492 (tokens/second)
+ 		Prompt evaluation:	5.125000 (seconds)		 Rate: 	50.731707 (tokens/second)
+ 		Generated 50 tokens:	5.256000 (seconds)		 Rate: 	9.512938 (tokens/second)
+ 	Time to first generated token:	5.125000 (seconds)
+ LLM_RUN|i=5|verdict=SUSPICIOUS|first_token_ms=5127|total_ms=10385|tokens=51|tok_per_s=9.51|pss_mb=1319|guard_fallback=true
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 242    Generated Tokens: 101
+ 	Total inference time:		15.699000 (seconds)		 Rate: 	6.433531 (tokens/second)
+ 		Prompt evaluation:	4.705000 (seconds)		 Rate: 	51.434644 (tokens/second)
+ 		Generated 101 tokens:	10.994000 (seconds)		 Rate: 	9.186829 (tokens/second)
+ 	Time to first generated token:	4.705000 (seconds)
+ LLM_RUN|i=6|verdict=SUSPICIOUS|first_token_ms=4707|total_ms=15704|tokens=102|tok_per_s=9.18|pss_mb=1315|guard_fallback=false
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 272    Generated Tokens: 132
+ 	Total inference time:		18.604000 (seconds)		 Rate: 	7.095248 (tokens/second)
+ 		Prompt evaluation:	5.496000 (seconds)		 Rate: 	49.490539 (tokens/second)
+ 		Generated 132 tokens:	13.108000 (seconds)		 Rate: 	10.070186 (tokens/second)
+ 	Time to first generated token:	5.496000 (seconds)
+ LLM_RUN|i=7|verdict=SUSPICIOUS|first_token_ms=5497|total_ms=18609|tokens=133|tok_per_s=10.07|pss_mb=1309|guard_fallback=false
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 262    Generated Tokens: 95
+ 	Total inference time:		16.240000 (seconds)		 Rate: 	5.849754 (tokens/second)
+ 		Prompt evaluation:	5.443000 (seconds)		 Rate: 	48.135220 (tokens/second)
+ 		Generated 95 tokens:	10.797000 (seconds)		 Rate: 	8.798740 (tokens/second)
+ 	Time to first generated token:	5.443000 (seconds)
+ LLM_RUN|i=8|verdict=SUSPICIOUS|first_token_ms=5444|total_ms=16244|tokens=96|tok_per_s=8.80|pss_mb=1311|guard_fallback=false
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 245    Generated Tokens: 65
+ 	Total inference time:		11.926000 (seconds)		 Rate: 	5.450277 (tokens/second)
+ 		Prompt evaluation:	4.724000 (seconds)		 Rate: 	51.862828 (tokens/second)
+ 		Generated 65 tokens:	7.202000 (seconds)		 Rate: 	9.025271 (tokens/second)
+ 	Time to first generated token:	4.724000 (seconds)
+ LLM_RUN|i=9|verdict=SUSPICIOUS|first_token_ms=4725|total_ms=11930|tokens=66|tok_per_s=9.02|pss_mb=1312|guard_fallback=false
+ LLM_SUMMARY|runs=10|guard_fallbacks=6
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 254    Generated Tokens: 5
+ 	Total inference time:		5.410000 (seconds)		 Rate: 	0.924214 (tokens/second)
+ 		Prompt evaluation:	5.027000 (seconds)		 Rate: 	50.527153 (tokens/second)
+ 		Generated 5 tokens:	0.383000 (seconds)		 Rate: 	13.054830 (tokens/second)
+ 	Time to first generated token:	5.027000 (seconds)
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 254    Generated Tokens: 89
+ 	Total inference time:		13.941000 (seconds)		 Rate: 	6.384047 (tokens/second)
+ 		Prompt evaluation:	5.044000 (seconds)		 Rate: 	50.356860 (tokens/second)
+ 		Generated 89 tokens:	8.897000 (seconds)		 Rate: 	10.003372 (tokens/second)
+ 	Time to first generated token:	5.044000 (seconds)
+ LLM_CANCEL|tokens_before_stop=6|stop_to_return_ms=55|works_after_cancel=true
+ cpu_supported=true
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 324    Generated Tokens: 85
+ 	Total inference time:		15.525000 (seconds)		 Rate: 	5.475040 (tokens/second)
+ 		Prompt evaluation:	6.527000 (seconds)		 Rate: 	49.639957 (tokens/second)
+ 		Generated 85 tokens:	8.998000 (seconds)		 Rate: 	9.446544 (tokens/second)
+ 	Time to first generated token:	6.527000 (seconds)
+ msg=0|verdict=HIGH_RISK|first_token_ms=6528|total_ms=15529|tokens=86|tok_per_s=9.44|pss_mb=1314
+ msg=0|raw=This message is dangerous because it asks you to share your OTP (one-time password) to update your KYC (Know Your Customer) information. This is a common scam where the scammer tries to trick you into revealing sensitive information.   You should not respond to this message or share any information, including your OTP. Instead, you should ignore the message and report it to the bank or financial institution that sent the message.
+ msg=0|guarded=This message is dangerous because it asks you to share your OTP (one-time password) to update your KYC (Know Your Customer) information. This is a common scam where the scammer tries to trick you into revealing sensitive information. You should not respond to this message or share any information, including your OTP. Instead, you should ignore the message and report it to the bank or financial institution that sent the message.  1. Don't click links or reply 2. Never share your OTP or PIN 3. Block and report the sender
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after prompt prefill: 1357.187500 MiB (0 if unsupported)
+ RSS after finishing text generation: 1357.187500 MiB (0 if unsupported)
+ 	Prompt Tokens: 248    Generated Tokens: 101
+ 	Total inference time:		15.116000 (seconds)		 Rate: 	6.681662 (tokens/second)
+ 		Prompt evaluation:	4.856000 (seconds)		 Rate: 	51.070840 (tokens/second)
+ 		Generated 101 tokens:	10.260000 (seconds)		 Rate: 	9.844055 (tokens/second)
+ 	Time to first generated token:	4.856000 (seconds)
+ msg=1|verdict=SUSPICIOUS|first_token_ms=4856|total_ms=15120|tokens=102|tok_per_s=9.84|pss_mb=1314
+ msg=1|raw=This message is not a legitimate offer and is likely a scam. The message claims you have won a large sum of money, but you need to pay a processing fee to claim it. This is a common tactic used by scammers to trick people into sending money.  You should not respond to this message or try to pay the fee, as it is not a real offer. Instead, you should ignore the message and report it to your phone's security app, which has already verified the message as suspicious.
+ msg=1|guarded=This message is not a legitimate offer and is likely a scam. The message claims you have won a large sum of money, but you need to pay a processing fee to claim it. This is a common tactic used by scammers to trick people into sending money. You should not respond to this message or try to pay the fee, as it is not a real offer. Instead, you should ignore the message and report it to your phone's security app, which has already verified the message as suspicious.  1. Don't click links or reply 2. Never share your OTP or PIN 3. Check with the sender using an official number
+ RSS after loading model: 1357.187500 MiB (0 if unsupported)
+ RSS after loading model: 1152.406250 MiB (0 if unsupported)
+ RSS after prompt prefill: 1152.406250 MiB (0 if unsupported)
+ RSS after finishing text generation: 1152.406250 MiB (0 if unsupported)
+ 	Prompt Tokens: 254    Generated Tokens: 126
+ 	Total inference time:		19.037000 (seconds)		 Rate: 	6.618690 (tokens/second)
+ 		Prompt evaluation:	5.364000 (seconds)		 Rate: 	47.352722 (tokens/second)
+ 		Generated 126 tokens:	13.673000 (seconds)		 Rate: 	9.215242 (tokens/second)
+ 	Time to first generated token:	5.364000 (seconds)
+ LLM_RUN|i=0|verdict=SUSPICIOUS|first_token_ms=9908|total_ms=23582|tokens=127|tok_per_s=9.21|pss_mb=1262|guard_fallback=false
+ RSS after loading model: 1152.406250 MiB (0 if unsupported)
+ RSS after prompt prefill: 1152.406250 MiB (0 if unsupported)
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 254    Generated Tokens: 91
+ 	Total inference time:		14.392000 (seconds)		 Rate: 	6.322957 (tokens/second)
+ 		Prompt evaluation:	6.154000 (seconds)		 Rate: 	41.273968 (tokens/second)
+ 		Generated 91 tokens:	8.238000 (seconds)		 Rate: 	11.046370 (tokens/second)
+ 	Time to first generated token:	6.154000 (seconds)
+ LLM_RUN|i=0|verdict=SUSPICIOUS|first_token_ms=9350|total_ms=17591|tokens=92|tok_per_s=11.04|pss_mb=1262|guard_fallback=false
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 249    Generated Tokens: 72
+ 	Total inference time:		11.607000 (seconds)		 Rate: 	6.203153 (tokens/second)
+ 		Prompt evaluation:	4.197000 (seconds)		 Rate: 	59.328091 (tokens/second)
+ 		Generated 72 tokens:	7.410000 (seconds)		 Rate: 	9.716599 (tokens/second)
+ 	Time to first generated token:	4.197000 (seconds)
+ LLM_RUN|i=1|verdict=SUSPICIOUS|first_token_ms=4198|total_ms=11610|tokens=73|tok_per_s=9.71|pss_mb=1260|guard_fallback=false
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 271    Generated Tokens: 58
+ 	Total inference time:		10.589000 (seconds)		 Rate: 	5.477382 (tokens/second)
+ 		Prompt evaluation:	5.337000 (seconds)		 Rate: 	50.777590 (tokens/second)
+ 		Generated 58 tokens:	5.252000 (seconds)		 Rate: 	11.043412 (tokens/second)
+ 	Time to first generated token:	5.337000 (seconds)
+ LLM_FALLBACK_RAW|i=2|This message is not dangerous because it is a scam and the security app has already determined that. The message is trying to trick you into sending money or revealing sensitive information. You should not respond to this message or click on any links or numbers, as they are likely to be phishing attempts.
+ LLM_RUN|i=2|verdict=SUSPICIOUS|first_token_ms=5338|total_ms=10592|tokens=59|tok_per_s=11.04|pss_mb=1260|guard_fallback=true
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 249    Generated Tokens: 73
+ 	Total inference time:		11.634000 (seconds)		 Rate: 	6.274712 (tokens/second)
+ 		Prompt evaluation:	4.803000 (seconds)		 Rate: 	51.842598 (tokens/second)
+ 		Generated 73 tokens:	6.831000 (seconds)		 Rate: 	10.686576 (tokens/second)
+ 	Time to first generated token:	4.803000 (seconds)
+ LLM_RUN|i=3|verdict=SUSPICIOUS|first_token_ms=4805|total_ms=11638|tokens=74|tok_per_s=10.68|pss_mb=1261|guard_fallback=false
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 255    Generated Tokens: 102
+ 	Total inference time:		15.837000 (seconds)		 Rate: 	6.440614 (tokens/second)
+ 		Prompt evaluation:	4.885000 (seconds)		 Rate: 	52.200614 (tokens/second)
+ 		Generated 102 tokens:	10.952000 (seconds)		 Rate: 	9.313367 (tokens/second)
+ 	Time to first generated token:	4.885000 (seconds)
+ LLM_RUN|i=4|verdict=SUSPICIOUS|first_token_ms=4886|total_ms=15840|tokens=103|tok_per_s=9.31|pss_mb=1262|guard_fallback=false
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 260    Generated Tokens: 106
+ 	Total inference time:		16.554000 (seconds)		 Rate: 	6.403286 (tokens/second)
+ 		Prompt evaluation:	4.913000 (seconds)		 Rate: 	52.920822 (tokens/second)
+ 		Generated 106 tokens:	11.641000 (seconds)		 Rate: 	9.105747 (tokens/second)
+ 	Time to first generated token:	4.913000 (seconds)
+ LLM_RUN|i=5|verdict=SUSPICIOUS|first_token_ms=4914|total_ms=16557|tokens=107|tok_per_s=9.10|pss_mb=1264|guard_fallback=false
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 242    Generated Tokens: 87
+ 	Total inference time:		12.193000 (seconds)		 Rate: 	7.135242 (tokens/second)
+ 		Prompt evaluation:	4.477000 (seconds)		 Rate: 	54.054054 (tokens/second)
+ 		Generated 87 tokens:	7.716000 (seconds)		 Rate: 	11.275272 (tokens/second)
+ 	Time to first generated token:	4.477000 (seconds)
+ LLM_RUN|i=6|verdict=SUSPICIOUS|first_token_ms=4478|total_ms=12197|tokens=88|tok_per_s=11.27|pss_mb=1266|guard_fallback=false
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 272    Generated Tokens: 90
+ 	Total inference time:		15.009000 (seconds)		 Rate: 	5.996402 (tokens/second)
+ 		Prompt evaluation:	4.965000 (seconds)		 Rate: 	54.783484 (tokens/second)
+ 		Generated 90 tokens:	10.044000 (seconds)		 Rate: 	8.960573 (tokens/second)
+ 	Time to first generated token:	4.965000 (seconds)
+ LLM_RUN|i=7|verdict=SUSPICIOUS|first_token_ms=4967|total_ms=15012|tokens=91|tok_per_s=8.96|pss_mb=1266|guard_fallback=false
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 262    Generated Tokens: 76
+ 	Total inference time:		11.611000 (seconds)		 Rate: 	6.545517 (tokens/second)
+ 		Prompt evaluation:	4.847000 (seconds)		 Rate: 	54.054054 (tokens/second)
+ 		Generated 76 tokens:	6.764000 (seconds)		 Rate: 	11.235955 (tokens/second)
+ 	Time to first generated token:	4.847000 (seconds)
+ LLM_RUN|i=8|verdict=SUSPICIOUS|first_token_ms=4849|total_ms=11615|tokens=77|tok_per_s=11.23|pss_mb=1268|guard_fallback=false
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 245    Generated Tokens: 125
+ 	Total inference time:		20.602000 (seconds)		 Rate: 	6.067372 (tokens/second)
+ 		Prompt evaluation:	4.532000 (seconds)		 Rate: 	54.060018 (tokens/second)
+ 		Generated 125 tokens:	16.070000 (seconds)		 Rate: 	7.778469 (tokens/second)
+ 	Time to first generated token:	4.532000 (seconds)
+ LLM_RUN|i=9|verdict=SUSPICIOUS|first_token_ms=4533|total_ms=20606|tokens=126|tok_per_s=7.78|pss_mb=1269|guard_fallback=false
+ LLM_SUMMARY|runs=10|guard_fallbacks=1
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 254    Generated Tokens: 5
+ 	Total inference time:		5.924000 (seconds)		 Rate: 	0.844024 (tokens/second)
+ 		Prompt evaluation:	5.480000 (seconds)		 Rate: 	46.350365 (tokens/second)
+ 		Generated 5 tokens:	0.444000 (seconds)		 Rate: 	11.261261 (tokens/second)
+ 	Time to first generated token:	5.480000 (seconds)
+ RSS after loading model: 1307.671875 MiB (0 if unsupported)
+ RSS after prompt prefill: 1307.671875 MiB (0 if unsupported)
+ RSS after finishing text generation: 1307.671875 MiB (0 if unsupported)
+ 	Prompt Tokens: 254    Generated Tokens: 78
+ 	Total inference time:		12.606000 (seconds)		 Rate: 	6.187530 (tokens/second)
+ 		Prompt evaluation:	4.925000 (seconds)		 Rate: 	51.573604 (tokens/second)
+ 		Generated 78 tokens:	7.681000 (seconds)		 Rate: 	10.154928 (tokens/second)
+ 	Time to first generated token:	4.925000 (seconds)
+ LLM_CANCEL|tokens_before_stop=6|stop_to_return_ms=57|works_after_cancel=true
+ COLD|first_analyze_ms=819.60
+ COLD|second_analyze_ms=12.84
+ FILTER|PASS|expected=null|actual=null|Rs 5000 will be credited to your a/c. Click this l
+ FILTER|PASS|expected=null|actual=null|Your a/c is credited with Rs 25,000 lottery prize.
+ FILTER|PASS|expected=null|actual=null|UPI cashback of Rs 2000 pending. Tap https://upi-r
+ FILTER|PASS|expected=null|actual=null|Dear customer share your OTP 445566 with our agent
+ FILTER|PASS|expected=null|actual=null|Congratulations you won Rs 50000 prize, click www.
+ FILTER|PASS|expected=null|actual=null|Your SBI account will be suspended today. Update K
+ FILTER|PASS|expected=null|actual=null|Electricity power will be disconnected tonight 9.3
+ FILTER|PASS|expected=null|actual=null|Your parcel is on hold due to incomplete address. 
+ FILTER|PASS|expected=null|actual=null|URGENT: You have been selected for a work from hom
+ FILTER|PASS|expected=null|actual=null|Your PAN card is blocked. Click http://pan-update.
+ FILTER|PASS|expected=null|actual=null|Hey are we still meeting at 5 today?
+ FILTER|PASS|expected=null|actual=null|Mom called, please ring her back when you are free
+ FILTER|PASS|expected=null|actual=null|Your order has been shipped and will arrive tomorr
+ FILTER|PASS|expected=null|actual=null|Happy birthday! Have a great year ahead
+ FILTER|PASS|expected=null|actual=null|Running 10 mins late, start without me
+ FILTER|PASS|expected=null|actual=null|Reminder: dentist appointment on Monday at 10am
+ FILTER|PASS|expected=OTP|actual=OTP|123456 is your OTP for txn of INR 2,499.00 at AMAZ
+ FILTER|PASS|expected=OTP|actual=OTP|Use 4821 as your login OTP for Paytm. Never share 
+ FILTER|PASS|expected=OTP|actual=OTP|OTP for your SBI internet banking login is 5544332
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Rs.1,250.00 debited from A/c XX4321 on 12-Nov-26 t
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Dear Customer, Rs 499 spent on your SBI Credit Car
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|You have received Rs 500.00 from RAMESH K in your 
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Dear Customer, your refund of Rs. 349.00 has been 
+ FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Txn of USD 12.99 done on your Axis Bank card XX445
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Rs 5000 will be credited to your a/c. Click this l
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Your a/c is credited with Rs 25,000 lottery prize.
+ VERDICT|SCAM|HIGH_RISK|alert=true|UPI cashback of Rs 2000 pending. Tap https://upi-r
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Dear customer share your OTP 445566 with our agent
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Congratulations you won Rs 50000 prize, click www.
+ VERDICT|SCAM|HIGH_RISK|alert=true|Your SBI account will be suspended today. Update K
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Electricity power will be disconnected tonight 9.3
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Your parcel is on hold due to incomplete address. 
+ VERDICT|SCAM|SUSPICIOUS|alert=true|URGENT: You have been selected for a work from hom
+ VERDICT|SCAM|SUSPICIOUS|alert=true|Your PAN card is blocked. Click http://pan-update.
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Hey are we still meeting at 5 today?
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Mom called, please ring her back when you are free
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Your order has been shipped and will arrive tomorr
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Happy birthday! Have a great year ahead
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Running 10 mins late, start without me
+ VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Reminder: dentist appointment on Monday at 10am
+ VERDICT|SENSITIVE|SKIPPED|alert=false|123456 is your OTP for txn of INR 2,499.00 at AMAZ
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Use 4821 as your login OTP for Paytm. Never share 
+ VERDICT|SENSITIVE|SKIPPED|alert=false|OTP for your SBI internet banking login is 5544332
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Rs.1,250.00 debited from A/c XX4321 on 12-Nov-26 t
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Dear Customer, Rs 499 spent on your SBI Credit Car
+ VERDICT|SENSITIVE|SKIPPED|alert=false|You have received Rs 500.00 from RAMESH K in your 
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Dear Customer, your refund of Rs. 349.00 has been 
+ VERDICT|SENSITIVE|SKIPPED|alert=false|Txn of USD 12.99 done on your Axis Bank card XX445
+ SUMMARY|scam_total=10|scam_alerted=10|benign_total=6|benign_alerted=0|sensitive_total=8|sensitive_skipped=8|sensitive_alerted=0
+ STAT|filter_classify|n=20000|mean_us=88.4|median_us=75.5|p95_us=157.7|p99_us=208.9|max_us=8178.0|min_us=27.8
+ STAT|analyze_full|n=2000|mean_us=2328.4|median_us=2243.6|p95_us=3044.9|p99_us=3661.6|max_us=14370.6|min_us=1789.3
+ STAT|analyze_SCAM|n=838|mean_us=2451.8|median_us=2329.9|p95_us=3140.6|p99_us=3686.1|max_us=8061.0|min_us=1893.5
+ STAT|analyze_BENIGN|n=498|mean_us=2122.1|median_us=1963.2|p95_us=2795.8|p99_us=3486.4|max_us=14370.6|min_us=1789.3
+ STAT|analyze_SENSITIVE|n=664|mean_us=2327.3|median_us=2233.2|p95_us=3008.8|p99_us=3631.3|max_us=7428.5|min_us=1889.0
+ STAT|receiver_path|n=2000|mean_us=1814.2|median_us=2143.5|p95_us=3102.8|p99_us=9075.5|max_us=23141.9|min_us=60.9
+ THROUGHPUT|receiver_path_msgs_per_sec=551
+ STAT|analyze_1600_chars|n=200|mean_us=10085.6|median_us=7969.4|p95_us=19001.9|p99_us=28654.7|max_us=135929.5|min_us=7556.3
+ MEM|java_used_kb=6833|native_heap_kb=11678
+ DONE|bench=DeviceBenchmarkTest|status=completed|sink=-788790970
+ DONE|logcat=ARMBENCH|records=COLD,FILTER,VERDICT,SUMMARY,STAT,THROUGHPUT,MEM
+ ACC|all|scam_n=625|scam_alerted=565|alert_recall=90.4%|scam_flagged=565|flag_recall=90.4%|scam_skipped_by_filter=22|safe_n=1667|false_alerts=41|false_alert_rate=2.5%|false_flags=41|false_flag_rate=2.5%
+ ACC|real_only|scam_n=324|scam_alerted=292|alert_recall=90.1%|scam_flagged=292|flag_recall=90.1%|scam_skipped_by_filter=3|safe_n=955|false_alerts=7|false_alert_rate=0.7%|false_flags=7|false_flag_rate=0.7%
+ ACC|synthetic_only|scam_n=301|scam_alerted=273|alert_recall=90.7%|scam_flagged=273|flag_recall=90.7%|scam_skipped_by_filter=19|safe_n=712|false_alerts=34|false_alert_rate=4.8%|false_flags=34|false_flag_rate=4.8%
+ ACC|lang_en|scam_n=443|scam_alerted=407|alert_recall=91.9%|scam_flagged=407|flag_recall=91.9%|scam_skipped_by_filter=7|safe_n=1464|false_alerts=34|false_alert_rate=2.3%|false_flags=34|false_flag_rate=2.3%
+ ACC|lang_hi|scam_n=60|scam_alerted=56|alert_recall=93.3%|scam_flagged=56|flag_recall=93.3%|scam_skipped_by_filter=3|safe_n=57|false_alerts=0|false_alert_rate=0.0%|false_flags=0|false_flag_rate=0.0%
+ ACC|lang_hinglish|scam_n=113|scam_alerted=94|alert_recall=83.2%|scam_flagged=94|flag_recall=83.2%|scam_skipped_by_filter=12|safe_n=132|false_alerts=4|false_alert_rate=3.0%|false_flags=4|false_flag_rate=3.0%
+ ACC|lang_ta|scam_n=5|scam_alerted=5|alert_recall=100.0%|scam_flagged=5|flag_recall=100.0%|scam_skipped_by_filter=0|safe_n=8|false_alerts=2|false_alert_rate=25.0%|false_flags=2|false_flag_rate=25.0%
+ ACC|lang_tanglish|scam_n=4|scam_alerted=3|alert_recall=75.0%|scam_flagged=3|flag_recall=75.0%|scam_skipped_by_filter=0|safe_n=6|false_alerts=1|false_alert_rate=16.7%|false_flags=1|false_flag_rate=16.7%
+ ACC_VERDICTS|SAFE->INSUFFICIENT_EVIDENCE|1537
+ ACC_VERDICTS|SAFE->SKIPPED|89
+ ACC_VERDICTS|SAFE->SUSPICIOUS|41
+ ACC_VERDICTS|SCAM->HIGH_RISK|1
+ ACC_VERDICTS|SCAM->INSUFFICIENT_EVIDENCE|38
+ ACC_VERDICTS|SCAM->SKIPPED|22
+ ACC_VERDICTS|SCAM->SUSPICIOUS|564
+ MISSED|en|SKIPPED|Dear User, Vistor Id - 7538XXX. Loan Application is ready to be Processed for Rs.2,50,000. Direct Transfer to 
+ MISSED|en|INSUFFICIENT_EVIDENCE|Rate Revsng soon.Xperience Beachside Living.Supertch Holiday Village.Xpandabl Villas at Yamuna XprswaySize 157
+ MISSED|en|INSUFFICIENT_EVIDENCE|Your PayPal account has been limited. Log in to resolve this issue using this official-looking link.
+ MISSED|en|INSUFFICIENT_EVIDENCE|Your WhatsApp has been hacked! To secure it, share this OTP with our support team immediately.
+ MISSED|en|INSUFFICIENT_EVIDENCE|Dear Customer, You have a missed call from +918431333249 The last missed call was at 03:42 PM on 15-Aug-2024 T
+ MISSED|en|INSUFFICIENT_EVIDENCE|Dear Customer, You have a missed call from +918062406779 The last missed call was at 05:14 PM on 20-Aug-2024 T
+ MISSED|en|INSUFFICIENT_EVIDENCE|0A$NETWORKS allow companies to bill for SMS, so they are responsible for their "suppliers", just as a shop has
+ MISSED|en|INSUFFICIENT_EVIDENCE|As a Registered Subscriber yr draw 4 a £100 gift voucher will b entered on receipt of a correct ans. When are 
+ MISSED|en|INSUFFICIENT_EVIDENCE|My name is Theresa & I have 7.3milion Dollar to transfer to you for charity work to help the poor ones in ur p
+ MISSED|en|INSUFFICIENT_EVIDENCE|Good Luck! Draw takes place 28th Feb 06. Good Luck! For removal send STOP to 87239 customer services 087080344
+ MISSED|en|INSUFFICIENT_EVIDENCE|ASKED 3MOBILE IF 0870 CHATLINES INCLU IN FREE MINS. INDIA CUST SERVs SED YES. L8ER GOT MEGA BILL. 3 DONT GIV A
+ MISSED|en|SKIPPED|Hi Jithu, Your Birthday celebration has begun at shoppersstop.com Click bit.ly/SSMarBD Use code HB03 & get Rs.
+ MISSED|en|INSUFFICIENT_EVIDENCE|you'hv completed a transaction for AUD 788.93 on 06/02/17 03-27-31 pm. Please follow the link if it is not don
+ MISSED|en|INSUFFICIENT_EVIDENCE|Dear Customer, You have a missed call from +911244451660 The last missed call was at 07:50 PM on 26-Aug-2024 T
+ MISSED|en|INSUFFICIENT_EVIDENCE|Sorry I missed your call let's talk when you have the time. I'm on 07090201529
+ MISSED|en|INSUFFICIENT_EVIDENCE|Monthly password for wap. mobsi.com is 391784. Use your wap phone not PC.
+ MISSED|en|SKIPPED|Your account has been credited with ₹500. To activate the credited amount, click on this phishing link - urgen
+ MISSED|en|INSUFFICIENT_EVIDENCE|Ur balance is now £500. Ur next question is: Who sang 'Uptown Girl' in the 80's ? 2 answer txt ur ANSWER to 83
+ MISSED|en|INSUFFICIENT_EVIDENCE|Refer to Pg 2 of todays Hindustan Times UNIVERSAL GROUP launches shops in MARKET SQUARE at Golf Course Extn Ro
+ MISSED|en|INSUFFICIENT_EVIDENCE|You won't believe it but it's true. It's Incredible Txts! Reply G now to learn truly amazing things that will 
+ MISSED|en|INSUFFICIENT_EVIDENCE|You won't believe it but it's true. It's Incredible Txts! Reply G now to learn truly amazing things that will 
+ MISSED|en|INSUFFICIENT_EVIDENCE|Hello darling how are you today? I would love to have a chat, why dont you tell me what you look like and what
+ MISSED|en|INSUFFICIENT_EVIDENCE|CALL 09090900040 & LISTEN TO EXTREME DIRTY LIVE CHAT GOING ON IN THE OFFICE RIGHT NOW TOTAL PRIVACY NO ONE KNO
+ MISSED|en|INSUFFICIENT_EVIDENCE|Winters & Weddings. Enjoy the season with glittering garments. Wardrobe Drycleaning Best Quality @ Affordable 
+ MISSED|en|INSUFFICIENT_EVIDENCE|FreeMsg Today's the day if you are ready! I'm horny & live in your town. I love sex fun & games! Netcollex Ltd
+ FALSE_ALERT|en|SUSPICIOUS|Hi! You just spoke to DEEPAK. We'd like to know if you were satisfied with the experience. Reply Toll Free wit
+ FALSE_ALERT|en|SUSPICIOUS|Hi! You just spoke to TANUSHA. We'd like to know if you were satisfied with the experience. Reply Toll Free wi
+ FALSE_ALERT|en|SUSPICIOUS|I'm vivek:)i got call from your number.
+ FALSE_ALERT|en|SUSPICIOUS|Hi! You just spoke to MANEESHA V. We'd like to know if you were satisfied with the experience. Reply Toll Free
+ FALSE_ALERT|en|SUSPICIOUS|Logged in with desktop now
+ FALSE_ALERT|en|SUSPICIOUS|K..u also dont msg or reply to his msg..
+ FALSE_ALERT|en|SUSPICIOUS|Service now ?
+ STAT|soak_pipeline|n=10000|mean_us=2540.6|median_us=2268.1|p95_us=3751.1|p99_us=10675.1|max_us=311610.1
+ SOAK|n=10000|seconds=25.42|msgs_per_sec=393
+ SOAK_MEM|before=java_kb=6779,native_kb=10178,pss_kb=133291|after=java_kb=6859,native_kb=10180,pss_kb=122351|java_growth_kb=80|pss_growth_kb=-10940
+ CONCURRENCY|threads=8|analyses=4000|seconds=3.78|msgs_per_sec=1058|verdict_mismatches=0
+ HOSTILE|empty|chars=0|ms=1.7|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|spaces|chars=9|ms=1.6|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|50k_letters|chars=50000|ms=74.2|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|20k_single_token|chars=20000|ms=22.2|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|5k_emoji|chars=10200|ms=32.7|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|zero_width_only|chars=2000|ms=28.4|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|zero_width_in_scam|chars=43|ms=3.7|ok=true|verdict=SUSPICIOUS
+ HOSTILE|rtl_arabic|chars=41|ms=1.9|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|mixed_scripts|chars=61|ms=2.3|ok=true|verdict=SUSPICIOUS
+ HOSTILE|unpaired_surrogate|chars=17|ms=2.0|ok=true|verdict=SUSPICIOUS
+ HOSTILE|nul_chars|chars=13|ms=1.8|ok=true|verdict=SUSPICIOUS
+ HOSTILE|500_urls|chars=13283|ms=117.3|ok=true|verdict=HIGH_RISK
+ HOSTILE|huge_url|chars=20012|ms=44.1|ok=true|verdict=SUSPICIOUS
+ HOSTILE|html_script|chars=68|ms=2.5|ok=true|verdict=SUSPICIOUS
+ HOSTILE|sql_like|chars=38|ms=2.2|ok=true|verdict=SUSPICIOUS
+ HOSTILE|digits_only|chars=5000|ms=8.2|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|punctuation|chars=18000|ms=100.0|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|combining_marks|chars=10000|ms=33.0|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|tamil_long|chars=13600|ms=42.2|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ HOSTILE|devanagari_long|chars=9200|ms=35.6|ok=true|verdict=INSUFFICIENT_EVIDENCE
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 252    Generated Tokens: 100
+ 	Total inference time:		12.351000 (seconds)		 Rate: 	8.096510 (tokens/second)
+ 		Prompt evaluation:	4.578000 (seconds)		 Rate: 	55.045872 (tokens/second)
+ 		Generated 100 tokens:	7.773000 (seconds)		 Rate: 	12.865046 (tokens/second)
+ 	Time to first generated token:	4.578000 (seconds)
+ LLM_RUN|i=0|verdict=SUSPICIOUS|first_token_ms=7797|total_ms=15571|tokens=101|tok_per_s=12.86|pss_mb=1403|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 247    Generated Tokens: 107
+ 	Total inference time:		14.429000 (seconds)		 Rate: 	7.415621 (tokens/second)
+ 		Prompt evaluation:	4.303000 (seconds)		 Rate: 	57.401813 (tokens/second)
+ 		Generated 107 tokens:	10.126000 (seconds)		 Rate: 	10.566858 (tokens/second)
+ 	Time to first generated token:	4.303000 (seconds)
+ LLM_RUN|i=1|verdict=SUSPICIOUS|first_token_ms=4303|total_ms=14433|tokens=108|tok_per_s=10.56|pss_mb=1315|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 269    Generated Tokens: 90
+ 	Total inference time:		14.316000 (seconds)		 Rate: 	6.286672 (tokens/second)
+ 		Prompt evaluation:	4.843000 (seconds)		 Rate: 	55.544084 (tokens/second)
+ 		Generated 90 tokens:	9.473000 (seconds)		 Rate: 	9.500686 (tokens/second)
+ 	Time to first generated token:	4.843000 (seconds)
+ LLM_RUN|i=2|verdict=SUSPICIOUS|first_token_ms=4844|total_ms=14320|tokens=91|tok_per_s=9.50|pss_mb=1316|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 247    Generated Tokens: 90
+ 	Total inference time:		13.219000 (seconds)		 Rate: 	6.808382 (tokens/second)
+ 		Prompt evaluation:	4.357000 (seconds)		 Rate: 	56.690383 (tokens/second)
+ 		Generated 90 tokens:	8.862000 (seconds)		 Rate: 	10.155721 (tokens/second)
+ 	Time to first generated token:	4.357000 (seconds)
+ LLM_RUN|i=3|verdict=SUSPICIOUS|first_token_ms=4359|total_ms=13224|tokens=91|tok_per_s=10.15|pss_mb=1316|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 253    Generated Tokens: 92
+ 	Total inference time:		13.054000 (seconds)		 Rate: 	7.047648 (tokens/second)
+ 		Prompt evaluation:	4.808000 (seconds)		 Rate: 	52.620632 (tokens/second)
+ 		Generated 92 tokens:	8.246000 (seconds)		 Rate: 	11.156925 (tokens/second)
+ 	Time to first generated token:	4.808000 (seconds)
+ LLM_RUN|i=4|verdict=SUSPICIOUS|first_token_ms=4809|total_ms=13058|tokens=93|tok_per_s=11.15|pss_mb=1309|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 258    Generated Tokens: 86
+ 	Total inference time:		13.303000 (seconds)		 Rate: 	6.464707 (tokens/second)
+ 		Prompt evaluation:	4.519000 (seconds)		 Rate: 	57.092277 (tokens/second)
+ 		Generated 86 tokens:	8.784000 (seconds)		 Rate: 	9.790528 (tokens/second)
+ 	Time to first generated token:	4.519000 (seconds)
+ LLM_RUN|i=5|verdict=SUSPICIOUS|first_token_ms=4519|total_ms=13307|tokens=87|tok_per_s=9.79|pss_mb=1304|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 240    Generated Tokens: 87
+ 	Total inference time:		13.125000 (seconds)		 Rate: 	6.628571 (tokens/second)
+ 		Prompt evaluation:	4.682000 (seconds)		 Rate: 	51.260145 (tokens/second)
+ 		Generated 87 tokens:	8.443000 (seconds)		 Rate: 	10.304394 (tokens/second)
+ 	Time to first generated token:	4.682000 (seconds)
+ LLM_RUN|i=6|verdict=SUSPICIOUS|first_token_ms=4683|total_ms=13129|tokens=88|tok_per_s=10.30|pss_mb=1303|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 270    Generated Tokens: 90
+ 	Total inference time:		13.685000 (seconds)		 Rate: 	6.576544 (tokens/second)
+ 		Prompt evaluation:	5.266000 (seconds)		 Rate: 	51.272313 (tokens/second)
+ 		Generated 90 tokens:	8.419000 (seconds)		 Rate: 	10.690106 (tokens/second)
+ 	Time to first generated token:	5.266000 (seconds)
+ LLM_RUN|i=7|verdict=SUSPICIOUS|first_token_ms=5268|total_ms=13690|tokens=91|tok_per_s=10.69|pss_mb=1302|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 260    Generated Tokens: 103
+ 	Total inference time:		14.116000 (seconds)		 Rate: 	7.296685 (tokens/second)
+ 		Prompt evaluation:	5.078000 (seconds)		 Rate: 	51.201260 (tokens/second)
+ 		Generated 103 tokens:	9.038000 (seconds)		 Rate: 	11.396327 (tokens/second)
+ 	Time to first generated token:	5.078000 (seconds)
+ LLM_RUN|i=8|verdict=SUSPICIOUS|first_token_ms=5079|total_ms=14120|tokens=104|tok_per_s=11.39|pss_mb=1304|guard_fallback=false
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 243    Generated Tokens: 142
+ 	Total inference time:		20.169000 (seconds)		 Rate: 	7.040508 (tokens/second)
+ 		Prompt evaluation:	5.077000 (seconds)		 Rate: 	47.862911 (tokens/second)
+ 		Generated 142 tokens:	15.092000 (seconds)		 Rate: 	9.408958 (tokens/second)
+ 	Time to first generated token:	5.077000 (seconds)
+ LLM_FALLBACK_RAW|i=9|This message is likely a scam because it asks you to share your One-Time Password (OTP) to block a suspicious transaction. This is a common tactic used by scammers to trick people into revealing sensitive information. By not asking you to click a link, call a number, or reply to the message, your phone's security app has already warned you that this is a suspicious message.   To stay safe, you should ignore this message and do not respond to it. Do not click on any links or visit any websites that may be linked to this message. Instead, wait for the security app to confirm that the message is 
+ LLM_RUN|i=9|verdict=SUSPICIOUS|first_token_ms=5079|total_ms=20173|tokens=143|tok_per_s=9.41|pss_mb=1305|guard_fallback=true
+ LLM_SUMMARY|runs=10|guard_fallbacks=1
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 252    Generated Tokens: 5
+ 	Total inference time:		5.205000 (seconds)		 Rate: 	0.960615 (tokens/second)
+ 		Prompt evaluation:	4.828000 (seconds)		 Rate: 	52.195526 (tokens/second)
+ 		Generated 5 tokens:	0.377000 (seconds)		 Rate: 	13.262599 (tokens/second)
+ 	Time to first generated token:	4.828000 (seconds)
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 252    Generated Tokens: 85
+ 	Total inference time:		13.408000 (seconds)		 Rate: 	6.339499 (tokens/second)
+ 		Prompt evaluation:	4.854000 (seconds)		 Rate: 	51.915946 (tokens/second)
+ 		Generated 85 tokens:	8.554000 (seconds)		 Rate: 	9.936872 (tokens/second)
+ 	Time to first generated token:	4.854000 (seconds)
+ LLM_CANCEL|tokens_before_stop=6|stop_to_return_ms=47|works_after_cancel=true
+ cpu_supported=true
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 322    Generated Tokens: 102
+ 	Total inference time:		15.190000 (seconds)		 Rate: 	6.714944 (tokens/second)
+ 		Prompt evaluation:	6.528000 (seconds)		 Rate: 	49.325980 (tokens/second)
+ 		Generated 102 tokens:	8.662000 (seconds)		 Rate: 	11.775571 (tokens/second)
+ 	Time to first generated token:	6.528000 (seconds)
+ msg=0|verdict=HIGH_RISK|first_token_ms=6531|total_ms=15195|tokens=103|tok_per_s=11.77|pss_mb=1308
+ msg=0|raw=This message is likely a scam because it asks you to share a URL to update your KYC (Know Your Customer) information, which is a sensitive piece of personal data. The message also asks you to click on a link to verify the OTP (one-time password) sent to your mobile phone, which could put you at risk of phishing. To stay safe, do not click on any links or share any sensitive information, and instead report the message to the bank's customer service number or the relevant authorities.
+ msg=0|guarded=This message is likely a scam because it asks you to share a URL to update your KYC (Know Your Customer) information, which is a sensitive piece of personal data. The message also asks you to click on a link to verify the OTP (one-time password) sent to your mobile phone, which could put you at risk of phishing. To stay safe, do not click on any links or share any sensitive information, and instead report the message to the bank's customer service number or the relevant authorities.  1. Don't click links or reply 2. Never share your OTP or PIN 3. Block and report the sender
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)
+ RSS after prompt prefill: 1382.128906 MiB (0 if unsupported)
+ RSS after finishing text generation: 1382.128906 MiB (0 if unsupported)
+ 	Prompt Tokens: 246    Generated Tokens: 86
+ 	Total inference time:		11.573000 (seconds)		 Rate: 	7.431090 (tokens/second)
+ 		Prompt evaluation:	4.748000 (seconds)		 Rate: 	51.811289 (tokens/second)
+ 		Generated 86 tokens:	6.825000 (seconds)		 Rate: 	12.600733 (tokens/second)
+ 	Time to first generated token:	4.748000 (seconds)
+ msg=1|verdict=SUSPICIOUS|first_token_ms=4749|total_ms=11577|tokens=87|tok_per_s=12.60|pss_mb=1309
+ msg=1|raw=This message is likely a scam because it asks you to pay a processing fee to claim a prize, which is not something you can do with a legitimate lottery or sweepstakes. The message also asks you to call a phone number, which is a common tactic used by scammers to trick people into revealing sensitive information. To stay safe, you should ignore this message and do not respond to it or provide any personal or financial information.
+ msg=1|guarded=This message is likely a scam because it asks you to pay a processing fee to claim a prize, which is not something you can do with a legitimate lottery or sweepstakes. The message also asks you to call a phone number, which is a common tactic used by scammers to trick people into revealing sensitive information. To stay safe, you should ignore this message and do not respond to it or provide any personal or financial information.  1. Don't click links or reply 2. Never share your OTP or PIN 3. Check with the sender using an official number
+ RSS after loading model: 1382.128906 MiB (0 if unsupported)

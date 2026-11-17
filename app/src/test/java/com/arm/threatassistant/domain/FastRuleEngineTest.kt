@@ -462,4 +462,12 @@ class FastRuleEngineTest {
         // RuleDetectionResult intentionally exposes no verdict property; its
         // public API is limited to signals + detector metadata.
     }
+
+    @Test
+    fun zeroWidthCharactersInsideWordsDoNotHideOtpRequest() {
+        val text = "Sh​are yo‌ur O‍TP to un⁠block your acc​ount"
+        val input = com.arm.threatassistant.domain.normalization.InputNormalizer.normalize(AnalysisInput(messageText = text))
+        val result = FastRuleEngine.detect(input)
+        assertTrue(result.signals.any { it.ruleId == "cred_003" })
+    }
 }

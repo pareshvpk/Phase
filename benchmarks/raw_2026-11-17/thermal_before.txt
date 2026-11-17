@@ -1,0 +1,13 @@
+Current temperatures from HAL:
+	Temperature{mValue=40.997, mType=3, mName=skin, mStatus=1}
+	Temperature{mValue=36.0, mType=6, mName=vbat, mStatus=0}
+	Temperature{mValue=47.3, mType=9, mName=nsp1, mStatus=0}
+	Temperature{mValue=45.6, mType=9, mName=nsp0, mStatus=0}
+	Temperature{mValue=50.6, mType=1, mName=GPU1, mStatus=0}
+	Temperature{mValue=48.5, mType=1, mName=GPU0, mStatus=0}
+	Temperature{mValue=55.7, mType=0, mName=CPU7, mStatus=0}
+	Temperature{mValue=59.0, mType=0, mName=CPU4, mStatus=0}
+	Temperature{mValue=53.6, mType=0, mName=CPU6, mStatus=0}
+	Temperature{mValue=56.9, mType=0, mName=CPU3, mStatus=0}
+	Temperature{mValue=58.9, mType=0, mName=CPU2, mStatus=0}
+	Temperature{mValue=58.4, mType=0, mName=CPU5, mStatus=0}

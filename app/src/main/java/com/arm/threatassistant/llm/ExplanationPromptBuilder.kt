@@ -57,8 +57,14 @@ object ExplanationPromptBuilder {
             append("\nMessage: \"")
             append(safeMessage)
             append("\"")
-            append("\nIn 2-4 short, simple sentences, tell me why this message is or is not ")
-            append("dangerous and what I should do to stay safe. Answer in plain sentences, no bullet points, no links.")
+            // Asking "why it is or is not dangerous" made the 1B model write
+            // "this message is not dangerous because it is a scam" for scam verdicts.
+            val risky = verdictLabel.contains("HIGH_RISK") || verdictLabel.contains("SUSPICIOUS")
+            append(
+                if (risky) "\nIn 2-4 short, simple sentences, explain why this message is likely a scam "
+                else "\nIn 2-4 short, simple sentences, tell me whether this message looks risky "
+            )
+            append("and what I should do to stay safe. Answer in plain sentences, no bullet points, no links.")
         }
 
         return buildString {

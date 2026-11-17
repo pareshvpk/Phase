@@ -309,4 +309,31 @@ class SensitiveSmsFilterTest {
             )
         )
     }
+
+    @Test
+    fun prizeLureWithoutLinkIsNotSkipped() {
+        val text = "URGENT! We are trying to contact you. Last weekends draw shows that you won a £1000 prize GUARANTEED. Call 09064012160. Claim code K52."
+        assertNull(SensitiveSmsFilter.classify(text))
+    }
+
+    @Test
+    fun creditedWithJoinLinkIsNotSkipped() {
+        val text = "Hi 9019XXXX40, Rs.15,000/- is Credited on your wallet account. Join Now to withdrawal directly: SR3.in/N439B-2"
+        assertNull(SensitiveSmsFilter.classify(text))
+    }
+
+    @Test
+    fun genuineDebitAlertWithReportLinkIsStillSkipped() {
+        val text = "Rs.1,250.00 debited from A/c XX4321 on 12-Nov-26 to VPA shop@okaxis. Not you? Report at https://hdfcbank.com/fraud -HDFC Bank"
+        assertEquals(SensitiveSmsKind.TRANSACTION, SensitiveSmsFilter.classify(text))
+    }
+
+    @Test
+    fun longDigitRunIsClassifiedQuickly() {
+        val text = "9".repeat(5_000) + " Rs"
+        val start = System.nanoTime()
+        SensitiveSmsFilter.classify(text)
+        val ms = (System.nanoTime() - start) / 1_000_000
+        assertTrue("took $ms ms", ms < 200)
+    }
 }

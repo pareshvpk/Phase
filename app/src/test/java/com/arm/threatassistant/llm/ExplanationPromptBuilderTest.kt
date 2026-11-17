@@ -127,4 +127,13 @@ class ExplanationPromptBuilderTest {
         }
         assertTrue("Expected $expected occurrences of $needle but was $count", count == expected)
     }
+
+    @Test
+    fun scamVerdictPromptDoesNotInviteNotDangerous() {
+        val prompt = ExplanationPromptBuilder.build(
+            verdictLabel = "HIGH_RISK", evidence = listOf("Asks for an OTP"), messageText = "Share OTP", languageName = "English"
+        )
+        assertTrue(prompt.contains("explain why this message is likely a scam"))
+        assertTrue(!prompt.contains("is or is not"))
+    }
 }

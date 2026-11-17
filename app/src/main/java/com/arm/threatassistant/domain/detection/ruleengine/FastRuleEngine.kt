@@ -200,13 +200,22 @@ object FastRuleEngine {
     fun detect(input: AnalysisInput): RuleDetectionResult {
         val text = input.normalizedText ?: input.messageText
         val normalized = normalizeForMatching(text)
+        // Invisible characters are used both between words ("act​within") and
+        // inside words to break keywords ("sh​are your o‍TP"). Match both
+        // readings: invisible as a space, and invisible removed.
+        val variants = if (INVISIBLE_CHARACTERS.containsMatchIn(text)) {
+            listOf(normalized, normalizeForMatching(text.replace(INVISIBLE_CHARACTERS, "")))
+        } else {
+            listOf(normalized)
+        }
 
         val detectedSignals = mutableListOf<DetectionSignal>()
 
         var signalIndex = 0
 
         for (rule in RULES) {
-            for (span in bestMatches(rule, normalized)) {
+            val spans = variants.flatMap { bestMatches(rule, it) }.distinctBy { it.text }
+            for (span in spans) {
                 signalIndex++
                 detectedSignals.add(
                     DetectionSignal(
