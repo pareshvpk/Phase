@@ -8,7 +8,5 @@
 -dontwarn org.pytorch.executorch.**
 -dontwarn javax.annotation.Nullable
 
-# Jetpack Compose.
--keep class androidx.compose.** { *; }
+# Jetpack Compose ships its own consumer rules; no blanket keep (it disabled shrinking).
 -dontwarn androidx.compose.**
--keepclassmembers class androidx.compose.runtime.** { *; }
