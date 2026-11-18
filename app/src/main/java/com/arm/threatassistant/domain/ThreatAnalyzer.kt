@@ -8,6 +8,7 @@ import com.arm.threatassistant.domain.detection.ruleengine.RuleDetectionResult
 import com.arm.threatassistant.domain.detection.smsclassifier.SmsClassifierResult
 import com.arm.threatassistant.domain.detection.smsclassifier.SmsSpecialistClassifier
 import com.arm.threatassistant.domain.detection.urldetection.UrlDetectionResult
+import com.arm.threatassistant.domain.detection.urldetection.UrlHostModel
 import com.arm.threatassistant.domain.detection.urldetection.UrlSpecialistDetector
 import com.arm.threatassistant.domain.model.AnalysisInput
 import com.arm.threatassistant.domain.model.AnalysisStatus
@@ -43,9 +44,16 @@ data class ThreatAnalysisResult(
 object ThreatAnalyzer {
 
     internal const val CLASSIFIER_ASSET = "sms_classifier_model.json"
+    internal const val URL_HOST_MODEL_ASSET = "url_host_model.json"
 
     @Volatile
     private var classifier: SmsSpecialistClassifier? = null
+
+    @Volatile
+    private var hostModel: UrlHostModel? = null
+
+    @Volatile
+    private var hostModelUnavailable = false
 
     /**
      * Runs the full analysis pipeline synchronously. Callers that are on the
@@ -56,7 +64,7 @@ object ThreatAnalyzer {
         val normalized = InputNormalizer.normalize(input)
 
         val ruleResult = FastRuleEngine.detect(normalized)
-        val urlResult = UrlSpecialistDetector.detect(normalized)
+        val urlResult = UrlSpecialistDetector.detect(normalized, getUrlHostModel(context))
         val classifierResult = getOrCreateClassifier(context).classify(normalized)
         val assessment = RiskPolicyEngine.assess(
             ruleResult = ruleResult,
@@ -82,6 +90,7 @@ object ThreatAnalyzer {
     fun preload(context: Context) {
         try {
             getOrCreateClassifier(context)
+            getUrlHostModel(context)
         } catch (ignored: Exception) {
             // Best effort only: analyze() will retry the lazy load.
         }
@@ -97,6 +106,30 @@ object ThreatAnalyzer {
                 context.applicationContext,
                 CLASSIFIER_ASSET
             ).also { classifier = it }
+        }
+    }
+
+    private fun getUrlHostModel(context: Context): UrlHostModel? {
+        val existing = hostModel
+        if (existing != null) {
+            return existing
+        }
+        if (hostModelUnavailable) {
+            return null
+        }
+        return synchronized(this) {
+            val current = hostModel
+            when {
+                current != null -> current
+                hostModelUnavailable -> null
+                else -> try {
+                    UrlHostModel.fromAssets(context.applicationContext, URL_HOST_MODEL_ASSET)
+                        .also { hostModel = it }
+                } catch (ignored: Exception) {
+                    hostModelUnavailable = true
+                    null
+                }
+            }
         }
     }
 }

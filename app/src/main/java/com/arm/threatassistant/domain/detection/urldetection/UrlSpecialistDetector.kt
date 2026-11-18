@@ -21,6 +21,7 @@ import java.util.regex.Pattern
  *   - ENCODED_CHARACTERS — URL-encoded characters that may obfuscate the destination
  *   - SUSPICIOUS_TLD — top-level domain commonly abused in phishing
  *   - EXCESSIVE_LENGTH — unusually long URL
+ *   - ML_PHISHING_HOST — optional host model scores the host as phishing
  */
 object UrlSpecialistDetector {
 
@@ -66,8 +67,14 @@ object UrlSpecialistDetector {
      * URLs are taken from [input.extractedUrls] if available, otherwise
      * extracted from [input.messageText] using the same pattern as
      * [com.arm.threatassistant.domain.normalization.InputNormalizer].
+     *
+     * [hostModel] is the optional phishing-URL host model; when it is null
+     * (the default) only the rule-based signals below are produced.
      */
-    fun detect(input: com.arm.threatassistant.domain.model.AnalysisInput): UrlDetectionResult {
+    fun detect(
+        input: com.arm.threatassistant.domain.model.AnalysisInput,
+        hostModel: UrlHostModel? = null
+    ): UrlDetectionResult {
         val urls = if (input.extractedUrls.isNotEmpty()) {
             input.extractedUrls
         } else {
@@ -109,6 +116,29 @@ object UrlSpecialistDetector {
                     detectorId = DETECTOR_ID,
                     detectorVersion = DETECTOR_VERSION
                 ))
+            }
+
+            // Machine-learning host model. IP literals and URL shorteners are
+            // skipped: the rules above already cover them.
+            if (hostModel != null && !analysis.isIpBased && !analysis.isUrlShortener) {
+                val modelHost = UrlHostClassifier.normalizeHost(url)
+                if (modelHost != null &&
+                    !isIpLiteral(modelHost) &&
+                    !UrlShortenerList.isShortener(modelHost) &&
+                    UrlHostClassifier.isPhishing(hostModel, modelHost)
+                ) {
+                    signalIndex++
+                    signals.add(UrlDetectionSignal(
+                        signalId = "$DETECTOR_ID-$signalIndex",
+                        category = UrlDetectionCategory.ML_PHISHING_HOST,
+                        severity = UrlDetectionSeverity.MEDIUM,
+                        description = "Machine-learning model: this web address looks like a phishing site.",
+                        matchedUrl = url,
+                        matchedComponent = modelHost,
+                        detectorId = DETECTOR_ID,
+                        detectorVersion = DETECTOR_VERSION
+                    ))
+                }
             }
 
             // Suspicious TLD.
@@ -323,6 +353,11 @@ object UrlSpecialistDetector {
     // -----------------------------------------------------------------------
     // Detection heuristics
     // -----------------------------------------------------------------------
+
+    /** True for IPv4 dotted-decimal and bracketed IPv6 literals. */
+    private fun isIpLiteral(host: String): Boolean {
+        return IPV4_PATTERN.matcher(host).matches() || host.startsWith("[")
+    }
 
     private fun isHomographAttack(host: String?): Boolean {
         host ?: return false

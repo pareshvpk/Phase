@@ -49,6 +49,7 @@
     <string name="reason_fake_link">नकली दिखने वाला लिंक है</string>
     <string name="reason_short_link">असली लिंक को छोटे लिंक में छिपाता है</string>
     <string name="reason_unusual_link">असामान्य लिंक है</string>
+    <string name="reason_fake_website">यह वेब पता नकली वेबसाइट जैसा लगता है।</string>
     <string name="reason_scam_wording">जानी-पहचानी धोखाधड़ी जैसी भाषा है</string>
 
     <string name="what_to_do">क्या करें</string>

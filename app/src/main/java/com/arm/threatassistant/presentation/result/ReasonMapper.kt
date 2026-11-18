@@ -22,6 +22,7 @@ enum class ReasonId {
     ACCOUNT_SUSPENSION,
     URGENCY_AND_COERCION,
     FAKE_LINK,
+    FAKE_WEBSITE,
     SHORT_LINK,
     UNUSUAL_LINK,
     SCAM_WORDING;
@@ -43,6 +44,7 @@ val ReasonId.labelRes: Int
         ReasonId.ACCOUNT_SUSPENSION -> R.string.reason_suspension
         ReasonId.URGENCY_AND_COERCION -> R.string.reason_urgency
         ReasonId.FAKE_LINK -> R.string.reason_fake_link
+        ReasonId.FAKE_WEBSITE -> R.string.reason_fake_website
         ReasonId.SHORT_LINK -> R.string.reason_short_link
         ReasonId.UNUSUAL_LINK -> R.string.reason_unusual_link
         ReasonId.SCAM_WORDING -> R.string.reason_scam_wording
@@ -103,6 +105,8 @@ private fun UrlDetectionCategory.toReason(): ReasonId = when (this) {
     UrlDetectionCategory.HOMOGRAPH_ATTACK,
     UrlDetectionCategory.MISLEADING_STRUCTURE -> ReasonId.FAKE_LINK
 
+    UrlDetectionCategory.ML_PHISHING_HOST -> ReasonId.FAKE_WEBSITE
+
     UrlDetectionCategory.URL_SHORTENER -> ReasonId.SHORT_LINK
 
     UrlDetectionCategory.IP_BASED_URL,
@@ -131,6 +135,7 @@ private val ReasonId.priority: Int
         ReasonId.ACCOUNT_SUSPENSION -> 70
         ReasonId.URGENCY_AND_COERCION -> 60
         ReasonId.FAKE_LINK -> 55
+        ReasonId.FAKE_WEBSITE -> 56
         ReasonId.SHORT_LINK -> 50
         ReasonId.UNUSUAL_LINK -> 40
         ReasonId.SCAM_WORDING -> 10

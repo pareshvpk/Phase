@@ -49,6 +49,7 @@
     <string name="reason_fake_link">போலியாகத் தெரியும் இணைப்பு உள்ளது</string>
     <string name="reason_short_link">உண்மையான இணைப்பைச் சிறு இணைப்பில் மறைக்கிறது</string>
     <string name="reason_unusual_link">வழக்கத்திற்கு மாறான இணைப்பு உள்ளது</string>
+    <string name="reason_fake_website">இந்த இணைய முகவரி போலி இணையதளம் போல் தெரிகிறது.</string>
     <string name="reason_scam_wording">தெரிந்த மோசடி மொழி போலவே உள்ளது</string>
 
     <string name="what_to_do">என்ன செய்ய வேண்டும்</string>

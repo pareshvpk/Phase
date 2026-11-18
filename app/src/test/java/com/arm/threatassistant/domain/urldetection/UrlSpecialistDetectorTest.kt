@@ -3,6 +3,7 @@ package com.arm.threatassistant.domain.detection.urldetection
 import com.arm.threatassistant.domain.model.AnalysisInput
 import org.junit.Assert.*
 import org.junit.Test
+import java.io.File
 
 class UrlSpecialistDetectorTest {
 
@@ -85,6 +86,47 @@ class UrlSpecialistDetectorTest {
     fun multipleSignalsCanFireForOneUrl() {
         val result = detector.detect(input("Click http://192.168.1.1:8080/login"))
         assertTrue(result.signalCount >= 2)
+    }
+
+    @Test
+    fun mlHostModelAddsPhishingSignalOnlyWhenProvided() {
+        val model = UrlHostModel.parse(
+            File("src/main/assets/url_host_model.json").readText(Charsets.UTF_8)
+        )
+        val phishingInput = input("Visit http://sbi-kyc-update.xyz/login now")
+
+        val withModel = detector.detect(phishingInput, model)
+        val mlSignals = withModel.signals.filter {
+            it.category == UrlDetectionCategory.ML_PHISHING_HOST
+        }
+        assertEquals(1, mlSignals.size)
+        assertEquals(UrlDetectionSeverity.MEDIUM, mlSignals[0].severity)
+        assertEquals(
+            "Machine-learning model: this web address looks like a phishing site.",
+            mlSignals[0].description
+        )
+        assertEquals("sbi-kyc-update.xyz", mlSignals[0].matchedComponent)
+
+        val withoutModel = detector.detect(phishingInput)
+        assertFalse(
+            withoutModel.signals.any { it.category == UrlDetectionCategory.ML_PHISHING_HOST }
+        )
+        assertEquals(
+            withoutModel.signals.map { it.category },
+            withModel.signals
+                .map { it.category }
+                .filter { it != UrlDetectionCategory.ML_PHISHING_HOST }
+        )
+
+        val benignInput = input("Visit https://www.google.com")
+        val benignWithModel = detector.detect(benignInput, model)
+        assertFalse(
+            benignWithModel.signals.any { it.category == UrlDetectionCategory.ML_PHISHING_HOST }
+        )
+        assertEquals(
+            detector.detect(benignInput).signals.map { it.category },
+            benignWithModel.signals.map { it.category }
+        )
     }
 
     @Test

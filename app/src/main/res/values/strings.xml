@@ -51,6 +51,7 @@
     <string name="reason_fake_link">Contains a fake-looking link</string>
     <string name="reason_short_link">Hides the real link behind a short link</string>
     <string name="reason_unusual_link">Contains an unusual link</string>
+    <string name="reason_fake_website">The web address looks like a fake website.</string>
     <string name="reason_scam_wording">Wording matches known scams</string>
 
     <string name="what_to_do">What to do</string>

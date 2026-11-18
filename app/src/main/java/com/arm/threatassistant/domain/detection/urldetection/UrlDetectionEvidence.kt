@@ -22,7 +22,8 @@ enum class UrlDetectionCategory {
     UNUSUAL_PORT,
     ENCODED_CHARACTERS,
     SUSPICIOUS_TLD,
-    EXCESSIVE_LENGTH
+    EXCESSIVE_LENGTH,
+    ML_PHISHING_HOST
 }
 
 /**
