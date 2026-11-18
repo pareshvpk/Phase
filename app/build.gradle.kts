@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -38,6 +40,25 @@ android {
         }
     }
 
+    // Release signing comes from keystore.properties in the project root (git-ignored):
+    //   storeFile=<absolute path to .jks>  storePassword=...  keyAlias=...  keyPassword=...
+    // Without that file, release builds fall back to the debug key so anyone can build.
+    val keystoreProps = Properties().apply {
+        val f = rootProject.file("keystore.properties")
+        if (f.isFile) f.inputStream().use { load(it) }
+    }
+    val hasReleaseKey = keystoreProps.getProperty("storeFile")?.let { file(it).isFile } == true
+    signingConfigs {
+        if (hasReleaseKey) {
+            create("release") {
+                storeFile = file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -46,8 +67,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // TODO: replace with real release keystore before publishing
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(if (hasReleaseKey) "release" else "debug")
         }
         debug {
             isMinifyEnabled = false

@@ -21,3 +21,8 @@ tools/url_classifier/data/
 
 # Network IDS training data (downloaded)
 tools/network_ids/data/
+
+# Release signing secrets (never commit)
+keystore.properties
+*.jks
+*.keystore
