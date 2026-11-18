@@ -158,3 +158,13 @@ Model copied once into app storage (1.14 GB SpinQuant + tokenizer). Raw: `raw_20
 | Temperature (full suite) | skin 41.0 → 46.4 °C (status 3) | AP 40.2 → 42.0 °C | CPU 46.2 → 51.1 °C, skin 39.1 → 44.4 °C (status 3) |
 
 **Conclusion across 3 phones:** detection results are identical on every device (deterministic pipeline). Latency stays under 7 ms at p99 even on the 32-bit budget phone. There are no leaks, no thread-safety problems and no UI crashes in 15,000 random events. Llama runs at 9–13 tok/s on 64-bit Dimensity/Snapdragon-class phones and is cleanly disabled where it can't run. The one consistent concern is heat under back-to-back Llama runs (thermal status 3 on both 64-bit phones).
+
+## 10. Re-test on vivo V2338, 2026-11-18 (after network check added, Apps tab removed)
+
+- Instrumented suite: **17/17 pass** (274 s). Real scams 90.1 % caught, 0.7 % false alerts; demo set 10/10 scams alerted, 0/6 benign, 8/8 OTP/bank skipped.
+  Detection median 3.1 ms; Llama first token 4.1–5.3 s, 9.7–11 tok/s, PSS ~1.28 GB.
+- Monkey (seed 42, 5,000 events) **crashed at event 3,479** on Compose UI 1.7.0:
+  `IllegalStateException: Dispatching intercepted soft keyboard event while focus system is invalidated` (framework bug).
+  Fixed by Compose BOM 2024.09.00 → 2024.12.01 (UI 1.7.6). After: seeds 42 and 7, 5,000 events each, **0 crashes, 0 ANRs**; 17/17 still pass.
+- Network check: home WPA2 Wi-Fi + USB debugging on → "Be careful on this network" with only the USB-debugging finding (correct).
+  Checked in English, Hindi and Tamil on Wi-Fi and mobile data; text renders correctly.

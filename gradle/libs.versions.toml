@@ -2,12 +2,12 @@
 # All versions are pinned to stable, mutually compatible releases.
 # AGP 8.6.0 requires JDK 17 and supports compileSdk 35.
 # Kotlin 2.0.0 ships its own Compose compiler plugin (org.jetbrains.kotlin.plugin.compose).
-# Compose BOM 2024.09.00 aligns the Compose UI / Material 3 / Foundation artifacts.
+# Compose BOM 2024.12.01 (Compose UI 1.7.6; 1.7.0 crashed under monkey with a focus-system bug) aligns the Compose UI / Material 3 / Foundation artifacts.
 
 [versions]
 agp = "8.6.0"
 kotlin = "2.0.0"
-composeBom = "2024.09.00"
+composeBom = "2024.12.01"
 coreKtx = "1.12.0"
 appcompat = "1.7.0"
 activityCompose = "1.8.2"
