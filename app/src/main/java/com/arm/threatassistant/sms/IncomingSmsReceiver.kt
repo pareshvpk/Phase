@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
 import com.arm.threatassistant.domain.ThreatAnalyzer
+import com.arm.threatassistant.domain.detection.ruleengine.DetectionSeverity
+import com.arm.threatassistant.domain.detection.riskpolicy.RiskPolicyEngine
 import com.arm.threatassistant.domain.model.InputSource
 import com.arm.threatassistant.presentation.result.ReasonMapper
 import java.util.UUID
@@ -48,7 +50,20 @@ class IncomingSmsReceiver : BroadcastReceiver() {
                     if (SensitiveSmsFilter.shouldSkip(body)) continue
                     val analysis = ThreatAnalyzer.analyze(context, body, InputSource.SMS)
                     val verdict = analysis.riskAssessment.verdict
-                    if (SmsAlertPolicy.shouldAlert(verdict)) {
+                    val hasHighSeverityRule = analysis.ruleDetectionResult.signals.any {
+                        it.severity == DetectionSeverity.HIGH
+                    }
+                    val classifierResult = analysis.classifierResult
+                    val classifierSaysScam = classifierResult.isThreat &&
+                        (classifierResult.threatScore ?: 0.0) >=
+                        RiskPolicyEngine.classifierMinConfidence
+                    if (SmsAlertPolicy.shouldAlert(
+                            verdict = verdict,
+                            sender = sender,
+                            hasHighSeverityRule = hasHighSeverityRule,
+                            classifierSaysScam = classifierSaysScam
+                        )
+                    ) {
                         val reasons = ReasonMapper.map(
                             ruleResult = analysis.ruleDetectionResult,
                             urlResult = analysis.urlDetectionResult,

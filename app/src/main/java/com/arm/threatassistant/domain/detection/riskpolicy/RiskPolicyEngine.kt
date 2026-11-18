@@ -97,6 +97,14 @@ object RiskPolicyEngine {
     private val thresholds = VerdictThresholds()
 
     /**
+     * The classifier confidence the engine requires before the classifier may
+     * influence a verdict. Exposed so callers (e.g. the SMS alert policy) reuse
+     * the same threshold instead of inventing a new number.
+     */
+    internal val classifierMinConfidence: Double
+        get() = thresholds.classifierMinConfidence
+
+    /**
      * Produces a [ThreatVerdictLevel] and [RiskAssessment] from all available
      * detection evidence.
      */

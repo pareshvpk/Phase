@@ -74,6 +74,19 @@ object ThreatAnalyzer {
         )
     }
 
+    /**
+     * Loads [CLASSIFIER_ASSET] ahead of the first analysis so the initial
+     * check is not slow. Safe to call from any thread, any number of times;
+     * failures are swallowed because the lazy path still works.
+     */
+    fun preload(context: Context) {
+        try {
+            getOrCreateClassifier(context)
+        } catch (ignored: Exception) {
+            // Best effort only: analyze() will retry the lazy load.
+        }
+    }
+
     private fun getOrCreateClassifier(context: Context): SmsSpecialistClassifier {
         val existing = classifier
         if (existing != null) {
