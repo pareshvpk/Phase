@@ -1,0 +1,94 @@
+{
+  "dataset": "NSL-KDD",
+  "test_set": "KDDTest+",
+  "n_test": 22544,
+  "n_train": 113376,
+  "n_holdout": 12597,
+  "holdout_accuracy": 0.988569,
+  "overall_accuracy": 0.780075,
+  "attack_detection_rate": 0.708953,
+  "false_alarm_rate": 0.0718773,
+  "per_class": {
+    "normal": {
+      "precision": 0.707013,
+      "recall": 0.928123,
+      "support": 9711
+    },
+    "dos": {
+      "precision": 0.970949,
+      "recall": 0.860418,
+      "support": 7458
+    },
+    "probe": {
+      "precision": 0.695438,
+      "recall": 0.642297,
+      "support": 2421
+    },
+    "r2l": {
+      "precision": 0.668241,
+      "recall": 0.196051,
+      "support": 2887
+    },
+    "u2r": {
+      "precision": 0.336538,
+      "recall": 0.522388,
+      "support": 67
+    }
+  },
+  "confusion_matrix": {
+    "rows": "true class",
+    "columns": "predicted class",
+    "matrix": [
+      [
+        9013,
+        70,
+        611,
+        6,
+        11
+      ],
+      [
+        872,
+        6417,
+        45,
+        111,
+        13
+      ],
+      [
+        587,
+        122,
+        1555,
+        157,
+        0
+      ],
+      [
+        2251,
+        0,
+        25,
+        566,
+        45
+      ],
+      [
+        25,
+        0,
+        0,
+        7,
+        35
+      ]
+    ]
+  },
+  "class_weights": {
+    "normal": 0.609712,
+    "dos": 0.811568,
+    "probe": 2.27484,
+    "r2l": 14.5616,
+    "u2r": 129.125
+  },
+  "hyperparameters": {
+    "model": "1-hidden-layer MLP, 64 ReLU units, softmax",
+    "optimizer": "scipy L-BFGS-B",
+    "l2": 0.0001,
+    "seed": 42,
+    "class_weight_exponent": 0.75,
+    "val_fraction": 0.1
+  }
+}

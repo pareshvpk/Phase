@@ -15,3 +15,9 @@ models/
 # SMS training data (downloaded; licences in tools/sms_classifier/data/manifest.json)
 tools/sms_classifier/data/
 __pycache__/
+
+# URL training data (downloaded)
+tools/url_classifier/data/
+
+# Network IDS training data (downloaded)
+tools/network_ids/data/
