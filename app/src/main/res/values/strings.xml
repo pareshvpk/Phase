@@ -6,6 +6,7 @@
     <string name="nav_today">Today</string>
     <string name="nav_protection">Protection</string>
     <string name="nav_settings">Settings</string>
+    <string name="nav_apps">Apps</string>
 
     <string name="today_title">Today\'s alerts</string>
     <string name="today_subtitle">Scam messages received today. This list clears at midnight.</string>
@@ -102,6 +103,30 @@
     <string name="error_empty_input">Please enter a message to check.</string>
     <string name="error_shared_empty">Shared content contained no usable text.</string>
     <string name="error_explanation_failed">Could not write an explanation.</string>
+
+    <string name="apps_title">Apps</string>
+    <string name="apps_subtitle">Check the apps on your phone for risky behaviour.</string>
+    <string name="apps_scan_button">Scan my apps</string>
+    <string name="apps_scanning">Scanning your apps&#8230;</string>
+    <string name="apps_need_attention">%1$d apps need attention</string>
+    <string name="apps_no_risky">No risky apps found</string>
+    <string name="apps_look_fine">%1$d apps look fine</string>
+    <string name="apps_level_dangerous">Dangerous</string>
+    <string name="apps_level_review">Check this app</string>
+    <string name="apps_action_settings">App settings</string>
+    <string name="apps_action_uninstall">Uninstall</string>
+    <string name="apps_footer">Checked on this phone only. Nothing was uploaded.</string>
+
+    <string name="apps_finding_sideloaded">Installed from outside the app store.</string>
+    <string name="apps_finding_reads_sms">Can read your SMS, including OTPs.</string>
+    <string name="apps_finding_accessibility">Can see your screen and tap for you.</string>
+    <string name="apps_finding_overlay">Can draw over other apps (fake login screens).</string>
+    <string name="apps_finding_device_admin">Has device-admin rights, which makes it hard to remove.</string>
+    <string name="apps_finding_hidden_icon">Has no icon in the app drawer.</string>
+    <string name="apps_finding_installs_apps">Can install other apps.</string>
+    <string name="apps_finding_reads_notifications">Can read your notifications, including OTPs.</string>
+    <string name="apps_finding_sms_accessibility">Can read OTPs and control the screen &#8212; typical of banking trojans.</string>
+    <string name="apps_finding_remote_control">Can control your screen and hide it behind overlays &#8212; typical of remote-access scams.</string>
 
     <string name="settings_title">Settings</string>
     <string name="settings_language_title">Language</string>

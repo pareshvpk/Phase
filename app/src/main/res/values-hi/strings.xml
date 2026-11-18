@@ -5,6 +5,7 @@
     <string name="nav_today">आज</string>
     <string name="nav_protection">सुरक्षा</string>
     <string name="nav_settings">सेटिंग्स</string>
+    <string name="nav_apps">ऐप्स</string>
 
     <string name="today_title">आज के अलर्ट</string>
     <string name="today_subtitle">आज मिले धोखाधड़ी वाले संदेश। यह सूची आधी रात को साफ़ हो जाती है।</string>
@@ -100,6 +101,30 @@
     <string name="error_empty_input">जाँच के लिए कृपया एक संदेश दर्ज करें।</string>
     <string name="error_shared_empty">साझा की गई सामग्री में उपयोगी टेक्स्ट नहीं था।</string>
     <string name="error_explanation_failed">स्पष्टीकरण नहीं बन सका।</string>
+
+    <string name="apps_title">ऐप्स</string>
+    <string name="apps_subtitle">खतरनाक व्यवहार के लिए अपने फ़ोन के ऐप्स जाँचें।</string>
+    <string name="apps_scan_button">मेरे ऐप्स जाँचें</string>
+    <string name="apps_scanning">आपके ऐप्स जाँचे जा रहे हैं&#8230;</string>
+    <string name="apps_need_attention">%1$d ऐप्स पर ध्यान दें</string>
+    <string name="apps_no_risky">कोई खतरनाक ऐप नहीं मिला</string>
+    <string name="apps_look_fine">%1$d ऐप्स ठीक लगते हैं</string>
+    <string name="apps_level_dangerous">खतरनाक</string>
+    <string name="apps_level_review">इस ऐप की जाँच करें</string>
+    <string name="apps_action_settings">ऐप सेटिंग्स</string>
+    <string name="apps_action_uninstall">अनइंस्टॉल करें</string>
+    <string name="apps_footer">केवल इसी फ़ोन पर जाँचा गया। कुछ भी अपलोड नहीं किया गया।</string>
+
+    <string name="apps_finding_sideloaded">ऐप स्टोर के बाहर से इंस्टॉल किया गया।</string>
+    <string name="apps_finding_reads_sms">OTP सहित आपके SMS पढ़ सकता है।</string>
+    <string name="apps_finding_accessibility">आपकी स्क्रीन देखकर आपके लिए टैप कर सकता है।</string>
+    <string name="apps_finding_overlay">दूसरे ऐप्स के ऊपर ड्रॉ कर सकता है (नकली लॉगिन स्क्रीन)।</string>
+    <string name="apps_finding_device_admin">डिवाइस-एडमिन अधिकार हैं, जिससे इसे हटाना मुश्किल होता है।</string>
+    <string name="apps_finding_hidden_icon">ऐप ड्रॉअर में इसका कोई आइकन नहीं है।</string>
+    <string name="apps_finding_installs_apps">दूसरे ऐप्स इंस्टॉल कर सकता है।</string>
+    <string name="apps_finding_reads_notifications">OTP सहित आपकी सूचनाएँ पढ़ सकता है।</string>
+    <string name="apps_finding_sms_accessibility">OTP पढ़कर स्क्रीन नियंत्रित कर सकता है &#8212; बैंकिंग ट्रोजन जैसा व्यवहार।</string>
+    <string name="apps_finding_remote_control">स्क्रीन नियंत्रित करके ओवरले के पीछे छिपा सकता है &#8212; रिमोट-एक्सेस धोखाधड़ी जैसा व्यवहार।</string>
 
     <string name="settings_title">सेटिंग्स</string>
     <string name="settings_language_title">भाषा</string>

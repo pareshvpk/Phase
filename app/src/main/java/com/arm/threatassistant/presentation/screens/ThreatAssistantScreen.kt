@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -34,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arm.threatassistant.R
 import com.arm.threatassistant.domain.model.AnalysisInput
 import com.arm.threatassistant.domain.model.InputSource
+import com.arm.threatassistant.presentation.viewmodel.AppsViewModel
 import com.arm.threatassistant.presentation.viewmodel.ThreatAnalysisViewModel
 import com.arm.threatassistant.sms.TodayAlertsLogic
 import com.arm.threatassistant.sms.TodayAlertsStore
@@ -47,12 +49,14 @@ private enum class Destination(
     CHECK(R.string.nav_check, Icons.Filled.Search),
     TODAY(R.string.nav_today, Icons.Filled.Notifications),
     PROTECTION(R.string.nav_protection, Icons.Filled.Lock),
+    APPS(R.string.nav_apps, Icons.Filled.Warning),
     SETTINGS(R.string.nav_settings, Icons.Filled.Settings)
 }
 
 /**
- * Root app shell: four bottom-navigation destinations and simple state-based
- * navigation. System back from Today, Protection or Settings returns to Check.
+ * Root app shell: five bottom-navigation destinations and simple state-based
+ * navigation. System back from Today, Protection, Apps or Settings returns to
+ * Check.
  */
 @Composable
 fun ThreatAssistantScreen(
@@ -61,6 +65,7 @@ fun ThreatAssistantScreen(
     viewModel: ThreatAnalysisViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val appsViewModel: AppsViewModel = viewModel()
     val todayAlerts by TodayAlertsStore.alerts.collectAsState()
     var destination by rememberSaveable { mutableStateOf(Destination.CHECK) }
 
@@ -166,6 +171,7 @@ fun ThreatAssistantScreen(
                     onOpenProtection = { destination = Destination.PROTECTION }
                 )
                 Destination.PROTECTION -> ProtectionScreen()
+                Destination.APPS -> AppsScreen(viewModel = appsViewModel)
                 Destination.SETTINGS -> SettingsScreen()
             }
         }

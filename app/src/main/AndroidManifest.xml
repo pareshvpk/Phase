@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Opt-in incoming-SMS protection. Declared but only used when the user
          enables SMS protection in the app. -->
@@ -7,6 +8,10 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Only used for the one-time, user-started download of the explanation model. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Lists installed apps for the on-device Apps scan. Nothing leaves the phone. -->
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <!-- SMS protection is optional; do not require telephony hardware. -->
     <uses-feature
