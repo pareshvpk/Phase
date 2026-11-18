@@ -14,7 +14,6 @@ that protects non-expert users from scams and digital threats:
 | Phishing URL detection | Inside every check | URL rules + on-device host model (char n-grams) |
 | Plain-language explanation + safe steps | Result screen | **Llama 3.2 1B Instruct, SpinQuant INT4, via ExecuTorch on the Arm CPU**, behind an advice guard; fixed localized text as fallback |
 | Risky-word highlighting | Result screen | Rule matches and flagged links highlighted in the message |
-| Malware / risky-app behaviour | Apps tab | Installed-app scan: sideloading, SMS + accessibility + overlay combos, device admin, hidden icon |
 | Network safety (planned) | Protection tab | Wi-Fi security, captive portal, DNS, VPN, USB debugging — designed, not built |
 | Network intrusion classification | Raspberry Pi 5 / PC companion (`tools/network_ids`) | NSL-KDD MLP, per-flow plain-language explanation, optional Llama runner |
 | Languages / themes | Settings | English, Hindi, Tamil; light/dark/system |
@@ -108,25 +107,15 @@ urgency. Two false-alarm traps were found and fixed with the held-out set:
   steps for each flow. `--llama-cmd` pipes a short prompt to an ExecuTorch `llama_main` runner on the Pi.
 - Not implemented: live capture → NSL-KDD feature extraction (would use Zeek/argus connection logs).
 
-## 5. On-phone app and network checks (roadmap 3.1, 3.2 B)
-**Apps tab (done).** `InstalledAppsCollector` reads installed packages, installer, requested permissions,
-launcher icon, active device admins, enabled accessibility services and notification listeners. Nothing leaves the phone.
-`AppRiskScorer` is pure Kotlin and unit tested:
-- Findings: SIDELOADED (installer not Play or a known OEM store), READS_SMS, ACCESSIBILITY_CONTROL, SCREEN_OVERLAY,
-  DEVICE_ADMIN, HIDDEN_ICON, INSTALLS_APPS, READS_NOTIFICATIONS.
-- Combinations: SMS + accessibility (banking trojan) and accessibility + overlay (remote-access scam).
-- Levels: Dangerous / Check this app / Safe. System apps and ARM itself are always Safe.
-- Each finding has one plain sentence (en/hi/ta) and two actions: App settings and Uninstall.
-- Not device-tested yet.
-
+## 5. On-phone network check (roadmap 3.2 B)
 **On-phone network check (done, Protection tab).** `NetworkSnapshotCollector` reads the active network from
 ConnectivityManager, WifiManager (security type, API 31+) and Settings; nothing touches the network or leaves the phone.
 `NetworkRiskScorer` is pure Kotlin and unit tested:
 - Findings: OPEN_WIFI, WEP_WIFI, CAPTIVE_PORTAL, NOT_VALIDATED, PUBLIC_DNS_HIJACK_RISK (DNS server that is neither
   private nor a well-known resolver), NO_PRIVATE_DNS_ON_OPEN_WIFI, USB_DEBUGGING_ON, DEVELOPER_OPTIONS_ON, VPN_ACTIVE_UNKNOWN.
-- Levels: Risky network (open/WEP Wi-Fi) / Be careful / Looks safe.
+- Levels: This network is not safe (open/WEP Wi-Fi) / Be careful on this network / Your network looks fine.
 - Each finding has one plain sentence and one action (en/hi/ta). Permissions: ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE.
-- Not device-tested yet.
+- Device-tested on vivo V2338 (home WPA2 Wi-Fi, USB debugging on): "Be careful" with the single USB-debugging finding, as expected.
 
 ## 6. Measurements (from `benchmarks/DEVICE_REPORT_2026-11-17.md`)
 
