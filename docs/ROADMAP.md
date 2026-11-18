@@ -71,7 +71,7 @@ Phase 1 and the rule fixes are small and visible; Phase 2 needs the real message
 | 2.6 | **Done**: DLT business headers alert only on a high-severity rule or a confident model scam verdict. |
 | 2.7 | **Done**: "What looks risky" card highlights rule matches and flagged links. |
 | 3.1 | **Done in code**: Apps tab scanner (not device-tested yet). Llama explanation per finding not added (fixed plain sentences instead). |
-| 3.2 | **Part A done**: `tools/network_ids` NSL-KDD MLP companion for Raspberry Pi 5/PC (KDDTest+ acc 78 %, detection 71 %, false alarms 7.2 %), plain-language + optional Llama runner. **Part B (on-phone network check) not built**: the run was stopped when the PC ran low on memory; the brief is `models/TASK_G2_NETWORK_CHECK.md`. |
+| 3.2 | **Part A done**: `tools/network_ids` NSL-KDD MLP companion for Raspberry Pi 5/PC (KDDTest+ acc 78 %, detection 71 %, false alarms 7.2 %), plain-language + optional Llama runner. **Part B done (2026-11-18)**: on-phone Network check on the Protection tab (`NetworkSnapshotCollector` + unit-tested `NetworkRiskScorer`: open/WEP Wi-Fi, captive portal, unvalidated network, unknown DNS, Private DNS, USB debugging/developer options, VPN); en/hi/ta. Not device-tested yet. |
 | 4.2 | **Not done**: brief ready in `models/TASK_H_ONBOARDING.md`. |
 | 4.3 | **Done**: release key at `D:\ARM-release-key\arm-release.jks` (outside the repo, password backup next to it); `keystore.properties` is git-ignored; the release APK is verified to be signed with it. |
 | 4.4 | **Done**: `docs/ENGINEERING_REPORT.md` rewritten. |

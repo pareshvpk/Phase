@@ -1,5 +1,6 @@
 package com.arm.threatassistant.apps
 
+import android.annotation.SuppressLint
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -64,6 +65,8 @@ object InstalledAppsCollector {
             }
         }
 
+    // GET_PERMISSIONS is a valid PackageInfoFlags bit; lint cannot see through .toLong().
+    @SuppressLint("WrongConstant")
     @Suppress("DEPRECATION")
     private fun installedPackages(packageManager: PackageManager): List<PackageInfo> =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

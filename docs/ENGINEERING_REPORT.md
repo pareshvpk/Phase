@@ -119,9 +119,14 @@ launcher icon, active device admins, enabled accessibility services and notifica
 - Each finding has one plain sentence (en/hi/ta) and two actions: App settings and Uninstall.
 - Not device-tested yet.
 
-**On-phone network check (not done).** Designed in `models/TASK_G2_NETWORK_CHECK.md`: open/WEP Wi-Fi, captive
-portal, unvalidated network, non-standard public DNS, USB debugging, unknown VPN. The implementation run was stopped
-when the PC ran low on memory, and nothing was written.
+**On-phone network check (done, Protection tab).** `NetworkSnapshotCollector` reads the active network from
+ConnectivityManager, WifiManager (security type, API 31+) and Settings; nothing touches the network or leaves the phone.
+`NetworkRiskScorer` is pure Kotlin and unit tested:
+- Findings: OPEN_WIFI, WEP_WIFI, CAPTIVE_PORTAL, NOT_VALIDATED, PUBLIC_DNS_HIJACK_RISK (DNS server that is neither
+  private nor a well-known resolver), NO_PRIVATE_DNS_ON_OPEN_WIFI, USB_DEBUGGING_ON, DEVELOPER_OPTIONS_ON, VPN_ACTIVE_UNKNOWN.
+- Levels: Risky network (open/WEP Wi-Fi) / Be careful / Looks safe.
+- Each finding has one plain sentence and one action (en/hi/ta). Permissions: ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE.
+- Not device-tested yet.
 
 ## 6. Measurements (from `benchmarks/DEVICE_REPORT_2026-11-17.md`)
 

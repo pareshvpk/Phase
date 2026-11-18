@@ -12,6 +12,9 @@
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
+    <!-- Reads the current network for the on-device Network check. Nothing leaves the phone. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <!-- SMS protection is optional; do not require telephony hardware. -->
     <uses-feature

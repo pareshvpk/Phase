@@ -144,4 +144,32 @@
     <string name="settings_auto_explain_summary">परिणाम तैयार होने पर आसान भाषा में व्याख्या लिखें।</string>
     <string name="settings_local_language_explanations_title">हिन्दी/तमिल में AI स्पष्टीकरण (प्रयोगात्मक)</string>
     <string name="settings_local_language_explanations_summary">निश्चित व्याख्या के बजाय हिन्दी और तमिल के लिए ऑन-डिवाइस मॉडल का उपयोग करें।</string>
+
+    <!-- Network check (roadmap 3.2B) -->
+    <string name="network_check_title">नेटवर्क जाँच</string>
+    <string name="network_check_hint">आप अभी जिस वाई-फ़ाई या मोबाइल नेटवर्क पर हैं, उसकी जाँच करता है। कुछ भी आपके फ़ोन से बाहर नहीं जाता।</string>
+    <string name="network_check_button">मेरा नेटवर्क जाँचें</string>
+    <string name="network_check_running">आपका नेटवर्क जाँचा जा रहा है&#8230;</string>
+    <string name="network_check_no_findings">इस नेटवर्क पर कोई समस्या नहीं मिली।</string>
+    <string name="network_level_ok">सुरक्षित लगता है</string>
+    <string name="network_level_caution">सावधान रहें</string>
+    <string name="network_level_risky">जोखिम भरा नेटवर्क</string>
+    <string name="network_finding_open_wifi">इस वाई-फ़ाई में पासवर्ड नहीं है। आस-पास के लोग देख सकते हैं कि आप क्या भेजते हैं।</string>
+    <string name="network_finding_wep_wifi">यह वाई-फ़ाई पुरानी WEP सुरक्षा इस्तेमाल करता है, जिसे तोड़ना आसान है।</string>
+    <string name="network_finding_captive_portal">यह वाई-फ़ाई पहले एक वेब पेज पर साइन इन करवाना चाहता है।</string>
+    <string name="network_finding_not_validated">यह वाई-फ़ाई ठीक से इंटरनेट तक नहीं पहुँच पाया।</string>
+    <string name="network_finding_public_dns">आपका फ़ोन एक अनजान DNS सर्वर इस्तेमाल कर रहा है। यह आपको नकली वेबसाइटों पर भेज सकता है।</string>
+    <string name="network_finding_no_private_dns">खुले वाई-फ़ाई पर प्राइवेट DNS बंद है।</string>
+    <string name="network_finding_usb_debugging">USB डीबगिंग चालू है।</string>
+    <string name="network_finding_developer_options">डेवलपर विकल्प चालू हैं।</string>
+    <string name="network_finding_vpn">एक VPN चालू है।</string>
+    <string name="network_advice_open_wifi">यहाँ बैंकिंग और भुगतान न करें। इसके बजाय मोबाइल डेटा इस्तेमाल करें।</string>
+    <string name="network_advice_wep_wifi">इस वाई-फ़ाई पर पासवर्ड या भुगतान की जानकारी न डालें।</string>
+    <string name="network_advice_captive_portal">केवल भरोसेमंद जगह पर ही साइन इन करें। उस पेज पर कभी बैंक की जानकारी न डालें।</string>
+    <string name="network_advice_not_validated">अगर पेज अजीब दिखें तो डिस्कनेक्ट करें और मोबाइल डेटा इस्तेमाल करें।</string>
+    <string name="network_advice_public_dns">सेटिंग्स में प्राइवेट DNS चालू करें, या दूसरे नेटवर्क पर जाएँ।</string>
+    <string name="network_advice_no_private_dns">अपनी ब्राउज़िंग सुरक्षित रखने के लिए सेटिंग्स &gt; नेटवर्क में प्राइवेट DNS चालू करें।</string>
+    <string name="network_advice_usb_debugging">ज़रूरत न हो तो सेटिंग्स &gt; डेवलपर विकल्प में इसे बंद करें।</string>
+    <string name="network_advice_developer_options">अगर आपने इन्हें खुद चालू नहीं किया है तो बंद कर दें।</string>
+    <string name="network_advice_vpn">पक्का करें कि यह VPN आपने खुद इंस्टॉल किया है और आप इस पर भरोसा करते हैं।</string>
 </resources>
