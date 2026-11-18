@@ -64,6 +64,9 @@ object FastRuleEngine {
         fun overlaps(other: MatchSpan): Boolean = start <= other.end && other.start <= end
     }
 
+    /** Regex prefix: the following words must not come right after a negation ("never share otp"). */
+    private const val NOT_NEGATED = "(?<!not |never |dont |don t |nor |no )"
+
     /** All rules, grouped by category for maintainability. */
     private val RULES = listOf(
         // ---- A. Urgency and coercion ----
@@ -89,6 +92,15 @@ object FastRuleEngine {
         RuleDefinition("urg_007", RuleCategory.URGENCY_AND_COERCION, DetectionSeverity.MEDIUM,
             listOf("act now", "respond immediately"),
             "Message demands immediate response without explanation."),
+        RuleDefinition("urg_008", RuleCategory.URGENCY_AND_COERCION, DetectionSeverity.HIGH,
+            listOf("digital arrest", "cbi officer", "cyber crime department",
+                "narcotics found in your parcel", "arrest warrant",
+                "case registered against your"),
+            "Message impersonates law enforcement and threatens arrest, a digital-arrest coercion tactic."),
+        RuleDefinition("urg_009", RuleCategory.URGENCY_AND_COERCION, DetectionSeverity.MEDIUM,
+            listOf("account band ho jayega", "turant", "abhi click karein",
+                "kyc update karein"),
+            "Hinglish message pressures the recipient to act urgently."),
 
         // ---- B. Credential requests ----
         RuleDefinition("cred_001", RuleCategory.CREDENTIAL_REQUEST, DetectionSeverity.HIGH,
@@ -115,6 +127,20 @@ object FastRuleEngine {
         RuleDefinition("cred_008", RuleCategory.CREDENTIAL_REQUEST, DetectionSeverity.MEDIUM,
             listOf("your otp is", "your otp has been"),
             "Message references an OTP value; legitimate in some contexts but reviewed here."),
+        RuleDefinition("cred_009", RuleCategory.CREDENTIAL_REQUEST, DetectionSeverity.HIGH,
+            // Lookbehind keeps the bank warning "do not / never share OTP" silent.
+            listOf("$NOT_NEGATED\\bshare otp", "$NOT_NEGATED\\bsend otp", "$NOT_NEGATED\\btell otp",
+                "$NOT_NEGATED\\bforward otp", "otp share karo", "otp bhejo", "otp batao",
+                "$NOT_NEGATED\\bshare pin", "$NOT_NEGATED\\bshare upi pin", "enter upi pin to receive"),
+            "Message asks the recipient to share an OTP or UPI PIN, even without the article."),
+        // Installable APKs are classified here rather than as a money demand because
+        // their primary purpose is to steal OTPs, PINs and passwords; no explicit
+        // payment is requested in the lure.
+        RuleDefinition("cred_010", RuleCategory.CREDENTIAL_REQUEST, DetectionSeverity.HIGH,
+            // Word-bounded: a bare "apk" substring matches the Hinglish "aapka" (your).
+            listOf("download the apk", "install this app to", "install the app to update kyc",
+                "\\bapk\\b"),
+            "Message lures the recipient into installing an APK, a common banking-trojan delivery."),
 
         // ---- C. Financial impersonation ----
         RuleDefinition("fin_001", RuleCategory.FINANCIAL_IMPERSONATION, DetectionSeverity.MEDIUM,
@@ -165,6 +191,21 @@ object FastRuleEngine {
             listOf("transfer funds immediately", "transfer money immediately",
                 "send money immediately"),
             "Message demands immediate fund transfer."),
+        RuleDefinition("pay_009", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.HIGH,
+            listOf("collect request", "approve the request to receive",
+                "enter pin to receive", "scan to receive", "scan this qr to receive"),
+            "Message tricks the recipient into approving a UPI collect request that debits them."),
+        RuleDefinition("pay_010", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.MEDIUM,
+            listOf("refund has been initiated click", "claim your refund", "income tax refund"),
+            "Message lures the recipient with a fraudulent refund that requires payment details."),
+        RuleDefinition("pay_011", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.MEDIUM,
+            listOf("part time job", "earn rs", "daily income", "like youtube videos",
+                "telegram task", "work from home and earn"),
+            "Message promotes a task or profit scheme, a common advance-fee lure."),
+        RuleDefinition("pay_012", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.MEDIUM,
+            listOf("parcel is on hold", "customs duty", "your courier could not be delivered",
+                "update your address"),
+            "Message demands a courier or customs fee, a common parcel scam."),
 
         // ---- E. Account suspension threats ----
         RuleDefinition("susp_001", RuleCategory.ACCOUNT_SUSPENSION, DetectionSeverity.HIGH,
@@ -187,7 +228,11 @@ object FastRuleEngine {
             "Message states the account will be suspended."),
         RuleDefinition("susp_007", RuleCategory.ACCOUNT_SUSPENSION, DetectionSeverity.HIGH,
             listOf("kyc verification required immediately", "kyc update required immediately"),
-            "Message demands immediate KYC verification under threat of suspension.")
+            "Message demands immediate KYC verification under threat of suspension."),
+        RuleDefinition("susp_008", RuleCategory.ACCOUNT_SUSPENSION, DetectionSeverity.HIGH,
+            listOf("electricity will be disconnected", "power will be disconnected tonight",
+                "electricity bill not updated"),
+            "Message threatens electricity disconnection to force an urgent payment.")
     )
 
     /**

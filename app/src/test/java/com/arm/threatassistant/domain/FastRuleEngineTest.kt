@@ -470,4 +470,137 @@ class FastRuleEngineTest {
         val result = FastRuleEngine.detect(input)
         assertTrue(result.signals.any { it.ruleId == "cred_003" })
     }
+
+    // ---- Roadmap 2.5: scam-rule gap coverage ----
+
+    @Test
+    fun otpOrPinSharingWithoutArticleIsDetected() {
+        val result = engine.detect(input("Dear user, send OTP to 9876543210 to verify your reward."))
+        assertTrue("Expected cred_009, got ${ruleIds(result)}", hasRule(result, "cred_009"))
+        assertTrue(categories(result).contains(RuleCategory.CREDENTIAL_REQUEST))
+        assertEquals(DetectionSeverity.HIGH, result.signals.first { it.ruleId == "cred_009" }.severity)
+    }
+
+    @Test
+    fun upiCollectRequestTrickIsDetected() {
+        val result = engine.detect(input("Approve the request to receive Rs 2000. Enter pin to receive money."))
+        assertTrue("Expected pay_009, got ${ruleIds(result)}", hasRule(result, "pay_009"))
+        assertTrue(categories(result).contains(RuleCategory.PAYMENT_DEMAND))
+        assertEquals(DetectionSeverity.HIGH, result.signals.first { it.ruleId == "pay_009" }.severity)
+    }
+
+    @Test
+    fun apkInstallLureIsDetected() {
+        val result = engine.detect(input("Download the APK and install this app to update KYC."))
+        assertTrue("Expected cred_010, got ${ruleIds(result)}", hasRule(result, "cred_010"))
+        assertTrue(categories(result).contains(RuleCategory.CREDENTIAL_REQUEST))
+        assertEquals(DetectionSeverity.HIGH, result.signals.first { it.ruleId == "cred_010" }.severity)
+    }
+
+    @Test
+    fun digitalArrestThreatIsDetected() {
+        val result = engine.detect(input("This is a CBI officer. A digital arrest warrant is issued because narcotics found in your parcel."))
+        assertTrue("Expected urg_008, got ${ruleIds(result)}", hasRule(result, "urg_008"))
+        assertTrue(categories(result).contains(RuleCategory.URGENCY_AND_COERCION))
+        assertEquals(DetectionSeverity.HIGH, result.signals.first { it.ruleId == "urg_008" }.severity)
+    }
+
+    @Test
+    fun refundTrickIsDetected() {
+        val result = engine.detect(input("Your refund has been initiated. Click here to claim your refund now."))
+        assertTrue("Expected pay_010, got ${ruleIds(result)}", hasRule(result, "pay_010"))
+        assertTrue(categories(result).contains(RuleCategory.PAYMENT_DEMAND))
+        assertEquals(DetectionSeverity.MEDIUM, result.signals.first { it.ruleId == "pay_010" }.severity)
+    }
+
+    @Test
+    fun taskOrProfitGroupScamIsDetected() {
+        val result = engine.detect(input("Part time job offer: earn Rs 500 daily income by liking YouTube videos on our telegram task."))
+        assertTrue("Expected pay_011, got ${ruleIds(result)}", hasRule(result, "pay_011"))
+        assertTrue(categories(result).contains(RuleCategory.PAYMENT_DEMAND))
+        assertEquals(DetectionSeverity.MEDIUM, result.signals.first { it.ruleId == "pay_011" }.severity)
+    }
+
+    @Test
+    fun electricityDisconnectionThreatIsDetected() {
+        val result = engine.detect(input("Electricity will be disconnected tonight. Pay now to keep your power on."))
+        assertTrue("Expected susp_008, got ${ruleIds(result)}", hasRule(result, "susp_008"))
+        assertTrue(categories(result).contains(RuleCategory.ACCOUNT_SUSPENSION))
+        assertEquals(DetectionSeverity.HIGH, result.signals.first { it.ruleId == "susp_008" }.severity)
+    }
+
+    @Test
+    fun courierCustomsFeeScamIsDetected() {
+        val result = engine.detect(input("Your parcel is on hold due to customs duty. Update your address to release it."))
+        assertTrue("Expected pay_012, got ${ruleIds(result)}", hasRule(result, "pay_012"))
+        assertTrue(categories(result).contains(RuleCategory.PAYMENT_DEMAND))
+        assertEquals(DetectionSeverity.MEDIUM, result.signals.first { it.ruleId == "pay_012" }.severity)
+    }
+
+    @Test
+    fun hinglishUrgencyIsDetected() {
+        val result = engine.detect(input("Aapka account band ho jayega. Turant KYC update karein."))
+        assertTrue("Expected urg_009, got ${ruleIds(result)}", hasRule(result, "urg_009"))
+        assertTrue(categories(result).contains(RuleCategory.URGENCY_AND_COERCION))
+        assertEquals(DetectionSeverity.MEDIUM, result.signals.first { it.ruleId == "urg_009" }.severity)
+    }
+
+    @Test
+    fun legitimateOtpSmsProducesNoHighSignal() {
+        val result = engine.detect(input("Your OTP for login is 482913. Do not share it with anyone. -HDFC Bank"))
+        val highSignals = result.signals.filter { it.severity == DetectionSeverity.HIGH }
+        assertTrue("Expected no HIGH signal, got ${highSignals.map { it.ruleId }}", highSignals.isEmpty())
+        assertFalse("cred_009 should not fire on an OTP notification", hasRule(result, "cred_009"))
+    }
+
+    @Test
+    fun legitimateParcelDeliverySmsProducesNoHighSignal() {
+        val result = engine.detect(input("Your parcel was delivered today. Thanks for shopping."))
+        assertTrue(
+            "Expected no HIGH signal, got ${result.signals.filter { it.severity == DetectionSeverity.HIGH }.map { it.ruleId }}",
+            result.signals.none { it.severity == DetectionSeverity.HIGH }
+        )
+        assertFalse(hasRule(result, "pay_012"))
+    }
+
+    @Test
+    fun legitimateElectricityPaidSmsProducesNoHighSignal() {
+        val result = engine.detect(input("Electricity bill of Rs 820 paid successfully."))
+        assertTrue(
+            "Expected no HIGH signal, got ${result.signals.filter { it.severity == DetectionSeverity.HIGH }.map { it.ruleId }}",
+            result.signals.none { it.severity == DetectionSeverity.HIGH }
+        )
+        assertFalse(hasRule(result, "susp_008"))
+    }
+
+    @Test
+    fun sbiKycOtpScamProducesCredentialRequestSignal() {
+        val text = "Dear SBI customer, your KYC expires today. Share OTP to avoid account block"
+        val result = engine.detect(input(text))
+        assertTrue(
+            "Expected a CREDENTIAL_REQUEST signal, got ${ruleIds(result)}",
+            result.signals.any { it.category == RuleCategory.CREDENTIAL_REQUEST }
+        )
+        assertTrue("Expected cred_009, got ${ruleIds(result)}", hasRule(result, "cred_009"))
+    }
+
+    @Test
+    fun bankWarningNotToShareOtpIsNotACredentialRequest() {
+        for (text in listOf(
+            "Your OTP is 482913. Never share OTP with anyone. -SBI",
+            "Do not share OTP or PIN with anyone, bank never asks for it.",
+            "Don't share OTP with callers. -HDFC Bank"
+        )) {
+            val result = engine.detect(input(text))
+            assertFalse("Unexpected cred_009 for '$text'", hasRule(result, "cred_009"))
+        }
+    }
+
+    @Test
+    fun hinglishAapkaDoesNotTriggerApkRule() {
+        val result = engine.detect(input("Namaste, aapka electricity bill Rs 3,842 generate ho gaya hai."))
+        assertFalse("Unexpected cred_010, got ${ruleIds(result)}", hasRule(result, "cred_010"))
+        val scam = engine.detect(input("Download SBI Rewards.apk now to redeem points"))
+        assertTrue("Expected cred_010, got ${ruleIds(scam)}", hasRule(scam, "cred_010"))
+    }
 }
