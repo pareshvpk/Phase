@@ -1,6 +1,6 @@
 # ARM roadmap
 
-Last updated 2026-11-16. Based on the hackathon brief (Cybersecurity & Digital Safety: Llama via ExecuTorch on
+Last updated 2026-11-18 (see "Status 2026-11-18" at the end). Based on the hackathon brief (Cybersecurity & Digital Safety: Llama via ExecuTorch on
 Arm, no cloud) and a comparison with PS3 Sentinel (github.com/Vishnu-3727/ps3-sentinel, Apache-2.0 — credit it
 in NOTICE/README if any code or rules are reused).
 
@@ -59,3 +59,21 @@ Legend: **You** = needs the owner (accounts, phones, real messages, hardware). *
 ## Suggested order
 1.1 → 1.2 → 2.5 → 1.3 → 1.4 → 2.1 (in parallel, owner) → 2.2 → 2.3 → 2.4 → 2.6 → 2.7 → 3.1 → 3.2 → 4.x.
 Phase 1 and the rule fixes are small and visible; Phase 2 needs the real messages; Phase 3 is the differentiator.
+
+---
+
+## Status 2026-11-18
+
+| # | Status |
+|---|---|
+| 2.4 | **Done, with a different model**: char n-gram TF-IDF + logistic-regression *host* model (PhiUSIIL + Tranco top-30k + Indian sites), test precision 0.98 / recall 0.61 / FPR 0.64 %, wired into `UrlSpecialistDetector` as `ML_PHISHING_HOST`. The ExecuTorch char-CNN was not possible: Windows Application Control now blocks the torch DLLs on the dev PC. |
+| 2.5 | **Done**: 9 rule groups + unit tests; fixed `apk`→"aapka" and "never share OTP" false alarms. |
+| 2.6 | **Done**: DLT business headers alert only on a high-severity rule or a confident model scam verdict. |
+| 2.7 | **Done**: "What looks risky" card highlights rule matches and flagged links. |
+| 3.1 | **Done in code**: Apps tab scanner (not device-tested yet). Llama explanation per finding not added (fixed plain sentences instead). |
+| 3.2 | **Part A done**: `tools/network_ids` NSL-KDD MLP companion for Raspberry Pi 5/PC (KDDTest+ acc 78 %, detection 71 %, false alarms 7.2 %), plain-language + optional Llama runner. **Part B (on-phone network check) not built**: the run was stopped when the PC ran low on memory; the brief is `models/TASK_G2_NETWORK_CHECK.md`. |
+| 4.2 | **Not done**: brief ready in `models/TASK_H_ONBOARDING.md`. |
+| 4.3 | **Done**: release key at `D:\ARM-release-key\arm-release.jks` (outside the repo, password backup next to it); `keystore.properties` is git-ignored; the release APK is verified to be signed with it. |
+| 4.4 | **Done**: `docs/ENGINEERING_REPORT.md` rewritten. |
+| 4.5 | **Script done**: `docs/DEMO_SCRIPT.md`; recording is the owner's job. |
+| Also | Classifier preload at app start (done). Phone-only items 1.5, 1.6, 2.1, 2.8, 4.1 (new features), 4.6 still open: no phone was connected. |
