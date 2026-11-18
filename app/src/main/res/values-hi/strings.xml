@@ -31,6 +31,7 @@
     <string name="action_check_message">संदेश जाँचें</string>
     <string name="status_analyzing">जाँच हो रही है&#8230;</string>
     <string name="check_another">दूसरा संदेश जाँचें</string>
+    <string name="result_highlight_title">क्या खतरनाक लगता है</string>
 
     <string name="verdict_safe_title">सुरक्षित लगता है</string>
     <string name="verdict_safe_subtitle">हमें धोखाधड़ी के कोई संकेत नहीं मिले।</string>

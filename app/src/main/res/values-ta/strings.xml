@@ -31,6 +31,7 @@
     <string name="action_check_message">செய்தியைச் சரிபார்</string>
     <string name="status_analyzing">சரிபார்க்கப்படுகிறது&#8230;</string>
     <string name="check_another">மற்றொரு செய்தியைச் சரிபார்</string>
+    <string name="result_highlight_title">எது ஆபத்தாகத் தெரிகிறது</string>
 
     <string name="verdict_safe_title">பாதுகாப்பாகத் தெரிகிறது</string>
     <string name="verdict_safe_subtitle">மோசடிக்கான அறிகுறிகள் ஏதும் கிடைக்கவில்லை.</string>

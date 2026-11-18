@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arm.threatassistant.R
 import com.arm.threatassistant.domain.ThreatAnalyzer
+import com.arm.threatassistant.domain.ThreatAnalysisResult
 import com.arm.threatassistant.domain.adapters.InputAdapter
 import com.arm.threatassistant.domain.adapters.ManualInputAdapter
 import com.arm.threatassistant.domain.detection.riskpolicy.RiskAssessment
@@ -74,6 +75,7 @@ class ThreatAnalysisViewModel : ViewModel() {
                 smsClassifierResult = null,
                 urlDetectionResult = null,
                 riskAssessment = null,
+                highlightPhrases = emptyList(),
                 explanation = explanationAvailability(context)
             )
         }
@@ -94,6 +96,7 @@ class ThreatAnalysisViewModel : ViewModel() {
                     smsClassifierResult = null,
                     urlDetectionResult = null,
                     riskAssessment = null,
+                    highlightPhrases = emptyList(),
                     explanation = explanationAvailability(context)
                 )
             }
@@ -121,6 +124,7 @@ class ThreatAnalysisViewModel : ViewModel() {
                     smsClassifierResult = null,
                     urlDetectionResult = null,
                     riskAssessment = null,
+                    highlightPhrases = emptyList(),
                     explanation = explanationAvailability(context)
                 )
             }
@@ -137,6 +141,7 @@ class ThreatAnalysisViewModel : ViewModel() {
                 smsClassifierResult = null,
                 urlDetectionResult = null,
                 riskAssessment = null,
+                highlightPhrases = emptyList(),
                 explanation = explanationAvailability(context)
             )
         }
@@ -159,10 +164,19 @@ class ThreatAnalysisViewModel : ViewModel() {
                     smsClassifierResult = analysis.classifierResult,
                     urlDetectionResult = analysis.urlDetectionResult,
                     riskAssessment = analysis.riskAssessment,
+                    highlightPhrases = highlightPhrases(analysis),
                     explanation = explanationAvailability(context)
                 )
             }
         }
+    }
+
+    private fun highlightPhrases(analysis: ThreatAnalysisResult): List<String> {
+        val rulePhrases = analysis.ruleDetectionResult.signals
+            .mapNotNull { signal -> signal.matchedText.takeIf { text -> text.isNotBlank() } }
+        val urlPhrases = analysis.urlDetectionResult.signals
+            .mapNotNull { signal -> signal.matchedUrl.takeIf { url -> url.isNotBlank() } }
+        return (rulePhrases + urlPhrases).distinct()
     }
 
     /**
@@ -297,5 +311,6 @@ data class ThreatAnalysisUiState(
     val smsClassifierResult: SmsClassifierResult? = null,
     val urlDetectionResult: UrlDetectionResult? = null,
     val riskAssessment: RiskAssessment? = null,
+    val highlightPhrases: List<String> = emptyList(),
     val explanation: ExplanationState = ExplanationState.Hidden
 )

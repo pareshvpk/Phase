@@ -33,6 +33,7 @@
     <string name="action_check_message">Check message</string>
     <string name="status_analyzing">Checking&#8230;</string>
     <string name="check_another">Check another message</string>
+    <string name="result_highlight_title">What looks risky</string>
 
     <string name="verdict_safe_title">Looks safe</string>
     <string name="verdict_safe_subtitle">We found no signs of a scam.</string>

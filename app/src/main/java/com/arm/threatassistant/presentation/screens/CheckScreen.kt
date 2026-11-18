@@ -39,6 +39,7 @@ import com.arm.threatassistant.llm.LlmInstallState
 import com.arm.threatassistant.llm.LlmInstallStatus
 import com.arm.threatassistant.presentation.components.ActionsCard
 import com.arm.threatassistant.presentation.components.CheckMessageButton
+import com.arm.threatassistant.presentation.components.HighlightedMessageCard
 import com.arm.threatassistant.presentation.components.LlmExplanationSection
 import com.arm.threatassistant.presentation.components.MessageInput
 import com.arm.threatassistant.presentation.components.ReasonCard
@@ -47,6 +48,7 @@ import com.arm.threatassistant.presentation.components.VerdictCard
 import com.arm.threatassistant.presentation.result.OfflineExplanation
 import com.arm.threatassistant.presentation.result.ReasonId
 import com.arm.threatassistant.presentation.result.ReasonMapper
+import com.arm.threatassistant.presentation.result.RiskHighlighter
 import com.arm.threatassistant.presentation.result.labelRes
 import com.arm.threatassistant.presentation.settings.AppLanguage
 import com.arm.threatassistant.presentation.settings.AppSettings
@@ -96,6 +98,10 @@ fun CheckScreen(
     }
     val offlineExplanation = remember(reasons) {
         OfflineExplanation.build(context, reasons)
+    }
+
+    val highlightSpans = remember(state.highlightPhrases, state.inputText) {
+        RiskHighlighter.spans(state.inputText, state.highlightPhrases)
     }
 
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -234,6 +240,18 @@ fun CheckScreen(
 
             if (reasons.isNotEmpty()) {
                 item { ReasonCard(reasons = reasons) }
+            }
+
+            val showHighlights = highlightSpans.isNotEmpty() &&
+                (result.verdict == ThreatVerdictLevel.HIGH_RISK ||
+                    result.verdict == ThreatVerdictLevel.SUSPICIOUS)
+            if (showHighlights) {
+                item {
+                    HighlightedMessageCard(
+                        message = state.inputText,
+                        spans = highlightSpans
+                    )
+                }
             }
 
             item { ActionsCard(verdict = result.verdict) }
