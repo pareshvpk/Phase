@@ -39,6 +39,8 @@
     <string name="verdict_suspicious_subtitle">धोखाधड़ी के कुछ संकेत मिले हैं।</string>
     <string name="verdict_high_risk_title">धोखाधड़ी की संभावना</string>
     <string name="verdict_high_risk_subtitle">जवाब न दें, लिंक पर क्लिक न करें और कोड साझा न करें।</string>
+    <string name="verdict_unclear_title">धोखाधड़ी के संकेत नहीं मिले</string>
+    <string name="verdict_unclear_subtitle">इसमें कुछ संदिग्ध नहीं मिला। अगर आपको इसकी उम्मीद नहीं थी, तो भेजने वाले से पुष्टि करें।</string>
 
     <string name="why_we_think_so">हमें ऐसा क्यों लगता है</string>
     <string name="reason_urgency">डर या समय-सीमा बनाता है</string>

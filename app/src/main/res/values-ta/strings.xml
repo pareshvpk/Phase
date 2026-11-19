@@ -39,6 +39,8 @@
     <string name="verdict_suspicious_subtitle">சில மோசடி அறிகுறிகள் உள்ளன.</string>
     <string name="verdict_high_risk_title">மோசடி வாய்ப்பு</string>
     <string name="verdict_high_risk_subtitle">பதிலளிக்காதீர்கள், இணைப்புகளை அழுத்தாதீர்கள், குறியீடுகளைப் பங்கிடாதீர்கள்.</string>
+    <string name="verdict_unclear_title">மோசடி அறிகுறிகள் இல்லை</string>
+    <string name="verdict_unclear_subtitle">இதில் சந்தேகத்துக்குரியது எதுவும் இல்லை. எதிர்பாராத செய்தி என்றால், அனுப்பியவரிடம் உறுதிப்படுத்துங்கள்.</string>
 
     <string name="why_we_think_so">ஏன் இப்படி நினைக்கிறோம்</string>
     <string name="reason_urgency">பயம் அல்லது கால அவகாசத்தை உருவாக்குகிறது</string>

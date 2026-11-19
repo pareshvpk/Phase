@@ -268,9 +268,8 @@ class ThreatAnalysisViewModel : ViewModel() {
         if (!settings.explainAutomatically) return false
         return when (verdict) {
             ThreatVerdictLevel.HIGH_RISK, ThreatVerdictLevel.SUSPICIOUS -> true
-            // The verdict card shows "Be careful" for INSUFFICIENT_EVIDENCE too.
-            ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> true
-            ThreatVerdictLevel.SAFE -> false
+            // No scam signal: nothing to explain, so do not run Llama.
+            ThreatVerdictLevel.INSUFFICIENT_EVIDENCE, ThreatVerdictLevel.SAFE -> false
         }
     }
 

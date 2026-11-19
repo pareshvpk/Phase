@@ -41,6 +41,8 @@
     <string name="verdict_suspicious_subtitle">Some signs of a scam.</string>
     <string name="verdict_high_risk_title">Likely scam</string>
     <string name="verdict_high_risk_subtitle">Do not reply, click links or share codes.</string>
+    <string name="verdict_unclear_title">No scam signs found</string>
+    <string name="verdict_unclear_subtitle">Nothing suspicious here. If you did not expect it, check with the sender.</string>
 
     <string name="why_we_think_so">Why we think so</string>
     <string name="reason_urgency">Creates panic or a deadline</string>

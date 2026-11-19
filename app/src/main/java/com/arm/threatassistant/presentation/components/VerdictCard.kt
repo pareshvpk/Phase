@@ -42,8 +42,16 @@ fun VerdictCard(
             titleRes = R.string.verdict_safe_title,
             subtitleRes = R.string.verdict_safe_subtitle
         )
-        ThreatVerdictLevel.SUSPICIOUS,
+        // No rule, link or model signal fired. Shown calmly, not as a warning:
+        // telling users "Be careful" on every normal message is a false alarm.
         ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> VerdictStyle(
+            container = colors.safeContainer,
+            onContainer = colors.onSafeContainer,
+            iconRes = R.drawable.ic_verdict_safe,
+            titleRes = R.string.verdict_unclear_title,
+            subtitleRes = R.string.verdict_unclear_subtitle
+        )
+        ThreatVerdictLevel.SUSPICIOUS -> VerdictStyle(
             container = colors.suspiciousContainer,
             onContainer = colors.onSuspiciousContainer,
             iconRes = R.drawable.ic_verdict_warning,

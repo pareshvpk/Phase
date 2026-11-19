@@ -317,8 +317,14 @@ private fun TodayVerdictChip(verdict: ThreatVerdictLevel) {
             labelRes = R.string.verdict_high_risk_title
         )
 
-        ThreatVerdictLevel.SUSPICIOUS,
         ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> TodayChipStyle(
+            container = colors.safeContainer,
+            content = colors.onSafeContainer,
+            iconRes = R.drawable.ic_verdict_safe,
+            labelRes = R.string.verdict_unclear_title
+        )
+
+        ThreatVerdictLevel.SUSPICIOUS -> TodayChipStyle(
             container = colors.suspiciousContainer,
             content = colors.onSuspiciousContainer,
             iconRes = R.drawable.ic_verdict_warning,

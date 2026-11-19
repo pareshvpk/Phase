@@ -127,8 +127,7 @@ fun CheckScreen(
         val verdict = result.verdict
         val needsAuto = settingsState.explainAutomatically &&
             (verdict == ThreatVerdictLevel.HIGH_RISK ||
-                verdict == ThreatVerdictLevel.SUSPICIOUS ||
-                verdict == ThreatVerdictLevel.INSUFFICIENT_EVIDENCE)
+                verdict == ThreatVerdictLevel.SUSPICIOUS)
         if (!needsAuto) return@LaunchedEffect
         if (llmInstallState is LlmInstallStatus.Ready &&
             state.explanation !is ExplanationState.Done &&
