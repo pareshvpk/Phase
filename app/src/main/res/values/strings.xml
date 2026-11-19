@@ -126,31 +126,4 @@
     <string name="settings_local_language_explanations_title">AI explanations in Hindi/Tamil (experimental)</string>
     <string name="settings_local_language_explanations_summary">Use the on-device model for Hindi and Tamil instead of the fixed explanation.</string>
 
-    <!-- Network check (roadmap 3.2B) -->
-    <string name="network_check_title">Network check</string>
-    <string name="network_check_hint">Checks the Wi-Fi or mobile network you are on right now. Nothing leaves your phone.</string>
-    <string name="network_check_button">Check my network</string>
-    <string name="network_check_running">Checking your network&#8230;</string>
-    <string name="network_check_no_findings">No problems found on this network.</string>
-    <string name="network_level_ok">Your network looks fine</string>
-    <string name="network_level_caution">Be careful on this network</string>
-    <string name="network_level_risky">This network is not safe</string>
-    <string name="network_finding_open_wifi">This Wi-Fi has no password. Others nearby can see what you send.</string>
-    <string name="network_finding_wep_wifi">This Wi-Fi uses old WEP security, which is easy to break.</string>
-    <string name="network_finding_captive_portal">This Wi-Fi wants you to sign in on a web page first.</string>
-    <string name="network_finding_not_validated">This Wi-Fi could not reach the internet properly.</string>
-    <string name="network_finding_public_dns">Your phone is using an unknown DNS server. It could send you to fake websites.</string>
-    <string name="network_finding_no_private_dns">Private DNS is off while on open Wi-Fi.</string>
-    <string name="network_finding_usb_debugging">USB debugging is on.</string>
-    <string name="network_finding_developer_options">Developer options are on.</string>
-    <string name="network_finding_vpn">A VPN is active.</string>
-    <string name="network_advice_open_wifi">Avoid banking and payments here. Use mobile data instead.</string>
-    <string name="network_advice_wep_wifi">Do not enter passwords or payment details on this Wi-Fi.</string>
-    <string name="network_advice_captive_portal">Only sign in if you trust this place. Never enter your bank details on that page.</string>
-    <string name="network_advice_not_validated">Disconnect and use mobile data if pages look strange.</string>
-    <string name="network_advice_public_dns">Turn on Private DNS in Settings, or switch to another network.</string>
-    <string name="network_advice_no_private_dns">Turn on Private DNS in Settings &gt; Network to protect your browsing.</string>
-    <string name="network_advice_usb_debugging">Turn it off in Settings &gt; Developer options unless you need it.</string>
-    <string name="network_advice_developer_options">Turn them off if you did not switch them on yourself.</string>
-    <string name="network_advice_vpn">Make sure you installed this VPN yourself and trust it.</string>
 </resources>

@@ -166,5 +166,5 @@ Model copied once into app storage (1.14 GB SpinQuant + tokenizer). Raw: `raw_20
 - Monkey (seed 42, 5,000 events) **crashed at event 3,479** on Compose UI 1.7.0:
   `IllegalStateException: Dispatching intercepted soft keyboard event while focus system is invalidated` (framework bug).
   Fixed by Compose BOM 2024.09.00 → 2024.12.01 (UI 1.7.6). After: seeds 42 and 7, 5,000 events each, **0 crashes, 0 ANRs**; 17/17 still pass.
-- Network check: home WPA2 Wi-Fi + USB debugging on → "Be careful on this network" with only the USB-debugging finding (correct).
+- Network check: home WPA2 Wi-Fi + USB debugging on → "Be careful on this network" with only the USB-debugging finding (correct). (The network check was removed from the app on 2026-11-19.)
   Checked in English, Hindi and Tamil on Wi-Fi and mobile data; text renders correctly.

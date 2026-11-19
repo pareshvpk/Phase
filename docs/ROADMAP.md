@@ -71,7 +71,7 @@ Phase 1 and the rule fixes are small and visible; Phase 2 needs the real message
 | 2.6 | **Done**: DLT business headers alert only on a high-severity rule or a confident model scam verdict. |
 | 2.7 | **Done**: "What looks risky" card highlights rule matches and flagged links. |
 | 3.1 | **Removed (2026-11-18)**: the Apps-tab scanner was built, then taken out of the app by owner decision after a device test on the vivo V2338 flagged 34 of ~70 user apps (rules too broad for Play Store apps). |
-| 3.2 | **Part A done**: `tools/network_ids` NSL-KDD MLP companion for Raspberry Pi 5/PC (KDDTest+ acc 78 %, detection 71 %, false alarms 7.2 %), plain-language + optional Llama runner. **Part B done (2026-11-18)**: on-phone Network check on the Protection tab (`NetworkSnapshotCollector` + unit-tested `NetworkRiskScorer`: open/WEP Wi-Fi, captive portal, unvalidated network, unknown DNS, Private DNS, USB debugging/developer options, VPN); en/hi/ta. Device-tested on vivo V2338. |
+| 3.2 | **Part A done**: `tools/network_ids` NSL-KDD MLP companion for Raspberry Pi 5/PC (KDDTest+ acc 78 %, detection 71 %, false alarms 7.2 %), plain-language + optional Llama runner. **Part B removed (2026-11-19, owner decision: not required for the competition)**; it was built and device-tested on 2026-11-18 (commit e5e914f) and is still in git history. |
 | 4.2 | **Not done**: brief ready in `models/TASK_H_ONBOARDING.md`. |
 | 4.3 | **Done**: release key at `D:\ARM-release-key\arm-release.jks` (outside the repo, password backup next to it); `keystore.properties` is git-ignored; the release APK is verified to be signed with it. |
 | 4.4 | **Done**: `docs/ENGINEERING_REPORT.md` rewritten. |

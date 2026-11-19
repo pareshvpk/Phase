@@ -14,7 +14,6 @@ that protects non-expert users from scams and digital threats:
 | Phishing URL detection | Inside every check | URL rules + on-device host model (char n-grams) |
 | Plain-language explanation + safe steps | Result screen | **Llama 3.2 1B Instruct, SpinQuant INT4, via ExecuTorch on the Arm CPU**, behind an advice guard; fixed localized text as fallback |
 | Risky-word highlighting | Result screen | Rule matches and flagged links highlighted in the message |
-| Network safety (planned) | Protection tab | Wi-Fi security, captive portal, DNS, VPN, USB debugging — designed, not built |
 | Network intrusion classification | Raspberry Pi 5 / PC companion (`tools/network_ids`) | NSL-KDD MLP, per-flow plain-language explanation, optional Llama runner |
 | Languages / themes | Settings | English, Hindi, Tamil; light/dark/system |
 
@@ -107,15 +106,11 @@ urgency. Two false-alarm traps were found and fixed with the held-out set:
   steps for each flow. `--llama-cmd` pipes a short prompt to an ExecuTorch `llama_main` runner on the Pi.
 - Not implemented: live capture → NSL-KDD feature extraction (would use Zeek/argus connection logs).
 
-## 5. On-phone network check (roadmap 3.2 B)
-**On-phone network check (done, Protection tab).** `NetworkSnapshotCollector` reads the active network from
-ConnectivityManager, WifiManager (security type, API 31+) and Settings; nothing touches the network or leaves the phone.
-`NetworkRiskScorer` is pure Kotlin and unit tested:
-- Findings: OPEN_WIFI, WEP_WIFI, CAPTIVE_PORTAL, NOT_VALIDATED, PUBLIC_DNS_HIJACK_RISK (DNS server that is neither
-  private nor a well-known resolver), NO_PRIVATE_DNS_ON_OPEN_WIFI, USB_DEBUGGING_ON, DEVELOPER_OPTIONS_ON, VPN_ACTIVE_UNKNOWN.
-- Levels: This network is not safe (open/WEP Wi-Fi) / Be careful on this network / Your network looks fine.
-- Each finding has one plain sentence and one action (en/hi/ta). Permissions: ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE.
-- Device-tested on vivo V2338 (home WPA2 Wi-Fi, USB debugging on): "Be careful" with the single USB-debugging finding, as expected.
+## 5. On-phone network check (removed)
+An on-phone network check (Wi-Fi security, captive portal, DNS, USB debugging, VPN) was built and device-tested on
+2026-11-18 (commit e5e914f) and removed on 2026-11-19 because the competition does not require it. Network intrusion
+detection is covered by the Pi/PC companion in section 4.4. The app no longer asks for ACCESS_NETWORK_STATE or
+ACCESS_WIFI_STATE.
 
 ## 6. Measurements (from `benchmarks/DEVICE_REPORT_2026-11-17.md`)
 
