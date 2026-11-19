@@ -6,16 +6,20 @@ package com.arm.threatassistant.llm
  * Pure Kotlin with no Android dependencies so it can be unit-tested on the JVM.
  * The detection verdict is authoritative and is passed to the model as fixed
  * context; the model is only asked to explain it.
+ *
+ * The prompt is split into a reusable [prefix] (system prompt plus the user
+ * header) and a per-message [tail] so the model's KV cache can keep the prefix
+ * and only process the short tail for each new message.
  */
 object ExplanationPromptBuilder {
 
     internal const val SYSTEM_PROMPT =
         "You are a friendly phone-safety helper who protects people from SMS fraud. " +
-            "The user's security app has already checked a message they received and decided " +
-            "the verdict; treat that verdict as correct and do not question it. Help the user " +
-            "stay safe by explaining the warning in plain, simple words. Do not repeat links or " +
-            "phone numbers from the message. Never tell the user to click links, call numbers, " +
-            "reply, or share codes."
+            "The user's security app has already checked the message and decided the " +
+            "verdict; treat that verdict as correct and do not question it. Explain the " +
+            "warning in plain, simple words. Do not repeat links, numbers or codes. Never " +
+            "tell the user to click, call, reply, share a code, or type, open, visit or " +
+            "copy a link."
 
     private const val BEGIN_OF_TEXT = "<|begin_of_text|>"
     private const val START_HEADER = "<|start_header_id|>"
@@ -25,7 +29,23 @@ object ExplanationPromptBuilder {
     private const val MAX_MESSAGE_LENGTH = 500
     private const val MAX_EVIDENCE_ITEMS = 8
 
-    fun build(
+    /** Everything up to and including the user header; cached across messages. */
+    fun prefix(languageName: String): String {
+        val safeLanguageName = languageName.sanitize()
+        return buildString {
+            append(BEGIN_OF_TEXT)
+            append(START_HEADER).append("system").append(END_HEADER).append("\n\n")
+            append(SYSTEM_PROMPT)
+            append(" Write the explanation in ")
+            append(safeLanguageName)
+            append('.')
+            append(EOT_ID)
+            append(START_HEADER).append("user").append(END_HEADER).append("\n\n")
+        }
+    }
+
+    /** The per-message user prompt, EOT, assistant header and answer start. */
+    fun tail(
         verdictLabel: String,
         evidence: List<String>,
         messageText: String,
@@ -61,21 +81,13 @@ object ExplanationPromptBuilder {
             // "this message is not dangerous because it is a scam" for scam verdicts.
             val risky = verdictLabel.contains("HIGH_RISK") || verdictLabel.contains("SUSPICIOUS")
             append(
-                if (risky) "\nIn 2-4 short, simple sentences, explain why this message is likely a scam "
-                else "\nIn 2-4 short, simple sentences, tell me whether this message looks risky "
+                if (risky) "\nIn exactly 2 short, simple sentences, explain why this message is likely a scam"
+                else "\nIn exactly 2 short, simple sentences, tell me whether this message looks risky"
             )
-            append("and what I should do to stay safe. Answer in plain sentences, no bullet points, no links.")
+            append(". Answer in plain sentences, no bullet points, no links.")
         }
 
         return buildString {
-            append(BEGIN_OF_TEXT)
-            append(START_HEADER).append("system").append(END_HEADER).append("\n\n")
-            append(SYSTEM_PROMPT)
-            append(" Write the explanation in ")
-            append(safeLanguageName)
-            append('.')
-            append(EOT_ID)
-            append(START_HEADER).append("user").append(END_HEADER).append("\n\n")
             append(userPrompt)
             append(EOT_ID)
             append(START_HEADER).append("assistant").append(END_HEADER).append("\n\n")
@@ -84,6 +96,13 @@ object ExplanationPromptBuilder {
             append(answerStart(safeLanguageName))
         }
     }
+
+    fun build(
+        verdictLabel: String,
+        evidence: List<String>,
+        messageText: String,
+        languageName: String
+    ): String = prefix(languageName) + tail(verdictLabel, evidence, messageText, languageName)
 
     internal fun answerStart(languageName: String): String = when (languageName) {
         "Hindi" -> "ज़रूर। आसान शब्दों में:\n\n"

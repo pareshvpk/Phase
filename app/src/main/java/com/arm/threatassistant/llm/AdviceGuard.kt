@@ -185,12 +185,24 @@ object AdviceGuard {
     }
 
     private fun triggerWords(languageTag: String): List<String> = when (languageTag.take(2)) {
-        "hi" -> listOf("क्लिक", "कॉल", "जवाब", "साझा", "शेयर", "otp")
-        "ta" -> listOf("கிளிக்", "அழை", "பதில்", "பகிர்")
+        "hi" -> listOf(
+            "क्लिक", "कॉल", "जवाब", "साझा", "शेयर", "otp",
+            "लिंक खोलें", "लिंक पर जाएं", "लिंक कॉपी", "लिंक टाइप", "लिंक खोल"
+        )
+        "ta" -> listOf(
+            "கிளிக்", "அழை", "பதில்", "பகிர்",
+            "இணைப்பைத் திற", "இணைப்பை திற", "இணைப்பை நகலெடு"
+        )
         else -> listOf(
             "click", "tap",
             "open a link", "open the link", "open link", "click the link", "tap the link",
             "click on", "tap on", "visit",
+            // Instructions to retype or copy a link into a browser are not safe advice.
+            "type the url", "type the link", "type this link", "type this url",
+            "enter the url", "enter the link", "open the url", "open the website",
+            "open this link", "open this url", "go to the link", "go to the url",
+            "go to the website", "go to this address", "copy the link", "copy the url",
+            "copy this link", "paste the link", "paste the url",
             "call", "dial",
             "reply", "reply now", "reply with",
             "share your otp", "send your otp", "give your otp", "reply with your otp",

@@ -55,10 +55,11 @@ InputNormalizer (NFC, invisible chars, URL/host/phone extraction)
 | Model | Llama 3.2 1B Instruct, SpinQuant INT4 weights, 8-bit embeddings (EO8), from `executorch-community` |
 | File | `llama3_2_1b.pte` 1,135,951,488 bytes (size and SHA-256 are pinned in `gradle.properties`) |
 | Runtime | `executorch-android` 1.5.1 AAR, `LlmModule`, XNNPACK kernels on the Arm CPU |
-| Context | 2048 tokens; fresh context per explanation (`resetContext`) |
-| Output limit | 150 new tokens, streamed to the UI |
+| Context | 2048 tokens. The fixed system prompt (prefix) is prefilled once and kept in the KV cache; each message only processes its own tail, then the prefix is restored in the background (`resetContext` + `prefillPrompt`). Falls back to the full prompt if prefill fails. Loaded with `LOAD_MODE_MMAP` |
+| Preload | `LlmExplainerProvider.warmUp` from `Application.onCreate` (after 2 s, only on phones with ≥ 6 GB RAM); released on `onTrimMemory` RUNNING_CRITICAL/COMPLETE |
+| Output limit | Greedy (temperature 0), at most 70 new tokens, stops after 2 sentences (`SentenceLimiter`); the 3 fixed safe steps are added by the app, not the model. Per-call stats logged under `ARMLLM` |
 | Gatekeeping | `CpuSupport` (64-bit process + Armv8.1 LSE atomics in `/proc/cpuinfo`); otherwise the fixed localized explanation |
-| Safety | `AdviceGuard` removes click/call/reply/share advice unless negated, URLs, phone numbers, refusals and verdict contradictions; softens absolute claims; caps at 6 sentences; always appends the 3 safe steps |
+| Safety | `AdviceGuard` removes click/call/reply/share advice and "type/open/copy the link" advice unless negated, URLs, phone numbers, refusals and verdict contradictions; softens absolute claims; caps at 6 sentences; always appends the 3 safe steps |
 
 Why SpinQuant INT4: our own fp32-embedding export was 1.7 GB. SpinQuant is 1.14 GB, keeps answer quality on
 these short prompts and runs at 9–13 tok/s on mid-range phones. The model is **not bundled** in the APK because

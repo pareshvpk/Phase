@@ -211,7 +211,9 @@ class ThreatAnalysisViewModel : ViewModel() {
         val messageText = current.normalizedText ?: current.inputText
         val language = AppSettings.get(context).state.value.language
         val languageName = language.explanationLanguageName(Locale.getDefault().language)
-        val prompt = ExplanationPromptBuilder.build(
+        // Split so the long system prefix stays in the KV cache between messages.
+        val prefix = ExplanationPromptBuilder.prefix(languageName)
+        val tail = ExplanationPromptBuilder.tail(
             verdictLabel = assessment.verdict.name,
             evidence = assessment.evidenceSummary,
             messageText = messageText,
@@ -234,7 +236,7 @@ class ThreatAnalysisViewModel : ViewModel() {
 
         explanationJob = viewModelScope.launch {
             try {
-                val text = explainer.explain(prompt) { token ->
+                val text = explainer.explain(prefix, tail) { token ->
                     _uiState.update { state ->
                         val generating = state.explanation as? ExplanationState.Generating
                         if (generating == null) {

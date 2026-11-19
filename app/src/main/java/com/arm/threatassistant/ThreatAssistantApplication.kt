@@ -1,8 +1,13 @@
 package com.arm.threatassistant
 
 import android.app.Application
+import android.content.ComponentCallbacks2
 import com.arm.threatassistant.domain.ThreatAnalyzer
+import com.arm.threatassistant.llm.LlmExplainerProvider
 import com.arm.threatassistant.llm.LlmInstallState
+import com.arm.threatassistant.presentation.settings.AppSettings
+import com.arm.threatassistant.presentation.settings.explanationLanguageName
+import java.util.Locale
 
 /**
  * Process entry point. Kicks off the one-time extraction of the bundled model
@@ -18,5 +23,20 @@ class ThreatAssistantApplication : Application() {
             isDaemon = true
             priority = Thread.MIN_PRIORITY
         }.start()
+        LlmExplainerProvider.warmUp(this, currentExplanationLanguageName())
     }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (level >= ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL ||
+            level == ComponentCallbacks2.TRIM_MEMORY_COMPLETE
+        ) {
+            LlmExplainerProvider.release()
+        }
+    }
+
+    /** Same language-name derivation the explanation prompt uses. */
+    private fun currentExplanationLanguageName(): String =
+        AppSettings.get(this).state.value.language
+            .explanationLanguageName(Locale.getDefault().language)
 }

@@ -76,4 +76,49 @@ class LlmDeviceTest {
             assertTrue(raw.isNotBlank())
         }
     }
+
+    @Test
+    fun prefixCacheMeasuresColdAndWarmCalls() = runBlocking {
+        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
+        org.junit.Assume.assumeTrue("Llama unsupported on this CPU/ABI", CpuSupport.isSupported(ctx))
+        val explainer = LlmExplainerProvider.get(ctx)
+        assertNotNull("Model not installed - open the app once first", explainer)
+        explainer!!
+
+        val languageName = "English"
+        val prefix = ExplanationPromptBuilder.prefix(languageName)
+        val tails = messages.map { text ->
+            val assessment = ThreatAnalyzer.analyze(ctx, text, InputSource.SMS).riskAssessment
+            ExplanationPromptBuilder.tail(
+                verdictLabel = assessment.verdict.name,
+                evidence = assessment.evidenceSummary,
+                messageText = text,
+                languageName = languageName
+            )
+        }
+
+        suspend fun measure(label: String, tail: String) {
+            val start = System.nanoTime()
+            var firstTokenNs = 0L
+            var tokens = 0
+            val raw = explainer.explain(prefix, tail) {
+                if (tokens == 0) firstTokenNs = System.nanoTime()
+                tokens++
+            }
+            val end = System.nanoTime()
+            val firstToken = if (firstTokenNs == 0L) end else firstTokenNs
+            log(
+                "$label|first_token_ms=${(firstToken - start) / 1_000_000}" +
+                    "|total_ms=${(end - start) / 1_000_000}|tokens=$tokens" +
+                    "|stats=${(explainer as? ExecuTorchLlmExplainer)?.lastStats?.replace('\n', ' ')}"
+            )
+            log("$label|raw=${raw.replace('\n', ' ')}")
+        }
+
+        // First call without a warm prefix: the cold path includes the prefill.
+        measure("cold", tails[0])
+        explainer.warmUp(prefix)
+        // Second message with the prefix already in the KV cache.
+        measure("warm", tails[1])
+    }
 }

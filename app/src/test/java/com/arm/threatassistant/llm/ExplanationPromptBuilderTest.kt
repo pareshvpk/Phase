@@ -1,5 +1,6 @@
 package com.arm.threatassistant.llm
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -126,6 +127,52 @@ class ExplanationPromptBuilderTest {
             index = text.indexOf(needle, index + needle.length)
         }
         assertTrue("Expected $expected occurrences of $needle but was $count", count == expected)
+    }
+
+    @Test
+    fun prefixPlusTailEqualsBuildForEnglishHindiTamil() {
+        val evidence = listOf("Asks for an OTP")
+        val messageText = "Share OTP now"
+        for (languageName in listOf("English", "Hindi", "Tamil")) {
+            val prefix = ExplanationPromptBuilder.prefix(languageName)
+            val tail = ExplanationPromptBuilder.tail(
+                verdictLabel = "HIGH_RISK",
+                evidence = evidence,
+                messageText = messageText,
+                languageName = languageName
+            )
+            assertEquals(
+                prefix + tail,
+                ExplanationPromptBuilder.build(
+                    verdictLabel = "HIGH_RISK",
+                    evidence = evidence,
+                    messageText = messageText,
+                    languageName = languageName
+                )
+            )
+        }
+    }
+
+    @Test
+    fun prefixDoesNotContainTheMessageText() {
+        val messageText = "UNIQUE_MESSAGE_TOKEN_123"
+        val prefix = ExplanationPromptBuilder.prefix("English")
+
+        assertFalse(prefix.contains(messageText))
+        assertTrue(prefix.endsWith("<|start_header_id|>user<|end_header_id|>\n\n"))
+    }
+
+    @Test
+    fun userPromptAsksForExactlyTwoSentences() {
+        val prompt = ExplanationPromptBuilder.build(
+            verdictLabel = "HIGH_RISK",
+            evidence = emptyList(),
+            messageText = "Share OTP",
+            languageName = "English"
+        )
+
+        assertTrue(prompt.contains("In exactly 2 short, simple sentences"))
+        assertFalse(prompt.contains("2-4 short"))
     }
 
     @Test

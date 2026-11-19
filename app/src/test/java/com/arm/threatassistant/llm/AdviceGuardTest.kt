@@ -202,6 +202,44 @@ class AdviceGuardTest {
     }
 
     @Test
+    fun instructionToTypeTheUrlIntoBrowserIsDropped() {
+        val text = "Type the URL into your browser to check it. Your account needs attention. " +
+            "The sender is pretending to be your bank."
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
+
+        assertFalse(result.contains("Type the URL into your browser"))
+        assertTrue(result.contains("Your account needs attention"))
+    }
+
+    @Test
+    fun negatedInstructionToOpenTheLinkIsKept() {
+        val text = "Do not open the link. Your account needs attention. " +
+            "The sender is pretending to be your bank."
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
+
+        assertTrue(result.contains("Do not open the link"))
+        assertTrue(result.contains("Your account needs attention"))
+    }
+
+    @Test
+    fun hindiInstructionToOpenTheLinkIsDropped() {
+        val text = "लिंक खोलें। आपका पैसा बैंक में है। फोन चार्ज पर है।"
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "hi", fallback, safeSteps)
+
+        assertFalse(result.contains("लिंक खोलें"))
+        assertTrue(result.contains("आपका पैसा बैंक में है"))
+    }
+
+    @Test
+    fun tamilInstructionToOpenTheLinkIsDropped() {
+        val text = "இணைப்பைத் திறந்து பாருங்கள். நேற்று மழை பெய்தது. இன்று வானம் தெளிவாக உள்ளது."
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "ta", fallback, safeSteps)
+
+        assertFalse(result.contains("இணைப்பைத் திறந்து பாருங்கள்"))
+        assertTrue(result.contains("நேற்று மழை பெய்தது"))
+    }
+
+    @Test
     fun sentenceCutOffByTokenCapIsDropped() {
         val text = "This message claims you won a lottery. It asks for a processing fee first. " +
             "To stay safe, do not pay any money. Instead, you"
