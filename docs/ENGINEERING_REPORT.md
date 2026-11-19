@@ -128,6 +128,19 @@ ACCESS_WIFI_STATE.
 - These measurements are from v2.0.0. The features added on 2026-11-18 (sections 4.2–5) have unit tests only and
   still need a device run.
 
+### Llama speed after the prefix cache (vivo V2338, 2026-11-19, `LlmDeviceTest`)
+
+| | Before (2026-11-17) | After | PS3 Sentinel (same phone) |
+|---|---|---|---|
+| First token (model loaded, prefix cached) | 4.1–5.3 s | 2.0 s | 1.27 s (median) |
+| Full answer | 12–14 s | 4.3 s | 6.3 s (median) |
+| Decode | 9.7–11 tok/s | 10.7–11.9 tok/s | 14.4–14.8 tok/s |
+| Prefill | ~55 tok/s | 58–68 tok/s | – |
+
+Cold first call in a fresh process (model still loading): ~9 s to first token. The XNNPACK pool is resized to the
+big-core count (4 on this phone) between `LlmModule` creation and `load()`; resizing after `load()` hung generation.
+All 18 instrumented tests pass on the vivo after the change.
+
 ## 7. Privacy
 - No message leaves the phone. No analytics, no accounts.
 - Only risky SMS alerts of the current day are stored (Today tab); everything else stays in memory.

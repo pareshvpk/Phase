@@ -26,8 +26,12 @@ object ExplanationPromptBuilder {
     private const val END_HEADER = "<|end_header_id|>"
     private const val EOT_ID = "<|eot_id|>"
 
-    private const val MAX_MESSAGE_LENGTH = 500
-    private const val MAX_EVIDENCE_ITEMS = 8
+    internal const val USER_OPENING =
+        "I received this SMS and my phone's security app warned me about it. " +
+            "Please help me understand the warning.\n"
+
+    private const val MAX_MESSAGE_LENGTH = 160
+    private const val MAX_EVIDENCE_ITEMS = 5
 
     /** Everything up to and including the user header; cached across messages. */
     fun prefix(languageName: String): String {
@@ -41,6 +45,8 @@ object ExplanationPromptBuilder {
             append('.')
             append(EOT_ID)
             append(START_HEADER).append("user").append(END_HEADER).append("\n\n")
+            // The fixed opening of the user turn is cached with the prefix too.
+            append(USER_OPENING)
         }
     }
 
@@ -81,8 +87,8 @@ object ExplanationPromptBuilder {
             // "this message is not dangerous because it is a scam" for scam verdicts.
             val risky = verdictLabel.contains("HIGH_RISK") || verdictLabel.contains("SUSPICIOUS")
             append(
-                if (risky) "\nIn exactly 2 short, simple sentences, explain why this message is likely a scam"
-                else "\nIn exactly 2 short, simple sentences, tell me whether this message looks risky"
+                if (risky) "\nIn 2 short sentences (at most 15 words each), explain why this message is likely a scam"
+                else "\nIn 2 short sentences (at most 15 words each), tell me whether this message looks risky"
             )
             append(". Answer in plain sentences, no bullet points, no links.")
         }

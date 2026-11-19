@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import org.pytorch.executorch.Module
 import org.pytorch.executorch.extension.llm.LlmCallback
 import org.pytorch.executorch.extension.llm.LlmGenerationConfig
 import org.pytorch.executorch.extension.llm.LlmModule
@@ -61,11 +62,15 @@ class ExecuTorchLlmExplainer(
     private val files: LlmModelFiles
 ) : LlmExplainer {
 
-    private companion object {
-        const val TAG = "ARMLLM"
+    companion object {
+        /** Thread count for the XNNPACK pool; 0 = number of big cores. For device tests. */
+        @Volatile
+        var threadCountOverride: Int = 0
+
+        private const val TAG = "ARMLLM"
         const val TEMPERATURE = 0f
         const val MAX_SEQ_LEN = 768
-        const val MAX_NEW_TOKENS = 70
+        const val MAX_NEW_TOKENS = 80
         const val MAX_SENTENCES = 2
         const val EOT_ID = "<|eot_id|>"
     }
@@ -203,6 +208,9 @@ class ExecuTorchLlmExplainer(
                     .loadMode(LlmModuleConfig.LOAD_MODE_MMAP)
                     .build()
             )
+            // Resize the pool before load(): XNNPACK takes the pool when the program
+            // loads, and resizing it afterwards left generation waiting forever.
+            restoreThreadPool()
             created.load()
             module = created
             return created
@@ -210,6 +218,19 @@ class ExecuTorchLlmExplainer(
             unavailable = true
             throw Exception("The on-device explanation model could not be loaded.", t)
         }
+    }
+
+    /**
+     * ExecuTorch 1.5.1's LlmModule constructor resets the shared XNNPACK thread
+     * pool to "performant cores minus one". Module.load with an explicit thread
+     * count re-sizes that pool; with MMAP only the program header is read.
+     */
+    private fun restoreThreadPool() {
+        val threads = threadCountOverride.takeIf { it > 0 } ?: CpuCores.bigCoreCount()
+        runCatching {
+            Module.load(files.model.absolutePath, Module.LOAD_MODE_MMAP, threads).close()
+            Log.i(TAG, "llama_threads=$threads")
+        }.onFailure { Log.w(TAG, "thread pool restore failed", it) }
     }
 
     /** Runs one generation; assumes [genMutex] is held. */

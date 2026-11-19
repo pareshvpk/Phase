@@ -14,7 +14,7 @@ import kotlin.text.Regex
 object AdviceGuard {
 
     private const val MAX_SENTENCES = 6
-    private const val MIN_SENTENCES = 2
+    private const val MIN_SENTENCES = 1
 
     private val specialTokenRegex = Regex("<\\|[^|]+\\|>")
     private val urlRegex = Regex("""https?://\S+|www\.\S+""", RegexOption.IGNORE_CASE)

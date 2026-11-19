@@ -32,7 +32,7 @@ class ExplanationPromptBuilderTest {
     }
 
     @Test
-    fun messageIsTruncatedTo500Characters() {
+    fun messageIsTruncatedTo160Characters() {
         val prompt = ExplanationPromptBuilder.build(
             verdictLabel = "SAFE",
             evidence = emptyList(),
@@ -40,12 +40,12 @@ class ExplanationPromptBuilderTest {
             languageName = "English"
         )
 
-        assertTrue(prompt.contains("x".repeat(500)))
-        assertFalse(prompt.contains("x".repeat(501)))
+        assertTrue(prompt.contains("x".repeat(160)))
+        assertFalse(prompt.contains("x".repeat(161)))
     }
 
     @Test
-    fun evidenceIsLimitedToEightItems() {
+    fun evidenceIsLimitedToFiveItems() {
         val evidence = (0 until 10).map { "reason$it" }
         val prompt = ExplanationPromptBuilder.build(
             verdictLabel = "SUSPICIOUS",
@@ -55,8 +55,8 @@ class ExplanationPromptBuilderTest {
         )
 
         assertTrue(prompt.contains("reason0"))
-        assertTrue(prompt.contains("reason7"))
-        assertFalse(prompt.contains("reason8"))
+        assertTrue(prompt.contains("reason4"))
+        assertFalse(prompt.contains("reason5"))
         assertFalse(prompt.contains("reason9"))
     }
 
@@ -159,11 +159,11 @@ class ExplanationPromptBuilderTest {
         val prefix = ExplanationPromptBuilder.prefix("English")
 
         assertFalse(prefix.contains(messageText))
-        assertTrue(prefix.endsWith("<|start_header_id|>user<|end_header_id|>\n\n"))
+        assertTrue(prefix.endsWith("<|start_header_id|>user<|end_header_id|>\n\n" + ExplanationPromptBuilder.USER_OPENING))
     }
 
     @Test
-    fun userPromptAsksForExactlyTwoSentences() {
+    fun userPromptAsksForTwoShortSentences() {
         val prompt = ExplanationPromptBuilder.build(
             verdictLabel = "HIGH_RISK",
             evidence = emptyList(),
@@ -171,7 +171,7 @@ class ExplanationPromptBuilderTest {
             languageName = "English"
         )
 
-        assertTrue(prompt.contains("In exactly 2 short, simple sentences"))
+        assertTrue(prompt.contains("In 2 short sentences (at most 15 words each)"))
         assertFalse(prompt.contains("2-4 short"))
     }
 

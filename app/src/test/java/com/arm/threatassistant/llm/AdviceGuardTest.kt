@@ -110,11 +110,24 @@ class AdviceGuardTest {
     }
 
     @Test
-    fun repeatedSentencesAreCollapsedToFallback() {
+    fun oneCompleteSentenceBeforeACutOffIsKept() {
+        // Seen on the vivo: the token cap cut the second sentence; the first must still be shown.
+        val text = "This message is likely a scam because it asks you to share an OTP to update your KYC. " +
+            "The message also claims that your account will be blocked if you don't update your KYC, which"
+        val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
+
+        assertTrue(result.startsWith("This message is likely a scam because it asks you to share an OTP"))
+        assertFalse(result.contains("which"))
+    }
+
+    @Test
+    fun repeatedSentencesAreCollapsedToOne() {
         val text = "Your account is at risk. Your account is at risk. Your account is at risk."
         val result = AdviceGuard.guard(text, ThreatVerdictLevel.HIGH_RISK, "en", fallback, safeSteps)
 
-        assertEquals(fallback, result) // only one distinct sentence remains -> below the minimum
+        // Duplicates collapse to one sentence; one sentence is enough, safe steps are appended.
+        assertTrue(result.startsWith("Your account is at risk."))
+        assertEquals(1, Regex("Your account is at risk").findAll(result).count())
     }
 
     @Test
