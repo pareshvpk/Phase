@@ -1,0 +1,146 @@
+[
+ [
+  "S01",
+  "scam",
+  "en",
+  "Someone is using your card. Reply with your OTP and PIN immediately to block the transaction."
+ ],
+ [
+  "S02",
+  "scam",
+  "en",
+  "Your parcel is on hold. Pay a release fee of Rs 9 at https://parcel-fee.example/claim today."
+ ],
+ [
+  "S03",
+  "scam",
+  "en",
+  "You won a cash prize in our draw. Send a registration fee before we transfer the winnings."
+ ],
+ [
+  "S04",
+  "scam",
+  "en",
+  "This is your manager on a new number. Buy gift cards for the meeting and send me the codes."
+ ],
+ [
+  "S05",
+  "scam",
+  "en",
+  "Your bank KYC has expired. Your account will be blocked. Verify now at https://account-check.example/login"
+ ],
+ [
+  "S06",
+  "scam",
+  "en",
+  "Guaranteed returns of 30 percent daily. Transfer Rs 500 to join our exclusive investment group."
+ ],
+ [
+  "S07",
+  "scam",
+  "en",
+  "Electricity disconnection tonight. Install the attached support APK and share the access code with our technician."
+ ],
+ [
+  "S08",
+  "scam",
+  "hinglish",
+  "Aapka bank account aaj band ho jayega. KYC update ke liye apna OTP abhi bhejo."
+ ],
+ [
+  "S09",
+  "scam",
+  "hi",
+  "इनाम जीतने के लिए पहले फीस भेजें। अपना बैंक पिन और ओटीपी हमें बताएं।"
+ ],
+ [
+  "S10",
+  "scam",
+  "ta",
+  "பரிசைப் பெற முதலில் பணம் அனுப்புங்கள். உங்கள் வங்கி OTP எண்ணை எங்களுக்கு அனுப்பவும்."
+ ],
+ [
+  "S11",
+  "scam",
+  "en",
+  "It is Mum. My phone broke and I need money urgently. Transfer it to my friend's account."
+ ],
+ [
+  "S12",
+  "scam",
+  "en",
+  "Remote job approved. Pay a refundable joining deposit before your interview to secure your place."
+ ],
+ [
+  "B01",
+  "routine",
+  "en",
+  "I left the keys with the neighbour. See you after dinner."
+ ],
+ [
+  "B02",
+  "routine",
+  "en",
+  "The library has renewed your books until next Friday. Thank you."
+ ],
+ [
+  "B03",
+  "routine",
+  "en",
+  "Your appointment is confirmed for 10 AM. Bring your previous report."
+ ],
+ [
+  "B04",
+  "routine",
+  "en",
+  "Security reminder from the office. Never share your OTP, password or PIN with anyone."
+ ],
+ [
+  "B05",
+  "routine",
+  "en",
+  "Your verification code is 482615. It expires in ten minutes. Do not share it."
+ ],
+ [
+  "B06",
+  "routine",
+  "en",
+  "Your account was debited by Rs 240 for groceries. Available balance Rs 3510."
+ ],
+ [
+  "B07",
+  "routine",
+  "en",
+  "The club picnic schedule is on https://example.org/calendar for everyone to read."
+ ],
+ [
+  "B08",
+  "routine",
+  "hinglish",
+  "Kal shaam library ke paas milte hain. Main apni kitaab le aaunga."
+ ],
+ [
+  "B09",
+  "routine",
+  "hi",
+  "कल स्कूल का समय सुबह नौ बजे है। कृपया अपनी किताब लाएँ।"
+ ],
+ [
+  "B10",
+  "routine",
+  "ta",
+  "நாளை காலை ஒன்பது மணிக்கு பள்ளியில் சந்திப்போம். புத்தகத்தை கொண்டு வாருங்கள்."
+ ],
+ [
+  "B11",
+  "routine",
+  "en",
+  "The refund of Rs 50 for your cancelled ticket has been completed. No action is needed."
+ ],
+ [
+  "B12",
+  "routine",
+  "en",
+  "The cafe has a lunch discount for all staff on Wednesday. Just show your staff badge."
+ ]
+]

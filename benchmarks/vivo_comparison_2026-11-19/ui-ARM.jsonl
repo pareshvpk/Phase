@@ -1,0 +1,24 @@
+{"app":"ARM","id":"S01","label":"scam","lang":"en","route":"share","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"S02","label":"scam","lang":"en","route":"selection","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"S03","label":"scam","lang":"en","route":"share","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"S04","label":"scam","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"S05","label":"scam","lang":"en","route":"share","verdict":"Likely scam","timing":"","advice":""}
+{"app":"ARM","id":"S06","label":"scam","lang":"en","route":"share","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"S07","label":"scam","lang":"en","route":"share","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"S08","label":"scam","lang":"hinglish","route":"share","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"S09","label":"scam","lang":"hi","route":"share","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"S10","label":"scam","lang":"ta","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"S11","label":"scam","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"S12","label":"scam","lang":"en","route":"share","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"B01","label":"routine","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B02","label":"routine","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B03","label":"routine","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B04","label":"routine","lang":"en","route":"selection","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"B05","label":"routine","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B06","label":"routine","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B07","label":"routine","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B08","label":"routine","lang":"hinglish","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B09","label":"routine","lang":"hi","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B10","label":"routine","lang":"ta","route":"share","verdict":"Be careful","timing":"","advice":""}
+{"app":"ARM","id":"B11","label":"routine","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}
+{"app":"ARM","id":"B12","label":"routine","lang":"en","route":"share","verdict":"No scam signs found","timing":"","advice":""}

@@ -126,4 +126,30 @@
     <string name="settings_local_language_explanations_title">AI explanations in Hindi/Tamil (experimental)</string>
     <string name="settings_local_language_explanations_summary">Use the on-device model for Hindi and Tamil instead of the fixed explanation.</string>
 
+    <string name="reason_disclosure">Asks you to disclose a private code or password</string>
+    <string name="action_disclosure_private">Do not reply with your OTP, PIN or password.</string>
+    <string name="action_disclosure_verify">Open the official app for that account to check the request.</string>
+    <string name="action_disclosure_shared">Already shared it? Contact the provider through its official app.</string>
+    <string name="reason_upi_mismatch">Promises money but asks you to authorize a payment</string>
+    <string name="upi_mismatch_explanation">Approving this request could send money from your account. You do not need to authorize a payment to receive a refund.</string>
+    <string name="action_upi_decline">Decline the payment request.</string>
+    <string name="action_upi_verify">Open your UPI app yourself and check your transaction history.</string>
+    <string name="action_upi_paid">Already paid? Report the transaction through your UPI app or bank.</string>
+    <string name="onboarding_check_title">Check any message</string>
+    <string name="onboarding_check_body">Paste a message or share text from another app. ARM checks for scam signs and explains what looks risky.</string>
+    <string name="onboarding_privacy_title">Everything stays on your phone</string>
+    <string name="onboarding_privacy_body">Message checks run offline. AI explanations also run on your phone when the model is installed. Messages are never uploaded. Risky alerts are stored privately on this phone for today and cleared when the day ends.</string>
+    <string name="onboarding_protection_title">Get alerts for risky messages</string>
+    <string name="onboarding_protection_body">SMS protection is optional. Set it up to check incoming SMS and MMS text on this phone. You choose which permissions to allow.</string>
+    <string name="onboarding_step">%1$d of %2$d</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_back">Back</string>
+    <string name="onboarding_set_up">Set up protection</string>
+    <string name="onboarding_not_now">Not now</string>
+    <string name="settings_privacy_title">Privacy</string>
+    <string name="settings_show_introduction">Show introduction again</string>
+    <string name="privacy_model_download">ARM uses internet access for optional model downloads and direct traffic forwarding when you enable network monitoring. Detection stays on your phone; no cloud analysis or remote VPN server is used.</string>
+    <string name="privacy_protection_control">SMS, MMS, message-reading and notification permissions are optional and used for incoming-message protection. You can turn protection off at any time in the Protection tab.</string>
+    <string name="privacy_close">Close</string>
 </resources>

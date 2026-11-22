@@ -1,0 +1,160 @@
+﻿--------- beginning of main
+11-21 07:23:59.934 23585 23655 I ARMBENCH: COLD|first_analyze_ms=58.18
+11-21 07:23:59.949 23585 23655 I ARMBENCH: COLD|second_analyze_ms=15.14
+11-21 07:23:59.956 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Rs 5000 will be credited to your a/c. Click this l
+11-21 07:23:59.956 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Your a/c is credited with Rs 25,000 lottery prize.
+11-21 07:23:59.956 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|UPI cashback of Rs 2000 pending. Tap https://upi-r
+11-21 07:23:59.958 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Dear customer share your OTP 445566 with our agent
+11-21 07:23:59.958 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Congratulations you won Rs 50000 prize, click www.
+11-21 07:23:59.958 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Your SBI account will be suspended today. Update K
+11-21 07:23:59.959 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Electricity power will be disconnected tonight 9.3
+11-21 07:23:59.959 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Your parcel is on hold due to incomplete address. 
+11-21 07:23:59.960 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|URGENT: You have been selected for a work from hom
+11-21 07:23:59.960 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Your PAN card is blocked. Click http://pan-update.
+11-21 07:23:59.960 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Hey are we still meeting at 5 today?
+11-21 07:23:59.961 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Mom called, please ring her back when you are free
+11-21 07:23:59.961 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Your order has been shipped and will arrive tomorr
+11-21 07:23:59.961 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Happy birthday! Have a great year ahead
+11-21 07:23:59.961 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Running 10 mins late, start without me
+11-21 07:23:59.962 23585 23655 I ARMBENCH: FILTER|PASS|expected=null|actual=null|Reminder: dentist appointment on Monday at 10am
+11-21 07:23:59.962 23585 23655 I ARMBENCH: FILTER|PASS|expected=OTP|actual=OTP|123456 is your OTP for txn of INR 2,499.00 at AMAZ
+11-21 07:23:59.962 23585 23655 I ARMBENCH: FILTER|PASS|expected=OTP|actual=OTP|Use 4821 as your login OTP for Paytm. Never share 
+11-21 07:23:59.962 23585 23655 I ARMBENCH: FILTER|PASS|expected=OTP|actual=OTP|OTP for your SBI internet banking login is 5544332
+11-21 07:23:59.963 23585 23655 I ARMBENCH: FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Rs.1,250.00 debited from A/c XX4321 on 12-Nov-26 t
+11-21 07:23:59.963 23585 23655 I ARMBENCH: FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Dear Customer, Rs 499 spent on your SBI Credit Car
+11-21 07:23:59.964 23585 23655 I ARMBENCH: FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|You have received Rs 500.00 from RAMESH K in your 
+11-21 07:23:59.964 23585 23655 I ARMBENCH: FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Dear Customer, your refund of Rs. 349.00 has been 
+11-21 07:23:59.964 23585 23655 I ARMBENCH: FILTER|PASS|expected=TRANSACTION|actual=TRANSACTION|Txn of USD 12.99 done on your Axis Bank card XX445
+11-21 07:23:59.991 23585 23655 I ARMBENCH: VERDICT|SCAM|SUSPICIOUS|alert=true|Rs 5000 will be credited to your a/c. Click this l
+11-21 07:24:00.026 23585 23655 I ARMBENCH: VERDICT|SCAM|HIGH_RISK|alert=true|Your a/c is credited with Rs 25,000 lottery prize.
+11-21 07:24:00.044 23585 23655 I ARMBENCH: VERDICT|SCAM|HIGH_RISK|alert=true|UPI cashback of Rs 2000 pending. Tap https://upi-r
+11-21 07:24:00.052 23585 23655 I ARMBENCH: VERDICT|SCAM|SUSPICIOUS|alert=true|Dear customer share your OTP 445566 with our agent
+11-21 07:24:00.059 23585 23655 I ARMBENCH: VERDICT|SCAM|SUSPICIOUS|alert=true|Congratulations you won Rs 50000 prize, click www.
+11-21 07:24:00.065 23585 23655 I ARMBENCH: VERDICT|SCAM|HIGH_RISK|alert=true|Your SBI account will be suspended today. Update K
+11-21 07:24:00.070 23585 23655 I ARMBENCH: VERDICT|SCAM|SUSPICIOUS|alert=true|Electricity power will be disconnected tonight 9.3
+11-21 07:24:00.077 23585 23655 I ARMBENCH: VERDICT|SCAM|HIGH_RISK|alert=true|Your parcel is on hold due to incomplete address. 
+11-21 07:24:00.083 23585 23655 I ARMBENCH: VERDICT|SCAM|SUSPICIOUS|alert=true|URGENT: You have been selected for a work from hom
+11-21 07:24:00.090 23585 23655 I ARMBENCH: VERDICT|SCAM|SUSPICIOUS|alert=true|Your PAN card is blocked. Click http://pan-update.
+11-21 07:24:00.094 23585 23655 I ARMBENCH: VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Hey are we still meeting at 5 today?
+11-21 07:24:00.099 23585 23655 I ARMBENCH: VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Mom called, please ring her back when you are free
+11-21 07:24:00.104 23585 23655 I ARMBENCH: VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Your order has been shipped and will arrive tomorr
+11-21 07:24:00.109 23585 23655 I ARMBENCH: VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Happy birthday! Have a great year ahead
+11-21 07:24:00.113 23585 23655 I ARMBENCH: VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Running 10 mins late, start without me
+11-21 07:24:00.118 23585 23655 I ARMBENCH: VERDICT|BENIGN|INSUFFICIENT_EVIDENCE|alert=false|Reminder: dentist appointment on Monday at 10am
+11-21 07:24:00.119 23585 23655 I ARMBENCH: VERDICT|SENSITIVE|SKIPPED|alert=false|123456 is your OTP for txn of INR 2,499.00 at AMAZ
+11-21 07:24:00.119 23585 23655 I ARMBENCH: VERDICT|SENSITIVE|SKIPPED|alert=false|Use 4821 as your login OTP for Paytm. Never share 
+11-21 07:24:00.119 23585 23655 I ARMBENCH: VERDICT|SENSITIVE|SKIPPED|alert=false|OTP for your SBI internet banking login is 5544332
+11-21 07:24:00.120 23585 23655 I ARMBENCH: VERDICT|SENSITIVE|SKIPPED|alert=false|Rs.1,250.00 debited from A/c XX4321 on 12-Nov-26 t
+11-21 07:24:00.120 23585 23655 I ARMBENCH: VERDICT|SENSITIVE|SKIPPED|alert=false|Dear Customer, Rs 499 spent on your SBI Credit Car
+11-21 07:24:00.120 23585 23655 I ARMBENCH: VERDICT|SENSITIVE|SKIPPED|alert=false|You have received Rs 500.00 from RAMESH K in your 
+11-21 07:24:00.121 23585 23655 I ARMBENCH: VERDICT|SENSITIVE|SKIPPED|alert=false|Dear Customer, your refund of Rs. 349.00 has been 
+11-21 07:24:00.121 23585 23655 I ARMBENCH: VERDICT|SENSITIVE|SKIPPED|alert=false|Txn of USD 12.99 done on your Axis Bank card XX445
+11-21 07:24:00.121 23585 23655 I ARMBENCH: SUMMARY|scam_total=10|scam_alerted=10|benign_total=6|benign_alerted=0|sensitive_total=8|sensitive_skipped=8|sensitive_alerted=0
+11-21 07:24:00.347 23585 23657 I ARMLLM  : llama_threads=4
+11-21 07:24:03.384 23585 23655 I ARMBENCH: STAT|filter_classify|n=20000|mean_us=140.7|median_us=120.8|p95_us=228.6|p99_us=702.8|max_us=7080.1|min_us=40.5
+11-21 07:24:16.421 23585 23655 I ARMBENCH: STAT|analyze_full|n=2000|mean_us=5783.2|median_us=3602.8|p95_us=15226.6|p99_us=29253.6|max_us=1525948.7|min_us=2761.4
+11-21 07:24:16.421 23585 23655 I ARMBENCH: STAT|analyze_SCAM|n=838|mean_us=5437.6|median_us=3799.4|p95_us=16014.1|p99_us=33450.8|max_us=68688.8|min_us=3042.9
+11-21 07:24:16.421 23585 23655 I ARMBENCH: STAT|analyze_BENIGN|n=498|mean_us=7529.5|median_us=3153.5|p95_us=15641.3|p99_us=22676.4|max_us=1525948.7|min_us=2761.4
+11-21 07:24:16.422 23585 23655 I ARMBENCH: STAT|analyze_SENSITIVE|n=664|mean_us=4909.6|median_us=3567.2|p95_us=14223.6|p99_us=21519.8|max_us=83376.3|min_us=2952.2
+11-21 07:24:25.914 23585 23655 I ARMBENCH: STAT|receiver_path|n=2000|mean_us=4198.2|median_us=3289.5|p95_us=16677.6|p99_us=30269.2|max_us=209105.2|min_us=91.9
+11-21 07:24:25.914 23585 23655 I ARMBENCH: THROUGHPUT|receiver_path_msgs_per_sec=238
+11-21 07:24:30.776 23585 23655 I ARMBENCH: STAT|analyze_1600_chars|n=200|mean_us=21635.0|median_us=12874.3|p95_us=62432.5|p99_us=90445.7|max_us=199578.8|min_us=10792.4
+11-21 07:24:30.822 23585 23655 I ARMBENCH: MEM|java_used_kb=8671|native_heap_kb=14672
+11-21 07:24:30.838 23585 23655 I ARMBENCH: DONE|bench=DeviceBenchmarkTest|status=completed|sink=768326836
+11-21 07:24:30.838 23585 23655 I ARMBENCH: DONE|logcat=ARMBENCH|records=COLD,FILTER,VERDICT,SUMMARY,STAT,THROUGHPUT,MEM
+11-21 07:24:41.344 23585 23655 I ARMSTRESS: ACC|all|scam_n=625|scam_alerted=566|alert_recall=90.6%|scam_flagged=566|flag_recall=90.6%|scam_skipped_by_filter=22|safe_n=1667|false_alerts=41|false_alert_rate=2.5%|false_flags=41|false_flag_rate=2.5%
+11-21 07:24:41.350 23585 23655 I ARMSTRESS: ACC|real_only|scam_n=324|scam_alerted=292|alert_recall=90.1%|scam_flagged=292|flag_recall=90.1%|scam_skipped_by_filter=3|safe_n=955|false_alerts=7|false_alert_rate=0.7%|false_flags=7|false_flag_rate=0.7%
+11-21 07:24:41.355 23585 23655 I ARMSTRESS: ACC|synthetic_only|scam_n=301|scam_alerted=274|alert_recall=91.0%|scam_flagged=274|flag_recall=91.0%|scam_skipped_by_filter=19|safe_n=712|false_alerts=34|false_alert_rate=4.8%|false_flags=34|false_flag_rate=4.8%
+11-21 07:24:41.366 23585 23655 I ARMSTRESS: ACC|lang_en|scam_n=443|scam_alerted=407|alert_recall=91.9%|scam_flagged=407|flag_recall=91.9%|scam_skipped_by_filter=7|safe_n=1464|false_alerts=34|false_alert_rate=2.3%|false_flags=34|false_flag_rate=2.3%
+11-21 07:24:41.368 23585 23655 I ARMSTRESS: ACC|lang_hi|scam_n=60|scam_alerted=56|alert_recall=93.3%|scam_flagged=56|flag_recall=93.3%|scam_skipped_by_filter=3|safe_n=57|false_alerts=0|false_alert_rate=0.0%|false_flags=0|false_flag_rate=0.0%
+11-21 07:24:41.371 23585 23655 I ARMSTRESS: ACC|lang_hinglish|scam_n=113|scam_alerted=94|alert_recall=83.2%|scam_flagged=94|flag_recall=83.2%|scam_skipped_by_filter=12|safe_n=132|false_alerts=4|false_alert_rate=3.0%|false_flags=4|false_flag_rate=3.0%
+11-21 07:24:41.373 23585 23655 I ARMSTRESS: ACC|lang_ta|scam_n=5|scam_alerted=5|alert_recall=100.0%|scam_flagged=5|flag_recall=100.0%|scam_skipped_by_filter=0|safe_n=8|false_alerts=2|false_alert_rate=25.0%|false_flags=2|false_flag_rate=25.0%
+11-21 07:24:41.375 23585 23655 I ARMSTRESS: ACC|lang_tanglish|scam_n=4|scam_alerted=4|alert_recall=100.0%|scam_flagged=4|flag_recall=100.0%|scam_skipped_by_filter=0|safe_n=6|false_alerts=1|false_alert_rate=16.7%|false_flags=1|false_flag_rate=16.7%
+11-21 07:24:41.386 23585 23655 I ARMSTRESS: ACC_VERDICTS|SAFE->INSUFFICIENT_EVIDENCE|1535
+11-21 07:24:41.386 23585 23655 I ARMSTRESS: ACC_VERDICTS|SAFE->SAFE|2
+11-21 07:24:41.386 23585 23655 I ARMSTRESS: ACC_VERDICTS|SAFE->SKIPPED|89
+11-21 07:24:41.386 23585 23655 I ARMSTRESS: ACC_VERDICTS|SAFE->SUSPICIOUS|41
+11-21 07:24:41.386 23585 23655 I ARMSTRESS: ACC_VERDICTS|SCAM->HIGH_RISK|2
+11-21 07:24:41.386 23585 23655 I ARMSTRESS: ACC_VERDICTS|SCAM->INSUFFICIENT_EVIDENCE|37
+11-21 07:24:41.386 23585 23655 I ARMSTRESS: ACC_VERDICTS|SCAM->SKIPPED|22
+11-21 07:24:41.386 23585 23655 I ARMSTRESS: ACC_VERDICTS|SCAM->SUSPICIOUS|564
+11-21 07:25:22.280 23585 23655 I ARMSTRESS: STAT|soak_pipeline|n=10000|mean_us=3882.3|median_us=3661.9|p95_us=4991.7|p99_us=14429.8|max_us=110698.0
+11-21 07:25:22.280 23585 23655 I ARMSTRESS: SOAK|n=10000|seconds=38.84|msgs_per_sec=257
+11-21 07:25:22.280 23585 23655 I ARMSTRESS: SOAK_MEM|before=java_kb=8915,native_kb=9968,pss_kb=131794|after=java_kb=8995,native_kb=9971,pss_kb=136189|java_growth_kb=80|pss_growth_kb=4395
+11-21 07:25:30.027 23585 23655 I ARMSTRESS: CONCURRENCY|threads=8|analyses=4000|seconds=6.26|msgs_per_sec=639|verdict_mismatches=0
+11-21 07:25:30.047 23585 23655 I ARMSTRESS: HOSTILE|empty|chars=0|ms=2.3|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.049 23585 23655 I ARMSTRESS: HOSTILE|spaces|chars=9|ms=2.1|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.216 23585 23655 I ARMSTRESS: HOSTILE|50k_letters|chars=50000|ms=167.3|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.244 23585 23655 I ARMSTRESS: HOSTILE|20k_single_token|chars=20000|ms=27.5|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.281 23585 23655 I ARMSTRESS: HOSTILE|5k_emoji|chars=10200|ms=37.2|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.313 23585 23655 I ARMSTRESS: HOSTILE|zero_width_only|chars=2000|ms=31.1|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.318 23585 23655 I ARMSTRESS: HOSTILE|zero_width_in_scam|chars=43|ms=5.4|ok=true|verdict=SUSPICIOUS
+11-21 07:25:30.321 23585 23655 I ARMSTRESS: HOSTILE|rtl_arabic|chars=41|ms=2.9|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.325 23585 23655 I ARMSTRESS: HOSTILE|mixed_scripts|chars=61|ms=3.5|ok=true|verdict=SUSPICIOUS
+11-21 07:25:30.328 23585 23655 I ARMSTRESS: HOSTILE|unpaired_surrogate|chars=17|ms=2.8|ok=true|verdict=SUSPICIOUS
+11-21 07:25:30.330 23585 23655 I ARMSTRESS: HOSTILE|nul_chars|chars=13|ms=2.7|ok=true|verdict=SUSPICIOUS
+11-21 07:25:30.497 23585 23655 I ARMSTRESS: HOSTILE|500_urls|chars=13283|ms=167.0|ok=true|verdict=HIGH_RISK
+11-21 07:25:30.581 23585 23655 I ARMSTRESS: HOSTILE|huge_url|chars=20012|ms=83.3|ok=true|verdict=SUSPICIOUS
+11-21 07:25:30.584 23585 23655 I ARMSTRESS: HOSTILE|html_script|chars=68|ms=3.3|ok=true|verdict=SUSPICIOUS
+11-21 07:25:30.587 23585 23655 I ARMSTRESS: HOSTILE|sql_like|chars=38|ms=2.8|ok=true|verdict=SUSPICIOUS
+11-21 07:25:30.598 23585 23655 I ARMSTRESS: HOSTILE|digits_only|chars=5000|ms=10.4|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.711 23585 23655 I ARMSTRESS: HOSTILE|punctuation|chars=18000|ms=113.5|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.746 23585 23655 I ARMSTRESS: HOSTILE|combining_marks|chars=10000|ms=34.5|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.796 23585 23655 I ARMSTRESS: HOSTILE|tamil_long|chars=13600|ms=49.9|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:30.888 23585 23655 I ARMSTRESS: HOSTILE|devanagari_long|chars=9200|ms=92.3|ok=true|verdict=INSUFFICIENT_EVIDENCE
+11-21 07:25:31.098 23585 23657 I ARMLLM  : llama_threads=4
+11-21 07:25:42.219 23585 23657 I ARMLLM  : {"prefill_token_per_sec":65.1276,"decode_token_per_sec":11.761,"prompt_tokens":268,"generated_tokens":37,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226134953,"inference_end_ms":1795226142214,"model_execution_start_ms":1795226142107,"model_execution_end_ms":1795226142213,"prompt_eval_end_ms":1795226139068,"first_token_ms":1795226139068,"aggregate_sampling_time_ms":9,"aggregate_model_execution_time_ms":7234,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:25:42.348 23585 23655 I ARMSTRESS: LLM_RUN|i=0|verdict=SUSPICIOUS|first_token_ms=8139|total_ms=11293|tokens=38|tok_per_s=11.73|pss_mb=1317|guard_fallback=false
+11-21 07:25:47.340 23585 23657 I ARMLLM  : {"prefill_token_per_sec":71.6426,"decode_token_per_sec":11.4155,"prompt_tokens":263,"generated_tokens":15,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226142355,"inference_end_ms":1795226147340,"model_execution_start_ms":1795226147244,"model_execution_end_ms":1795226147339,"prompt_eval_end_ms":1795226146026,"first_token_ms":1795226146026,"aggregate_sampling_time_ms":6,"aggregate_model_execution_time_ms":4970,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:25:47.372 23585 23655 I ARMSTRESS: LLM_RUN|i=1|verdict=SUSPICIOUS|first_token_ms=3672|total_ms=4988|tokens=16|tok_per_s=11.40|pss_mb=1312|guard_fallback=false
+11-21 07:25:54.385 23585 23657 I ARMLLM  : {"prefill_token_per_sec":70.5096,"decode_token_per_sec":10.1523,"prompt_tokens":285,"generated_tokens":30,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226147388,"inference_end_ms":1795226154385,"model_execution_start_ms":1795226154283,"model_execution_end_ms":1795226154384,"prompt_eval_end_ms":1795226151430,"first_token_ms":1795226151430,"aggregate_sampling_time_ms":6,"aggregate_model_execution_time_ms":6976,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:25:54.417 23585 23655 I ARMSTRESS: LLM_RUN|i=2|verdict=SUSPICIOUS|first_token_ms=4042|total_ms=7000|tokens=31|tok_per_s=10.14|pss_mb=1314|guard_fallback=false
+11-21 07:26:00.255 23585 23657 I ARMLLM  : {"prefill_token_per_sec":61.6936,"decode_token_per_sec":9.63391,"prompt_tokens":263,"generated_tokens":15,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226154434,"inference_end_ms":1795226160254,"model_execution_start_ms":1795226160140,"model_execution_end_ms":1795226160254,"prompt_eval_end_ms":1795226158697,"first_token_ms":1795226158697,"aggregate_sampling_time_ms":7,"aggregate_model_execution_time_ms":5803,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:00.283 23585 23655 I ARMSTRESS: LLM_RUN|i=3|verdict=SUSPICIOUS|first_token_ms=4264|total_ms=5822|tokens=16|tok_per_s=9.63|pss_mb=1315|guard_fallback=false
+11-21 07:26:06.845 23585 23657 I ARMLLM  : {"prefill_token_per_sec":63.2495,"decode_token_per_sec":11.7596,"prompt_tokens":269,"generated_tokens":27,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226160295,"inference_end_ms":1795226166844,"model_execution_start_ms":1795226166743,"model_execution_end_ms":1795226166844,"prompt_eval_end_ms":1795226164548,"first_token_ms":1795226164548,"aggregate_sampling_time_ms":7,"aggregate_model_execution_time_ms":6530,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:06.884 23585 23655 I ARMSTRESS: LLM_RUN|i=4|verdict=SUSPICIOUS|first_token_ms=4254|total_ms=6554|tokens=28|tok_per_s=11.74|pss_mb=1315|guard_fallback=false
+11-21 07:26:13.346 23585 23657 I ARMLLM  : {"prefill_token_per_sec":60.916,"decode_token_per_sec":9.78877,"prompt_tokens":274,"generated_tokens":19,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226166906,"inference_end_ms":1795226173345,"model_execution_start_ms":1795226173246,"model_execution_end_ms":1795226173344,"prompt_eval_end_ms":1795226171404,"first_token_ms":1795226171404,"aggregate_sampling_time_ms":6,"aggregate_model_execution_time_ms":6424,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:13.380 23585 23655 I ARMSTRESS: LLM_RUN|i=5|verdict=SUSPICIOUS|first_token_ms=4499|total_ms=6443|tokens=20|tok_per_s=9.77|pss_mb=1316|guard_fallback=false
+11-21 07:26:19.429 23585 23657 I ARMLLM  : {"prefill_token_per_sec":62.8904,"decode_token_per_sec":12.2567,"prompt_tokens":292,"generated_tokens":17,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226173399,"inference_end_ms":1795226179429,"model_execution_start_ms":1795226179349,"model_execution_end_ms":1795226179428,"prompt_eval_end_ms":1795226178042,"first_token_ms":1795226178042,"aggregate_sampling_time_ms":4,"aggregate_model_execution_time_ms":6015,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:19.458 23585 23655 I ARMSTRESS: LLM_RUN|i=6|verdict=SUSPICIOUS|first_token_ms=4643|total_ms=6031|tokens=18|tok_per_s=12.25|pss_mb=1318|guard_fallback=false
+11-21 07:26:25.409 23585 23657 I ARMLLM  : {"prefill_token_per_sec":64.1287,"decode_token_per_sec":12.459,"prompt_tokens":283,"generated_tokens":19,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226179471,"inference_end_ms":1795226185409,"model_execution_start_ms":1795226185330,"model_execution_end_ms":1795226185408,"prompt_eval_end_ms":1795226183884,"first_token_ms":1795226183884,"aggregate_sampling_time_ms":8,"aggregate_model_execution_time_ms":5923,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:25.438 23585 23655 I ARMSTRESS: LLM_RUN|i=7|verdict=SUSPICIOUS|first_token_ms=4414|total_ms=5939|tokens=20|tok_per_s=12.46|pss_mb=1318|guard_fallback=false
+11-21 07:26:30.939 23585 23657 I ARMLLM  : {"prefill_token_per_sec":65.202,"decode_token_per_sec":11.9237,"prompt_tokens":276,"generated_tokens":15,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226185448,"inference_end_ms":1795226190939,"model_execution_start_ms":1795226190855,"model_execution_end_ms":1795226190938,"prompt_eval_end_ms":1795226189681,"first_token_ms":1795226189681,"aggregate_sampling_time_ms":4,"aggregate_model_execution_time_ms":5478,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:30.968 23585 23655 I ARMSTRESS: LLM_RUN|i=8|verdict=SUSPICIOUS|first_token_ms=4234|total_ms=5492|tokens=16|tok_per_s=11.92|pss_mb=1319|guard_fallback=false
+11-21 07:26:37.013 23585 23657 I ARMLLM  : {"prefill_token_per_sec":65.3479,"decode_token_per_sec":11.7188,"prompt_tokens":294,"generated_tokens":18,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226190978,"inference_end_ms":1795226197013,"model_execution_start_ms":1795226196908,"model_execution_end_ms":1795226197012,"prompt_eval_end_ms":1795226195477,"first_token_ms":1795226195477,"aggregate_sampling_time_ms":1,"aggregate_model_execution_time_ms":6021,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:37.050 23585 23655 I ARMSTRESS: LLM_RUN|i=9|verdict=SUSPICIOUS|first_token_ms=4500|total_ms=6038|tokens=19|tok_per_s=11.70|pss_mb=1319|guard_fallback=false
+11-21 07:26:37.050 23585 23655 I ARMSTRESS: LLM_SUMMARY|runs=10|guard_fallbacks=0
+11-21 07:26:41.579 23585 23657 I ARMLLM  : {"prefill_token_per_sec":65.2227,"decode_token_per_sec":12.5945,"prompt_tokens":268,"generated_tokens":5,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226197073,"inference_end_ms":1795226201579,"model_execution_start_ms":1795226201500,"model_execution_end_ms":1795226201578,"prompt_eval_end_ms":1795226201182,"first_token_ms":1795226201182,"aggregate_sampling_time_ms":3,"aggregate_model_execution_time_ms":4497,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:49.137 23585 23657 I ARMLLM  : {"prefill_token_per_sec":66.0424,"decode_token_per_sec":10.5866,"prompt_tokens":268,"generated_tokens":37,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226201583,"inference_end_ms":1795226209136,"model_execution_start_ms":1795226209031,"model_execution_end_ms":1795226209135,"prompt_eval_end_ms":1795226205641,"first_token_ms":1795226205641,"aggregate_sampling_time_ms":11,"aggregate_model_execution_time_ms":7525,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:49.144 23585 23655 I ARMSTRESS: LLM_CANCEL|tokens_before_stop=6|stop_to_return_ms=75|works_after_cancel=true
+11-21 07:26:57.730 23585 23660 I ARMLLM  : {"prefill_token_per_sec":62.0491,"decode_token_per_sec":10.8974,"prompt_tokens":215,"generated_tokens":34,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226211144,"inference_end_ms":1795226217729,"model_execution_start_ms":1795226217620,"model_execution_end_ms":1795226217726,"prompt_eval_end_ms":1795226214609,"first_token_ms":1795226214609,"aggregate_sampling_time_ms":11,"aggregate_model_execution_time_ms":8427,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:26:57.736 23585 23655 I ARMLLM  : cold|first_token_ms=5352|total_ms=8478|tokens=35|stats={"prefill_token_per_sec":62.0491,"decode_token_per_sec":10.8974,"prompt_tokens":215,"generated_tokens":34,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226211144,"inference_end_ms":1795226217729,"model_execution_start_ms":1795226217620,"model_execution_end_ms":1795226217726,"prompt_eval_end_ms":1795226214609,"first_token_ms":1795226214609,"aggregate_sampling_time_ms":11,"aggregate_model_execution_time_ms":8427,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:27:04.441 23585 23660 I ARMLLM  : {"prefill_token_per_sec":67.607,"decode_token_per_sec":9.68089,"prompt_tokens":139,"generated_tokens":27,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226219596,"inference_end_ms":1795226224441,"model_execution_start_ms":1795226224342,"model_execution_end_ms":1795226224440,"prompt_eval_end_ms":1795226221652,"first_token_ms":1795226221652,"aggregate_sampling_time_ms":7,"aggregate_model_execution_time_ms":6684,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:27:04.445 23585 23655 I ARMLLM  : warm|first_token_ms=2057|total_ms=4848|tokens=28|stats={"prefill_token_per_sec":67.607,"decode_token_per_sec":9.68089,"prompt_tokens":139,"generated_tokens":27,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226219596,"inference_end_ms":1795226224441,"model_execution_start_ms":1795226224342,"model_execution_end_ms":1795226224440,"prompt_eval_end_ms":1795226221652,"first_token_ms":1795226221652,"aggregate_sampling_time_ms":7,"aggregate_model_execution_time_ms":6684,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:27:04.494 23585 23655 I ARMLLM  : cpu_supported=true
+11-21 07:27:13.087 23585 23660 I ARMLLM  : {"prefill_token_per_sec":65.188,"decode_token_per_sec":9.4162,"prompt_tokens":338,"generated_tokens":15,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226226309,"inference_end_ms":1795226233087,"model_execution_start_ms":1795226232967,"model_execution_end_ms":1795226233085,"prompt_eval_end_ms":1795226231494,"first_token_ms":1795226231494,"aggregate_sampling_time_ms":7,"aggregate_model_execution_time_ms":6761,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:27:13.122 23585 23655 I ARMLLM  : msg=0|verdict=HIGH_RISK|first_token_ms=6927|total_ms=8524|tokens=16|tok_per_s=9.39|pss_mb=1319
+11-21 07:27:19.403 23585 23660 I ARMLLM  : {"prefill_token_per_sec":64.3577,"decode_token_per_sec":12.3853,"prompt_tokens":262,"generated_tokens":27,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226233152,"inference_end_ms":1795226239403,"model_execution_start_ms":1795226239320,"model_execution_end_ms":1795226239402,"prompt_eval_end_ms":1795226237223,"first_token_ms":1795226237223,"aggregate_sampling_time_ms":8,"aggregate_model_execution_time_ms":6229,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:27:19.432 23585 23655 I ARMLLM  : msg=1|verdict=SUSPICIOUS|first_token_ms=4072|total_ms=6252|tokens=28|tok_per_s=12.38|pss_mb=1320
+11-21 07:27:36.023 23585 23660 I ARMLLM  : {"prefill_token_per_sec":117.841,"decode_token_per_sec":15.984,"prompt_tokens":107,"generated_tokens":32,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226253113,"inference_end_ms":1795226256023,"model_execution_start_ms":1795226255951,"model_execution_end_ms":1795226256022,"prompt_eval_end_ms":1795226254021,"first_token_ms":1795226254021,"aggregate_sampling_time_ms":1,"aggregate_model_execution_time_ms":3986,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:28:20.031 28688 28715 I ARMLLM  : llama_threads=4
+11-21 07:29:54.439 29481 29715 I ARMLLM  : llama_threads=4
+11-21 07:30:40.070 29481 29717 I ARMLLM  : llama_threads=4
+11-21 07:31:16.300 30818 30848 I ARMLLM  : llama_threads=4
+11-21 07:33:33.419 31880 31977 I ARMLLM  : llama_threads=4
+11-21 07:33:58.673   473   592 I ARMLLM  : llama_threads=4
+11-21 07:34:10.475   473   592 I ARMLLM  : {"prefill_token_per_sec":60.2241,"decode_token_per_sec":11.4749,"prompt_tokens":215,"generated_tokens":34,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226643942,"inference_end_ms":1795226650475,"model_execution_start_ms":1795226650395,"model_execution_end_ms":1795226650474,"prompt_eval_end_ms":1795226647512,"first_token_ms":1795226647512,"aggregate_sampling_time_ms":13,"aggregate_model_execution_time_ms":8347,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:34:10.480   473   591 I ARMLLM  : cold|first_token_ms=9041|total_ms=12005|tokens=35|stats={"prefill_token_per_sec":60.2241,"decode_token_per_sec":11.4749,"prompt_tokens":215,"generated_tokens":34,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226643942,"inference_end_ms":1795226650475,"model_execution_start_ms":1795226650395,"model_execution_end_ms":1795226650474,"prompt_eval_end_ms":1795226647512,"first_token_ms":1795226647512,"aggregate_sampling_time_ms":13,"aggregate_model_execution_time_ms":8347,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:34:16.694   473   592 I ARMLLM  : {"prefill_token_per_sec":73.235,"decode_token_per_sec":12.2338,"prompt_tokens":139,"generated_tokens":27,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226652588,"inference_end_ms":1795226656693,"model_execution_start_ms":1795226656587,"model_execution_end_ms":1795226656692,"prompt_eval_end_ms":1795226654486,"first_token_ms":1795226654486,"aggregate_sampling_time_ms":8,"aggregate_model_execution_time_ms":6183,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:34:16.697   473   591 I ARMLLM  : warm|first_token_ms=1898|total_ms=4109|tokens=28|stats={"prefill_token_per_sec":73.235,"decode_token_per_sec":12.2338,"prompt_tokens":139,"generated_tokens":27,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226652588,"inference_end_ms":1795226656693,"model_execution_start_ms":1795226656587,"model_execution_end_ms":1795226656692,"prompt_eval_end_ms":1795226654486,"first_token_ms":1795226654486,"aggregate_sampling_time_ms":8,"aggregate_model_execution_time_ms":6183,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:34:16.744   473   591 I ARMLLM  : cpu_supported=true
+11-21 07:34:24.959   473   592 I ARMLLM  : {"prefill_token_per_sec":66.9174,"decode_token_per_sec":12.0192,"prompt_tokens":338,"generated_tokens":15,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226658660,"inference_end_ms":1795226664959,"model_execution_start_ms":1795226664880,"model_execution_end_ms":1795226664958,"prompt_eval_end_ms":1795226663711,"first_token_ms":1795226663711,"aggregate_sampling_time_ms":4,"aggregate_model_execution_time_ms":6287,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:34:24.989   473   591 I ARMLLM  : msg=0|verdict=HIGH_RISK|first_token_ms=6934|total_ms=8184|tokens=16|tok_per_s=12.00|pss_mb=1268
+11-21 07:34:31.126   473   592 I ARMLLM  : {"prefill_token_per_sec":66.5143,"decode_token_per_sec":12.4539,"prompt_tokens":262,"generated_tokens":27,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226665019,"inference_end_ms":1795226671126,"model_execution_start_ms":1795226671047,"model_execution_end_ms":1795226671123,"prompt_eval_end_ms":1795226668958,"first_token_ms":1795226668958,"aggregate_sampling_time_ms":10,"aggregate_model_execution_time_ms":6087,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:34:31.151   473   591 I ARMLLM  : msg=1|verdict=SUSPICIOUS|first_token_ms=3940|total_ms=6109|tokens=28|tok_per_s=12.45|pss_mb=1269
+11-21 07:35:00.219  2811  2901 I ARMLLM  : cpu_supported=true
+11-21 07:35:00.748  2811  2913 I ARMLLM  : llama_threads=4
+11-21 07:35:11.597  2811  2913 I ARMLLM  : {"prefill_token_per_sec":61.6676,"decode_token_per_sec":11.5296,"prompt_tokens":338,"generated_tokens":15,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226704814,"inference_end_ms":1795226711596,"model_execution_start_ms":1795226711515,"model_execution_end_ms":1795226711596,"prompt_eval_end_ms":1795226710295,"first_token_ms":1795226710295,"aggregate_sampling_time_ms":3,"aggregate_model_execution_time_ms":6765,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:35:11.630  2811  2901 I ARMLLM  : msg=0|verdict=HIGH_RISK|first_token_ms=9761|total_ms=11062|tokens=16|tok_per_s=11.52|pss_mb=1275
+11-21 07:35:19.600  2811  2913 I ARMLLM  : {"prefill_token_per_sec":65.2066,"decode_token_per_sec":11.4358,"prompt_tokens":262,"generated_tokens":27,"model_load_start_ms":0,"model_load_end_ms":0,"inference_start_ms":1795226713220,"inference_end_ms":1795226719599,"model_execution_start_ms":1795226719494,"model_execution_end_ms":1795226719598,"prompt_eval_end_ms":1795226717238,"first_token_ms":1795226717238,"aggregate_sampling_time_ms":7,"aggregate_model_execution_time_ms":6361,"SCALING_FACTOR_UNITS_PER_SECOND":1000}
+11-21 07:35:19.627  2811  2901 I ARMLLM  : msg=1|verdict=SUSPICIOUS|first_token_ms=5576|total_ms=7939|tokens=28|tok_per_s=11.43|pss_mb=1272

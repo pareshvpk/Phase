@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -33,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arm.threatassistant.R
 import com.arm.threatassistant.domain.detection.riskpolicy.ThreatVerdictLevel
-import com.arm.threatassistant.domain.model.AnalysisInput
 import com.arm.threatassistant.domain.model.AnalysisStatus
 import com.arm.threatassistant.llm.LlmInstallState
 import com.arm.threatassistant.llm.LlmInstallStatus
@@ -48,7 +48,6 @@ import com.arm.threatassistant.presentation.components.VerdictCard
 import com.arm.threatassistant.presentation.result.OfflineExplanation
 import com.arm.threatassistant.presentation.result.ReasonId
 import com.arm.threatassistant.presentation.result.ReasonMapper
-import com.arm.threatassistant.presentation.result.RiskHighlighter
 import com.arm.threatassistant.presentation.result.labelRes
 import com.arm.threatassistant.presentation.settings.AppLanguage
 import com.arm.threatassistant.presentation.settings.AppSettings
@@ -65,8 +64,6 @@ import kotlinx.coroutines.delay
 fun CheckScreen(
     modifier: Modifier = Modifier,
     viewModel: ThreatAnalysisViewModel = viewModel(),
-    ingestedInput: AnalysisInput? = null,
-    ingestRequestId: Long = 0L,
     isActive: Boolean = true
 ) {
     val context = LocalContext.current
@@ -100,9 +97,7 @@ fun CheckScreen(
         OfflineExplanation.build(context, reasons)
     }
 
-    val highlightSpans = remember(state.highlightPhrases, state.inputText) {
-        RiskHighlighter.spans(state.inputText, state.highlightPhrases)
-    }
+    val highlightSpans = state.highlightSpans
 
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     LaunchedEffect(state.riskAssessment) {
@@ -137,10 +132,8 @@ fun CheckScreen(
         }
     }
 
-    LaunchedEffect(ingestRequestId) {
-        if (ingestedInput != null) {
-            viewModel.onIngestedInput(context, ingestedInput)
-        }
+    DisposableEffect(viewModel) {
+        onDispose { viewModel.cancelExplanation(context.applicationContext) }
     }
 
     val result = state.riskAssessment
@@ -253,7 +246,7 @@ fun CheckScreen(
                 }
             }
 
-            item { ActionsCard(verdict = result.verdict) }
+            item { ActionsCard(verdict = result.verdict, reasons = reasons) }
 
             item {
                 LlmExplanationSection(

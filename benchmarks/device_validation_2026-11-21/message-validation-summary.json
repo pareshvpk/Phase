@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-21",
+  "scope": "Message validation only; other development workstreams remained paused",
+  "device": {"model": "vivo V2338", "android": 16, "abi": "arm64-v8a"},
+  "application": {
+    "package": "com.arm.threatassistant",
+    "version": "2.1.0",
+    "build": "debug",
+    "installation": "Updated in place; existing data and model retained",
+    "apk_sha256_verified_on_device": "605d054346353f33940eb36cd07e39040a2303dec6a6c4d8740a0a40b63013b3"
+  },
+  "fixes": [
+    "Pending MMS IDs receive a final provider lookup before retry expiry, even if Android delays the job",
+    "Pending MMS IDs absent from a successful provider query are removed from the retry queue",
+    "Emphatic negated UPI instructions preserve OTP privacy and do not produce payment-mismatch evidence",
+    "Accuracy evaluation uses sender-aware alert policy and reports how many sender values are available"
+  ],
+  "local_jvm_tests": {"passed": 364, "failed": 0, "errors": 0, "skipped": 0},
+  "device_tests": {
+    "focused_processor_and_fake_provider": {"passed": 7, "log": "message-validation.txt"},
+    "accuracy_soak_concurrency_hostile_input": {"passed": 4, "log": "message-stress.txt"},
+    "total_passed": 11
+  },
+  "held_out_dataset": {
+    "total": 2292,
+    "known_senders": 0,
+    "scam_count": 625,
+    "scams_alerted": 566,
+    "recall_percent": 90.6,
+    "safe_count": 1667,
+    "false_alerts": 41,
+    "false_alert_percent": 2.5,
+    "scams_skipped_by_sensitive_filter": 22,
+    "real_only": {"total": 1279, "scam_count": 324, "scams_alerted": 292, "safe_count": 955, "false_alerts": 7},
+    "metrics": "message-metrics.txt"
+  },
+  "stability": {
+    "soak_messages": 10000,
+    "soak_seconds": 40.61,
+    "java_heap_growth_kb": 81,
+    "concurrency_threads": 8,
+    "concurrency_analyses": 4000,
+    "concurrency_verdict_mismatches": 0,
+    "hostile_input_cases_passed": 20
+  },
+  "limitations": [
+    "Synthetic processor tests use isolated files and suppress notifications; they do not send messages or read the real inbox",
+    "MMS lifecycle tests use a fake provider; live carrier SMS/MMS delivery and notification behavior remain unverified",
+    "READ_SMS remained denied; RECEIVE_SMS permission was not changed",
+    "The evaluation dataset contains no sender values, so business-header behavior is covered separately by focused tests",
+    "Accuracy and false-alert rates describe this dataset only",
+    "This validates the debug build, not a signed release installation"
+  ],
+  "cleanup": {
+    "synthetic_alert_files_removed": true,
+    "stay_on_while_plugged_in_restored_to_original": 0,
+    "temporary_deviceidle_exemption_removed": true,
+    "airplane_mode": "off",
+    "wifi": "enabled",
+    "application_opened_after_testing": true
+  }
+}

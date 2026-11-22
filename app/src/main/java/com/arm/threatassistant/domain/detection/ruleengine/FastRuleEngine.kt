@@ -110,8 +110,8 @@ object FastRuleEngine {
             listOf("verify your banking credentials", "verify your credentials"),
             "Message requests banking credential verification."),
         RuleDefinition("cred_003", RuleCategory.CREDENTIAL_REQUEST, DetectionSeverity.HIGH,
-            listOf("share your otp", "share the otp", "send your otp", "send the otp"),
-            "Message asks the recipient to share or send an OTP."),
+            listOf(CredentialLanguage.SHARE_REQUEST, CredentialLanguage.REPLY_REQUEST),
+            "Message asks the recipient to disclose a private code or password."),
         RuleDefinition("cred_004", RuleCategory.CREDENTIAL_REQUEST, DetectionSeverity.HIGH,
             listOf("confirm your pin", "confirm your pincode", "reveal your pin"),
             "Message asks the recipient to confirm or reveal a PIN."),
@@ -130,8 +130,8 @@ object FastRuleEngine {
         RuleDefinition("cred_009", RuleCategory.CREDENTIAL_REQUEST, DetectionSeverity.HIGH,
             // Lookbehind keeps the bank warning "do not / never share OTP" silent.
             listOf("$NOT_NEGATED\\bshare otp", "$NOT_NEGATED\\bsend otp", "$NOT_NEGATED\\btell otp",
-                "$NOT_NEGATED\\bforward otp", "otp share karo", "otp bhejo", "otp batao",
-                "$NOT_NEGATED\\bshare pin", "$NOT_NEGATED\\bshare upi pin", "enter upi pin to receive"),
+                "$NOT_NEGATED\\bforward otp", CredentialLanguage.HINGLISH_REQUEST,
+                "$NOT_NEGATED\\bshare pin", "$NOT_NEGATED\\bshare upi pin"),
             "Message asks the recipient to share an OTP or UPI PIN, even without the article."),
         // Installable APKs are classified here rather than as a money demand because
         // their primary purpose is to steal OTPs, PINs and passwords; no explicit
@@ -192,8 +192,8 @@ object FastRuleEngine {
                 "send money immediately"),
             "Message demands immediate fund transfer."),
         RuleDefinition("pay_009", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.HIGH,
-            listOf("collect request", "approve the request to receive",
-                "enter pin to receive", "scan to receive", "scan this qr to receive"),
+            listOf("approve the request to receive", "enter (?:upi )?pin to receive",
+                "scan to receive", "scan this qr to receive").map { "$NOT_NEGATED\\b$it" },
             "Message tricks the recipient into approving a UPI collect request that debits them."),
         RuleDefinition("pay_010", RuleCategory.PAYMENT_DEMAND, DetectionSeverity.MEDIUM,
             listOf("refund has been initiated click", "claim your refund", "income tax refund"),
@@ -243,7 +243,7 @@ object FastRuleEngine {
      * verdict is produced.
      */
     fun detect(input: AnalysisInput): RuleDetectionResult {
-        val text = input.normalizedText ?: input.messageText
+        val text = CredentialLanguage.maskReminders(input.normalizedText ?: input.messageText)
         val normalized = normalizeForMatching(text)
         // Invisible characters are used both between words ("act​within") and
         // inside words to break keywords ("sh​are your o‍TP"). Match both
@@ -257,8 +257,24 @@ object FastRuleEngine {
         val detectedSignals = mutableListOf<DetectionSignal>()
 
         var signalIndex = 0
+        val paymentRanges = UpiPaymentRequest.evidence(input.messageText)
 
         for (rule in RULES) {
+            if (rule.ruleId == UpiPaymentRequest.RULE_ID && paymentRanges.isNotEmpty()) {
+                signalIndex++
+                detectedSignals.add(DetectionSignal(
+                    signalId = "$DETECTOR_ID-$signalIndex",
+                    category = rule.category,
+                    ruleId = rule.ruleId,
+                    description = UpiPaymentRequest.EXPLANATION,
+                    matchedText = paymentRanges.joinToString(" … ") { input.messageText.substring(it) },
+                    severity = rule.severity,
+                    detectorId = DETECTOR_ID,
+                    detectorVersion = DETECTOR_VERSION,
+                    originalRanges = paymentRanges
+                ))
+                continue
+            }
             val spans = variants.flatMap { bestMatches(rule, it) }.distinctBy { it.text }
             for (span in spans) {
                 signalIndex++

@@ -124,4 +124,30 @@
     <string name="settings_local_language_explanations_title">हिन्दी/तमिल में AI स्पष्टीकरण (प्रयोगात्मक)</string>
     <string name="settings_local_language_explanations_summary">निश्चित व्याख्या के बजाय हिन्दी और तमिल के लिए ऑन-डिवाइस मॉडल का उपयोग करें।</string>
 
+    <string name="reason_disclosure">निजी कोड या पासवर्ड बताने को कहता है</string>
+    <string name="action_disclosure_private">जवाब में अपना OTP, PIN या पासवर्ड न भेजें।</string>
+    <string name="action_disclosure_verify">अनुरोध की जाँच करने के लिए उस खाते का आधिकारिक ऐप खोलें।</string>
+    <string name="action_disclosure_shared">पहले ही बता दिया है? आधिकारिक ऐप से सेवा प्रदाता से संपर्क करें।</string>
+    <string name="reason_upi_mismatch">पैसे मिलने का वादा करके भुगतान मंज़ूर करने को कहता है</string>
+    <string name="upi_mismatch_explanation">इस अनुरोध को मंज़ूर करने पर आपके खाते से पैसे जा सकते हैं। रिफ़ंड पाने के लिए भुगतान मंज़ूर करने की ज़रूरत नहीं होती।</string>
+    <string name="action_upi_decline">भुगतान का अनुरोध अस्वीकार करें।</string>
+    <string name="action_upi_verify">खुद अपना UPI ऐप खोलकर लेनदेन का इतिहास जाँचें।</string>
+    <string name="action_upi_paid">भुगतान कर दिया है? अपने UPI ऐप या बैंक में इसकी शिकायत करें।</string>
+    <string name="onboarding_check_title">कोई भी संदेश जाँचें</string>
+    <string name="onboarding_check_body">संदेश पेस्ट करें या किसी दूसरे ऐप से टेक्स्ट साझा करें। ARM धोखाधड़ी के संकेत जाँचता है और बताता है कि क्या जोखिम भरा लगता है।</string>
+    <string name="onboarding_privacy_title">सब कुछ आपके फ़ोन पर रहता है</string>
+    <string name="onboarding_privacy_body">संदेशों की जाँच ऑफ़लाइन होती है। मॉडल इंस्टॉल होने पर AI की व्याख्या भी आपके फ़ोन पर बनती है। संदेश कभी अपलोड नहीं होते। जोखिम वाले अलर्ट सिर्फ़ आज के लिए इस फ़ोन पर निजी रूप से रखे जाते हैं और दिन खत्म होने पर हटा दिए जाते हैं।</string>
+    <string name="onboarding_protection_title">जोखिम वाले संदेशों के अलर्ट पाएँ</string>
+    <string name="onboarding_protection_body">SMS सुरक्षा वैकल्पिक है। आने वाले SMS और MMS टेक्स्ट को इस फ़ोन पर जाँचने के लिए इसे सेट अप करें। कौन सी अनुमतियाँ देनी हैं, यह आप चुनते हैं।</string>
+    <string name="onboarding_step">%2$d में से %1$d</string>
+    <string name="onboarding_skip">छोड़ें</string>
+    <string name="onboarding_next">आगे</string>
+    <string name="onboarding_back">पीछे</string>
+    <string name="onboarding_set_up">सुरक्षा सेट अप करें</string>
+    <string name="onboarding_not_now">अभी नहीं</string>
+    <string name="settings_privacy_title">गोपनीयता</string>
+    <string name="settings_show_introduction">परिचय फिर से देखें</string>
+    <string name="privacy_model_download">ARM वैकल्पिक मॉडल डाउनलोड और नेटवर्क निगरानी चालू होने पर ट्रैफ़िक सीधे आगे भेजने के लिए इंटरनेट इस्तेमाल करता है। जाँच फ़ोन पर होती है; क्लाउड विश्लेषण या रिमोट VPN सर्वर नहीं है।</string>
+    <string name="privacy_protection_control">SMS, MMS, संदेश पढ़ने और सूचनाओं की अनुमतियाँ वैकल्पिक हैं और आने वाले संदेशों की सुरक्षा के लिए इस्तेमाल होती हैं। आप सुरक्षा टैब में कभी भी सुरक्षा बंद कर सकते हैं।</string>
+    <string name="privacy_close">बंद करें</string>
 </resources>

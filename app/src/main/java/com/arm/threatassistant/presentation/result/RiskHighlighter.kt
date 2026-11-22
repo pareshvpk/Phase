@@ -1,5 +1,7 @@
 package com.arm.threatassistant.presentation.result
 
+import com.arm.threatassistant.domain.detection.ruleengine.CredentialLanguage
+
 data class HighlightSpan(val start: Int, val end: Int)
 
 object RiskHighlighter {
@@ -8,23 +10,25 @@ object RiskHighlighter {
 
     private const val MIN_PHRASE_LENGTH = 3
 
-    fun spans(message: String, phrases: List<String>): List<HighlightSpan> {
-        if (message.isEmpty() || phrases.isEmpty()) return emptyList()
+    fun spans(message: String, phrases: List<String>, exactRanges: List<IntRange> = emptyList()): List<HighlightSpan> {
+        if (message.isEmpty()) return emptyList()
 
         return try {
-            val found = mutableListOf<HighlightSpan>()
+            val searchable = CredentialLanguage.maskReminders(message)
+            val found = exactRanges.filter { it.first >= 0 && it.last < message.length && !it.isEmpty() }
+                .mapTo(mutableListOf()) { HighlightSpan(it.first, it.last + 1) }
             for (phrase in phrases) {
                 val trimmed = phrase.trim()
                 if (trimmed.length < MIN_PHRASE_LENGTH) continue
 
-                val verbatim = findAll(message, verbatimRegex(trimmed))
+                val verbatim = findAll(searchable, verbatimRegex(trimmed))
                 if (verbatim.isNotEmpty()) {
                     found.addAll(verbatim)
                     continue
                 }
 
                 val tolerant = tolerantPattern(trimmed) ?: continue
-                found.addAll(findAll(message, Regex(tolerant, RegexOption.IGNORE_CASE)))
+                found.addAll(findAll(searchable, Regex(tolerant, RegexOption.IGNORE_CASE)))
             }
             merge(found).take(MAX_SPANS)
         } catch (ignored: RuntimeException) {

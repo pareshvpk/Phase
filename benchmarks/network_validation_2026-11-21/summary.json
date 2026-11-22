@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-21",
+  "scope": "Offline network-monitor validation only",
+  "python": "3.11.9",
+  "numpy": "2.4.6",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "machine": "AMD64",
+  "tests_passed": 27,
+  "tests_log": "tests.txt",
+  "model_sha256": "8b22312822ad98842c3d541c0f6f70feccb6c012820bdeb2dcc4ae6b10d62202",
+  "fixtures": [
+    {
+      "fixture": "ordinary_udp",
+      "source": "synthetic in-memory UDP packets; no sockets opened",
+      "labels": "scenario labels for tool verification only",
+      "flows": 1,
+      "flows_with_observations": 0,
+      "output": "ordinary_udp.jsonl",
+      "evaluation": "ordinary_udp-evaluation.json"
+    },
+    {
+      "fixture": "port_fanout",
+      "source": "synthetic in-memory UDP packets; no sockets opened",
+      "labels": "scenario labels for tool verification only",
+      "flows": 12,
+      "flows_with_observations": 3,
+      "output": "port_fanout.jsonl",
+      "evaluation": "port_fanout-evaluation.json"
+    }
+  ],
+  "verified": [
+    "VLAN isolation in flow aggregation and fanout history",
+    "Mocked recvmsg restores offloaded tags and rejects truncated packets/control data",
+    "Bidirectional payload counts and bounded capture parsing",
+    "Independent-label metric calculations and input-integrity checks"
+  ],
+  "not_verified": [
+    "Actual Linux socket capture or NIC offload behaviour",
+    "Raspberry Pi/Arm runtime performance",
+    "Detection accuracy on independently labelled real traffic"
+  ],
+  "other_workstreams": "Message validation completed; malware and submission work not resumed"
+}

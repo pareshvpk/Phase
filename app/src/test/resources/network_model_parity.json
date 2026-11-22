@@ -1,0 +1,54 @@
+[
+  {
+    "values": {},
+    "label": "normal",
+    "score": 0.6183867393257723,
+    "imputed": 41
+  },
+  {
+    "values": {
+      "protocol_type": "tcp",
+      "service": "http_443",
+      "duration": 3,
+      "src_bytes": 340,
+      "dst_bytes": 18000
+    },
+    "label": "normal",
+    "score": 0.8704397836708566,
+    "imputed": 36
+  },
+  {
+    "values": {
+      "protocol_type": "udp",
+      "service": "domain_u",
+      "duration": 0,
+      "src_bytes": 44,
+      "dst_bytes": 120
+    },
+    "label": "normal",
+    "score": 0.9997666799710487,
+    "imputed": 36
+  },
+  {
+    "values": {
+      "protocol_type": "tcp",
+      "duration": 120,
+      "src_bytes": 5000000,
+      "dst_bytes": 0
+    },
+    "label": "normal",
+    "score": 0.9401191443869316,
+    "imputed": 37
+  },
+  {
+    "values": {
+      "protocol_type": "udp",
+      "duration": 60,
+      "src_bytes": 0,
+      "dst_bytes": 100000000
+    },
+    "label": "normal",
+    "score": 0.989251465184448,
+    "imputed": 37
+  }
+]

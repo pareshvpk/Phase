@@ -15,6 +15,7 @@ fun armProperty(name: String): String = (project.findProperty(name) as String?)?
 val llmModelUrl = armProperty("armLlmModelUrl")
 val llmTokenizerUrl = armProperty("armLlmTokenizerUrl")
 val llmModelSha256 = armProperty("armLlmModelSha256")
+val llmTokenizerSha256 = armProperty("armLlmTokenizerSha256")
 val llmModelBytes = armProperty("armLlmModelBytes").toLongOrNull() ?: 0L
 
 android {
@@ -25,13 +26,14 @@ android {
         applicationId = "com.arm.threatassistant"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "2.0.0"
+        versionCode = 3
+        versionName = "2.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "LLM_MODEL_URL", "\"$llmModelUrl\"")
         buildConfigField("String", "LLM_TOKENIZER_URL", "\"$llmTokenizerUrl\"")
         buildConfigField("String", "LLM_MODEL_SHA256", "\"$llmModelSha256\"")
+        buildConfigField("String", "LLM_TOKENIZER_SHA256", "\"$llmTokenizerSha256\"")
         buildConfigField("long", "LLM_MODEL_BYTES", "${llmModelBytes}L")
 
         ndk {
@@ -102,6 +104,7 @@ android {
 
 
 dependencies {
+    implementation(files("libs/hev-socks5-tunnel-2.20.0.aar"))
     implementation(platform(libs.compose.bom))
     implementation(libs.core.ktx)
     implementation(libs.appcompat)

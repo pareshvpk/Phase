@@ -1,0 +1,24 @@
+{
+  "perms": [
+    "android.permission.POST_NOTIFICATIONS: granted=true, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]",
+    "android.permission.RECEIVE_SMS: granted=false, flags=[ USER_SET|USER_FIXED|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED|RESTRICTION_INSTALLER_EXEMPT]",
+    "android.permission.RECEIVE_SMS: granted=false, flags=[ RESTRICTION_UPGRADE_EXEMPT]",
+    "android.permission.RECEIVE_SMS: granted=false, flags=[ RESTRICTION_UPGRADE_EXEMPT]"
+  ],
+  "statuses": [
+    "Broadcasting: Intent { act=org.ps3.sentinel.DEBUG_SMS flg=0x10400000 cmp=org.ps3.sentinel/.sms.DebugSmsReceiver (has extras) }\r\nBroadcast completed: result=0",
+    "Broadcasting: Intent { act=org.ps3.sentinel.DEBUG_SMS flg=0x10400000 cmp=org.ps3.sentinel/.sms.DebugSmsReceiver (has extras) }\r\nBroadcast completed: result=0"
+  ],
+  "countsAfterOtpThenScam": [
+    0,
+    2
+  ],
+  "addedNotificationCount": 2,
+  "events": [
+    "         1795110169.201 28720 29318 I PS3Timing: sms_verdict level=low sms_label=null full=false alert=false",
+    "         1795110170.213 28720 29333 I PS3Timing: deferred_analysis_done_ms=1085 posted=false updated=false",
+    "         1795110177.544 28720 29318 I PS3Timing: sms_verdict level=high sms_label=null full=false alert=true",
+    "         1795110177.582 28720 29318 I PS3Timing: sms_received_to_alert_ms=95",
+    "         1795110178.593 28720 29333 I PS3Timing: deferred_analysis_done_ms=1106 posted=false updated=false"
+  ]
+}

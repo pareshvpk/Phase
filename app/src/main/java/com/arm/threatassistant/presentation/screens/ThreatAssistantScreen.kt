@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -34,6 +35,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arm.threatassistant.R
 import com.arm.threatassistant.domain.model.AnalysisInput
 import com.arm.threatassistant.domain.model.InputSource
+import com.arm.threatassistant.presentation.onboarding.OnboardingPrefs
+import com.arm.threatassistant.presentation.onboarding.OnboardingScreen
+import com.arm.threatassistant.presentation.onboarding.shouldShowOnboarding
 import com.arm.threatassistant.presentation.viewmodel.ThreatAnalysisViewModel
 import com.arm.threatassistant.sms.TodayAlertsLogic
 import com.arm.threatassistant.sms.TodayAlertsStore
@@ -58,16 +62,53 @@ private enum class Destination(
 fun ThreatAssistantScreen(
     ingestedInput: AnalysisInput? = null,
     ingestRequestId: Long = 0L,
-    viewModel: ThreatAnalysisViewModel = viewModel()
+    viewModel: ThreatAnalysisViewModel = viewModel(),
+    launchAction: String? = null,
+    launchRequestId: Long = 0L
 ) {
     val context = LocalContext.current
     val todayAlerts by TodayAlertsStore.alerts.collectAsState()
     var destination by rememberSaveable { mutableStateOf(Destination.CHECK) }
+    LaunchedEffect(launchAction, launchRequestId) {
+        if (launchAction == com.arm.threatassistant.network.NetworkVpnService.OPEN) {
+            destination = Destination.PROTECTION
+        }
+    }
+    var reviewingApps by rememberSaveable { mutableStateOf(false) }
+    var showIntroduction by rememberSaveable {
+        mutableStateOf(shouldShowOnboarding(OnboardingPrefs.isDone(context), launchAction))
+    }
+    var handledLaunchRequestId by rememberSaveable { mutableLongStateOf(launchRequestId) }
+    var handledIngestRequestId by rememberSaveable { mutableLongStateOf(0L) }
+
+    // A new share, even with no usable text, interrupts the introduction.
+    // Remember the handled request so recreation preserves an explicit replay.
+    LaunchedEffect(launchRequestId) {
+        if (handledLaunchRequestId != launchRequestId) {
+            handledLaunchRequestId = launchRequestId
+            showIntroduction = shouldShowOnboarding(OnboardingPrefs.isDone(context), launchAction)
+            destination = if (launchAction == com.arm.threatassistant.network.NetworkVpnService.OPEN)
+                Destination.PROTECTION else Destination.CHECK
+            reviewingApps = false
+        }
+    }
 
     LaunchedEffect(ingestRequestId) {
-        if (ingestRequestId > 0L) {
+        if (ingestedInput != null && ingestRequestId > handledIngestRequestId) {
+            handledIngestRequestId = ingestRequestId
+            viewModel.onIngestedInput(context, ingestedInput)
             destination = Destination.CHECK
+            reviewingApps = false
         }
+    }
+
+    if (showIntroduction) {
+        OnboardingScreen(onFinish = { openProtection ->
+            OnboardingPrefs.markDone(context)
+            showIntroduction = false
+            destination = if (openProtection) Destination.PROTECTION else Destination.CHECK
+        })
+        return
     }
 
     // Keep the tab badge current, including after local midnight.
@@ -100,7 +141,10 @@ fun ThreatAssistantScreen(
                 Destination.entries.forEach { item ->
                     NavigationBarItem(
                         selected = destination == item,
-                        onClick = { destination = item },
+                        onClick = {
+                            destination = item
+                            reviewingApps = false
+                        },
                         icon = {
                             if (item == Destination.TODAY) {
                                 BadgedBox(
@@ -148,8 +192,6 @@ fun ThreatAssistantScreen(
             when (destination) {
                 Destination.CHECK -> CheckScreen(
                     viewModel = viewModel,
-                    ingestedInput = ingestedInput,
-                    ingestRequestId = ingestRequestId,
                     isActive = destination == Destination.CHECK
                 )
                 Destination.TODAY -> TodayScreen(
@@ -165,8 +207,15 @@ fun ThreatAssistantScreen(
                     },
                     onOpenProtection = { destination = Destination.PROTECTION }
                 )
-                Destination.PROTECTION -> ProtectionScreen()
-                Destination.SETTINGS -> SettingsScreen()
+                Destination.PROTECTION -> if (reviewingApps) {
+                    AppsScreen(onBack = { reviewingApps = false })
+                } else {
+                    ProtectionScreen(onReviewApps = { reviewingApps = true })
+                }
+                Destination.SETTINGS -> SettingsScreen(onShowIntroduction = {
+                    OnboardingPrefs.reset(context)
+                    showIntroduction = true
+                })
             }
         }
     }

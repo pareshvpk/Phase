@@ -19,6 +19,8 @@ import com.arm.threatassistant.llm.AdviceGuard
 import com.arm.threatassistant.llm.ExplanationPromptBuilder
 import com.arm.threatassistant.llm.LlmExplainerProvider
 import com.arm.threatassistant.presentation.result.OfflineExplanation
+import com.arm.threatassistant.presentation.result.HighlightSpan
+import com.arm.threatassistant.presentation.result.RiskHighlighter
 import com.arm.threatassistant.presentation.result.ReasonMapper
 import com.arm.threatassistant.presentation.settings.AppLanguage
 import com.arm.threatassistant.presentation.settings.AppSettings
@@ -75,7 +77,7 @@ class ThreatAnalysisViewModel : ViewModel() {
                 smsClassifierResult = null,
                 urlDetectionResult = null,
                 riskAssessment = null,
-                highlightPhrases = emptyList(),
+                highlightSpans = emptyList(),
                 explanation = explanationAvailability(context)
             )
         }
@@ -96,7 +98,7 @@ class ThreatAnalysisViewModel : ViewModel() {
                     smsClassifierResult = null,
                     urlDetectionResult = null,
                     riskAssessment = null,
-                    highlightPhrases = emptyList(),
+                    highlightSpans = emptyList(),
                     explanation = explanationAvailability(context)
                 )
             }
@@ -124,7 +126,7 @@ class ThreatAnalysisViewModel : ViewModel() {
                     smsClassifierResult = null,
                     urlDetectionResult = null,
                     riskAssessment = null,
-                    highlightPhrases = emptyList(),
+                    highlightSpans = emptyList(),
                     explanation = explanationAvailability(context)
                 )
             }
@@ -141,7 +143,7 @@ class ThreatAnalysisViewModel : ViewModel() {
                 smsClassifierResult = null,
                 urlDetectionResult = null,
                 riskAssessment = null,
-                highlightPhrases = emptyList(),
+                highlightSpans = emptyList(),
                 explanation = explanationAvailability(context)
             )
         }
@@ -151,11 +153,14 @@ class ThreatAnalysisViewModel : ViewModel() {
     private fun ingest(context: Context, input: AnalysisInput) {
         // The complete offline pipeline runs off the main thread. The shared
         // ThreatAnalyzer loads and caches the classifier model exactly once.
+        val displayed = _uiState.value.inputText
         viewModelScope.launch(Dispatchers.Default) {
             val analysis = ThreatAnalyzer.analyze(context, input.messageText, input.source)
             val normalized = analysis.normalizedInput
+            val highlights = highlightSpans(analysis, displayed)
 
             _uiState.update {
+                if (it.inputText != displayed) return@update it
                 it.copy(
                     status = AnalysisStatus.COMPLETED,
                     errorMessage = null,
@@ -164,19 +169,23 @@ class ThreatAnalysisViewModel : ViewModel() {
                     smsClassifierResult = analysis.classifierResult,
                     urlDetectionResult = analysis.urlDetectionResult,
                     riskAssessment = analysis.riskAssessment,
-                    highlightPhrases = highlightPhrases(analysis),
+                    highlightSpans = highlights,
                     explanation = explanationAvailability(context)
                 )
             }
         }
     }
 
-    private fun highlightPhrases(analysis: ThreatAnalysisResult): List<String> {
-        val rulePhrases = analysis.ruleDetectionResult.signals
+    private fun highlightSpans(analysis: ThreatAnalysisResult, displayed: String): List<HighlightSpan> {
+        val rules = analysis.ruleDetectionResult.signals
+        val rulePhrases = rules.filter { it.originalRanges.isEmpty() }
             .mapNotNull { signal -> signal.matchedText.takeIf { text -> text.isNotBlank() } }
         val urlPhrases = analysis.urlDetectionResult.signals
             .mapNotNull { signal -> signal.matchedUrl.takeIf { url -> url.isNotBlank() } }
-        return (rulePhrases + urlPhrases).distinct()
+        val offset = displayed.indexOf(analysis.normalizedInput.messageText)
+        if (offset < 0) return emptyList()
+        val ranges = rules.flatMap { it.originalRanges }.map { (it.first + offset)..(it.last + offset) }
+        return RiskHighlighter.spans(displayed, (rulePhrases + urlPhrases).distinct(), ranges)
     }
 
     /**
@@ -221,15 +230,13 @@ class ThreatAnalysisViewModel : ViewModel() {
         )
 
         val fallbackErrorMessage = context.getString(R.string.error_explanation_failed)
-        val fallback = OfflineExplanation.build(
-            context,
-            ReasonMapper.map(
-                ruleResult = current.ruleDetectionResult,
-                urlResult = current.urlDetectionResult,
-                classifierResult = current.smsClassifierResult
-            )
+        val reasons = ReasonMapper.map(
+            ruleResult = current.ruleDetectionResult,
+            urlResult = current.urlDetectionResult,
+            classifierResult = current.smsClassifierResult
         )
-        val safeSteps = OfflineExplanation.safeStepsFor(context, assessment.verdict)
+        val fallback = OfflineExplanation.build(context, reasons)
+        val safeSteps = OfflineExplanation.safeStepsFor(context, assessment.verdict, reasons)
 
         stopExplanation(context)
         _uiState.update { it.copy(explanation = ExplanationState.Generating("")) }
@@ -312,6 +319,6 @@ data class ThreatAnalysisUiState(
     val smsClassifierResult: SmsClassifierResult? = null,
     val urlDetectionResult: UrlDetectionResult? = null,
     val riskAssessment: RiskAssessment? = null,
-    val highlightPhrases: List<String> = emptyList(),
+    val highlightSpans: List<HighlightSpan> = emptyList(),
     val explanation: ExplanationState = ExplanationState.Hidden
 )

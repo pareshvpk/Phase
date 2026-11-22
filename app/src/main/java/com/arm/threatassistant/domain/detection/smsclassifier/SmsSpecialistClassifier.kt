@@ -1,6 +1,7 @@
 package com.arm.threatassistant.domain.detection.smsclassifier
 
 import kotlin.math.exp
+import com.arm.threatassistant.domain.detection.ruleengine.CredentialLanguage
 
 /**
  * SMS Specialist Classifier — logistic regression inference with TF-IDF features.
@@ -104,7 +105,7 @@ class SmsSpecialistClassifier private constructor(
         val m = model!!
 
         return try {
-            runInference(text, m)
+            runInference(CredentialLanguage.maskReminders(text), m)
         } catch (e: Exception) {
             SmsClassifierResult(
                 status = SmsClassifierStatus.ERROR,

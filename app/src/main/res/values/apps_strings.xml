@@ -1,0 +1,29 @@
+<resources>
+    <string name="apps_review_title">Review app access</string>
+    <string name="apps_back">Back</string>
+    <string name="apps_scope">Shows apps whose enabled accessibility services Android makes visible here. Screen readers and other assistive tools may need these capabilities. This snapshot shows access only. It cannot establish what an app did or detect malware.</string>
+    <string name="apps_unavailable">Android could not provide the service list.</string>
+    <string name="apps_retry">Try again</string>
+    <string name="apps_empty">Android reported no visible enabled accessibility services.</string>
+    <string name="apps_system">System app</string>
+    <string name="apps_combination">Check whether this app needs both SMS and accessibility access for its purpose.</string>
+    <string name="apps_screen">Enabled service can read window content.</string>
+    <string name="apps_gestures">Enabled service can perform gestures.</string>
+    <string name="apps_sms">SMS read permission granted.</string>
+    <string name="apps_unknown">SMS permission state unavailable.</string>
+    <string name="apps_details">Open app settings</string>
+    <string name="apps_access_settings">Open accessibility settings</string>
+    <string name="apps_settings_failed">Settings could not be opened.</string>
+    <string name="apps_scan">Check now</string>
+    <string name="apps_history_scope">Each check saves package names and last known access on this device for comparison. Changes in Android visibility can affect results.</string>
+    <string name="apps_first_scan">First check saved. Future checks can show newly visible services and additional access.</string>
+    <string name="apps_new_visible">Enabled service newly visible since the previous check.</string>
+    <string name="apps_new_screen">Screen-reading capability added since last observed.</string>
+    <string name="apps_new_gestures">Gesture capability added since last observed.</string>
+    <string name="apps_new_sms">SMS read permission changed from ungranted to granted since last verified.</string>
+    <string name="apps_no_change">No newly visible enabled services or additional access observed.</string>
+    <string name="apps_remediation">If access is unexpected, check the app’s permissions in app settings. Review the service in accessibility settings before turning it off, especially if you rely on assistive tools.</string>
+    <string name="apps_reset">Delete saved comparison</string>
+    <string name="apps_cleared">Saved comparison deleted. Your next check starts a new baseline.</string>
+    <string name="apps_operation_failed">The request could not be completed. Try again or reset the saved comparison.</string>
+</resources>

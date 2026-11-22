@@ -1,0 +1,113 @@
+{
+  "format": "arm-network-evaluation-v1",
+  "monitor_sha256": "e30584783ae766009711b8f49d5bc9f7d192193799027c60950a0c5042d73d04",
+  "flow_count": 12,
+  "labelled_flows": 12,
+  "label_coverage": 1.0,
+  "partial": false,
+  "capture_summary": {
+    "frames": 12,
+    "flows": 12,
+    "skipped_frames": 0
+  },
+  "experimental_model": {
+    "classes": [
+      "normal",
+      "dos",
+      "probe",
+      "r2l",
+      "u2r"
+    ],
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        12,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "accuracy": 1.0,
+    "per_class": {
+      "normal": {
+        "support": 0,
+        "precision": null,
+        "recall": null
+      },
+      "dos": {
+        "support": 0,
+        "precision": null,
+        "recall": null
+      },
+      "probe": {
+        "support": 12,
+        "precision": 1.0,
+        "recall": 1.0
+      },
+      "r2l": {
+        "support": 0,
+        "precision": null,
+        "recall": null
+      },
+      "u2r": {
+        "support": 0,
+        "precision": null,
+        "recall": null
+      }
+    },
+    "binary": {
+      "true_positive": 12,
+      "false_negative": 0,
+      "false_positive": 0,
+      "true_negative": 0,
+      "recall": 1.0,
+      "false_positive_rate": null,
+      "precision": 1.0
+    }
+  },
+  "traffic_observations": {
+    "true_positive": 3,
+    "false_negative": 9,
+    "false_positive": 0,
+    "true_negative": 0,
+    "recall": 0.25,
+    "false_positive_rate": null,
+    "precision": 1.0
+  },
+  "limitations": [
+    "Labels must come from independent ground truth, not monitor predictions.",
+    "Metrics count emitted flow segments, not unique connections or attack incidents.",
+    "Traffic observations flag patterns that can also be legitimate activity.",
+    "Unlabelled and skipped frames are not covered by these classification metrics.",
+    "Packet-derived model scores are experimental; these results apply only to the supplied labels."
+  ],
+  "labels_sha256": "3d16c2303bc2448aa3a3cc2369e64a33c88fe46e98f6caa2ce21e81e20fb1501"
+}

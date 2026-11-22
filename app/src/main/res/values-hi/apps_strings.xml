@@ -1,0 +1,29 @@
+<resources>
+    <string name="apps_review_title">ऐप की पहुँच जाँचें</string>
+    <string name="apps_back">वापस</string>
+    <string name="apps_scope">यहाँ वे ऐप दिखते हैं जिनकी चालू सुलभता सेवाओं की जानकारी Android देता है। स्क्रीन रीडर और दूसरे सहायक टूल को इन सुविधाओं की ज़रूरत हो सकती है। यह जाँच केवल पहुँच दिखाती है। इससे ऐप की गतिविधि या मैलवेयर का पता नहीं चलता।</string>
+    <string name="apps_unavailable">Android से सेवाओं की सूची नहीं मिली।</string>
+    <string name="apps_retry">फिर कोशिश करें</string>
+    <string name="apps_empty">Android ने कोई चालू सुलभता सेवा नहीं दिखाई।</string>
+    <string name="apps_system">सिस्टम ऐप</string>
+    <string name="apps_combination">जाँचें कि इस ऐप को अपने काम के लिए SMS और सुलभता, दोनों की पहुँच चाहिए या नहीं।</string>
+    <string name="apps_screen">चालू सेवा विंडो की सामग्री पढ़ सकती है।</string>
+    <string name="apps_gestures">चालू सेवा स्क्रीन पर जेस्चर कर सकती है।</string>
+    <string name="apps_sms">SMS पढ़ने की अनुमति है।</string>
+    <string name="apps_unknown">SMS की अनुमति की स्थिति उपलब्ध नहीं है।</string>
+    <string name="apps_details">ऐप सेटिंग खोलें</string>
+    <string name="apps_access_settings">सुलभता सेटिंग खोलें</string>
+    <string name="apps_settings_failed">सेटिंग नहीं खुल सकी।</string>
+    <string name="apps_scan">अभी जाँचें</string>
+    <string name="apps_history_scope">हर जाँच के बाद तुलना के लिए इस डिवाइस पर पैकेज नाम और पहुँच की पिछली ज्ञात स्थिति सहेजी जाती है। Android की दृश्यता बदलने से नतीजे बदल सकते हैं।</string>
+    <string name="apps_first_scan">पहली जाँच सहेजी गई। अगली जाँच में नई दिखाई देने वाली सेवाएँ और अतिरिक्त पहुँच देख सकते हैं।</string>
+    <string name="apps_new_visible">पिछली जाँच के बाद चालू सेवा पहली बार दिखाई दी।</string>
+    <string name="apps_new_screen">पिछली बार दिखने के बाद स्क्रीन पढ़ने की क्षमता जुड़ी।</string>
+    <string name="apps_new_gestures">पिछली बार दिखने के बाद जेस्चर की क्षमता जुड़ी।</string>
+    <string name="apps_new_sms">पिछली पुष्ट जाँच में SMS पढ़ने की अनुमति नहीं थी। अब यह अनुमति है।</string>
+    <string name="apps_no_change">कोई नई चालू सेवा या अतिरिक्त पहुँच नहीं दिखाई दी।</string>
+    <string name="apps_remediation">पहुँच अनपेक्षित लगे तो ऐप सेटिंग में अनुमतियाँ देखें। सेवा बंद करने से पहले सुलभता सेटिंग में उसकी जाँच करें, खासकर अगर आप सहायक टूल का इस्तेमाल करते हैं।</string>
+    <string name="apps_reset">सहेजी गई तुलना मिटाएँ</string>
+    <string name="apps_cleared">सहेजी गई तुलना मिट गई। अगली जाँच से नई तुलना शुरू होगी।</string>
+    <string name="apps_operation_failed">अनुरोध पूरा नहीं हुआ। फिर कोशिश करें या सहेजी गई तुलना मिटाएँ।</string>
+</resources>

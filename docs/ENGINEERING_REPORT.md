@@ -1,6 +1,6 @@
 # Technical report — ARM Digital Safety Guardian
 
-Last updated 2026-11-18 (v2.0.0 + roadmap phases 2–4). Hackathon theme: Cybersecurity & Digital Safety —
+Updated 20 November 2026. Hackathon theme: Cybersecurity & Digital Safety —
 on-device AI on Arm hardware, no cloud, with a Llama-family model running through ExecuTorch.
 
 ## 1. What ARM does
@@ -14,10 +14,11 @@ that protects non-expert users from scams and digital threats:
 | Phishing URL detection | Inside every check | URL rules + on-device host model (char n-grams) |
 | Plain-language explanation + safe steps | Result screen | **Llama 3.2 1B Instruct, SpinQuant INT4, via ExecuTorch on the Arm CPU**, behind an advice guard; fixed localized text as fallback |
 | Risky-word highlighting | Result screen | Rule matches and flagged links highlighted in the message |
+| App access review | Protection tab | Explicit local checks of enabled accessibility providers, capability changes and granted SMS access |
 | Network intrusion classification | Raspberry Pi 5 / PC companion (`tools/network_ids`) | NSL-KDD MLP, per-flow plain-language explanation, optional Llama runner |
 | Languages / themes | Settings | English, Hindi, Tamil; light/dark/system |
 
-Everything runs on the device. The only network use is the optional one-time download of the Llama model
+Android detection and explanation run on the phone. The network companion runs on a separate host. The Android app uses internet access only for an optional one-time download of the Llama model
 (the download URL is not configured yet; the model is copied by adb for now).
 
 ## 2. Architecture
@@ -38,7 +39,7 @@ InputNormalizer (NFC, invisible chars, URL/host/phone extraction)
            ┌──────────────┼──────────────────────────┐
            ▼              ▼                          ▼
    ReasonMapper     RiskHighlighter        ExplanationPromptBuilder → Llama (ExecuTorch) → AdviceGuard
-   (plain reasons)  (highlight spans)      (verdict-aware prompt)      streamed, 150-token cap
+   (plain reasons)  (highlight spans)      (verdict-aware prompt)      streamed, 70-token cap
 ```
 
 - `ThreatAnalyzer` is the single entry point for the UI and the SMS receiver. The SMS and URL models are loaded
@@ -62,8 +63,8 @@ InputNormalizer (NFC, invisible chars, URL/host/phone extraction)
 | Safety | `AdviceGuard` removes click/call/reply/share advice and "type/open/copy the link" advice unless negated, URLs, phone numbers, refusals and verdict contradictions; softens absolute claims; caps at 6 sentences; always appends the 3 safe steps |
 
 Why SpinQuant INT4: our own fp32-embedding export was 1.7 GB. SpinQuant is 1.14 GB, keeps answer quality on
-these short prompts and runs at 9–13 tok/s on mid-range phones. The model is **not bundled** in the APK because
-ExecuTorch needs a real file and bundling stored it twice (APK + extracted copy, 3.5 GB). The release APK is 13.5 MB.
+these short prompts and runs at 9–13 tok/s on mid-range phones. The default APK uses separate model files because
+ExecuTorch needs a real file and bundling stored it twice (APK + extracted copy, 3.5 GB). The submission checklist describes separate model provisioning.
 
 Hindi/Tamil Llama output is experimental (switch off by default). Llama always passes through the advice guard,
 and the localized fixed text is used whenever the guard rejects an answer.
@@ -98,14 +99,14 @@ urgency. Two false-alarm traps were found and fixed with the held-out set:
   ExecuTorch workload.
 
 ### 4.4 Network intrusion companion (roadmap 3.2 A)
-- `tools/network_ids`: numpy/scipy only, so it runs on a Raspberry Pi 5 CPU. Input is NSL-KDD 41-feature flows.
+- `tools/network_ids`: numpy/scipy only, for CPU inference on a PC or Raspberry Pi 5. Input is NSL-KDD 41-feature flows.
 - One-hot protocol/service/flag, log1p on heavy columns, z-score, MLP 122 → 64 → 5 (normal, dos, probe, r2l, u2r),
   class-weighted cross-entropy, L-BFGS.
 - KDDTest+ (the harder official test set): accuracy 78.0 %, attack detection 70.9 %, false alarms 7.2 %;
   DoS recall 0.86, probe 0.64, r2l 0.20, u2r 0.52. Inference 0.03 ms per flow.
 - `detect.py` prints a verdict, a plain-language meaning, the top 3 features (gradient × input) and 3 remediation
   steps for each flow. `--llama-cmd` pipes a short prompt to an ExecuTorch `llama_main` runner on the Pi.
-- Not implemented: live capture → NSL-KDD feature extraction (would use Zeek/argus connection logs).
+- The passive monitor reads Ethernet classic PCAP files or captures on a Linux AF_PACKET interface. It aggregates IPv4 TCP/UDP packets into bounded flows. Some NSL-KDD features cannot be observed and are imputed. The monitor independently flags a source contacting at least 10 ports on one device within 60 seconds and flows reaching 1,000 packets/s over at least one second. The output explains the observation and suggests checks. Host checks use synthetic traffic. KDDTest+ metrics above apply only to benchmark rows. Accuracy on current networks and operation on Pi hardware await measurement.
 
 ## 5. On-phone network check (removed)
 An on-phone network check (Wi-Fi security, captive portal, DNS, USB debugging, VPN) was built and device-tested on
@@ -141,22 +142,21 @@ Cold first call in a fresh process (model still loading): ~9 s to first token. T
 big-core count (4 on this phone) between `LlmModule` creation and `load()`; resizing after `load()` hung generation.
 All 18 instrumented tests pass on the vivo after the change.
 
-## 7. Privacy
-- No message leaves the phone. No analytics, no accounts.
-- Only risky SMS alerts of the current day are stored (Today tab); everything else stays in memory.
-- The app scan reads only local system state (package manager, secure settings).
-- `INTERNET` is used only for the optional model download.
-- Release builds are signed with a private key kept outside the repository (`keystore.properties`, git-ignored).
+## 7. App review and message privacy
 
-## 8. Testing
-- JVM unit tests: 321 tests, 0 failures (`./gradlew testDebugUnitTest --offline`).
-- Instrumented tests: 17 (intent ingestion, device benchmark, stress/accuracy, Llama) — run on 3 phones on 2026-11-17.
-- Python: SMS evaluation (`tools/eval/evaluate.py`), URL parity file, NIDS metrics (`tools/network_ids/out/metrics.json`).
+Protection opens a local review of enabled accessibility services. It inspects service capabilities and granted SMS access for combinations worth checking. A legitimate assistive app can need these capabilities. The findings describe access and offer a route to Android settings. They do not establish malware infection. The user selects Check now to record a local baseline or compare changes. Reset clears that baseline. Package visibility is scoped to accessibility service providers.
 
-## 9. Known limits
-- Tamil/Tanglish SMS data is thin; Hindi/Tamil Llama is experimental and has not had the 20-message check (roadmap 1.5).
-- Not yet run on an Armv8.0 phone (roadmap 1.6); such phones get the fixed explanation.
-- The URL model's recall is modest (0.61); it is tuned for few false alarms. There is no ExecuTorch variant yet (see 4.3).
-- NIDS trained on NSL-KDD (1999-era traffic); r2l/u2r recall is low; no live capture yet.
-- The app scanner relies on `QUERY_ALL_PACKAGES`, which Google Play restricts. Sideloaded distribution is fine.
-- The public model download URL is not configured (owner's choice).
+Incoming protection is opt-in. SMS comes from delivery broadcasts. MMS processing uses the local provider to retrieve text parts. Flagged incoming content can appear in the app-private Today list. Manual checks, URL analysis and Llama explanations work offline. See [Privacy and security](PRIVACY_SECURITY.md).
+
+## 8. Validation and limitations
+
+Release 2.1.0 host validation on 21 November passed 362 JVM tests and 19 Python
+tests, debug/instrumentation/release builds and lint (0 errors, 30 warnings).
+The release signing certificate was verified. See the
+[exact release validation record](VALIDATION_2026-11-21.md).
+
+The 19 November vivo V2338 debug run passed 18 instrumented tests and generated Llama output with airplane mode on and Wi-Fi off. Across 56 deliberately balanced examples, ARM warned on 24 of 28 risky messages and two of 28 routine messages. A separate receiver-policy evaluation warned on 292 of 324 scams and seven of 955 safe messages among rows marked real. These samples measure different paths. The notification check used a synthetic publisher event. See the [device report and raw evidence](../benchmarks/vivo_comparison_2026-11-19/REPORT.md).
+
+The historical results predate the latest app review, onboarding and MMS changes. Current release installation, genuine SMS/MMS delivery, permission changes, accessibility review and recording remain device gates. The local provisioning helper checks model size and both SHA-256 pins before transfer. See the [submission checklist](SUBMISSION_CHECKLIST.md).
+
+Tamil/Tanglish data is sparse. Hindi/Tamil generation and the Armv8.0 fallback still need device review. The URL classifier prioritizes precision and misses many phishing hosts. The companion model was trained on historical NSL-KDD records and its rare attack classes have low recall. Packet-derived inputs have additional feature gaps. There is no current-device field accuracy estimate.

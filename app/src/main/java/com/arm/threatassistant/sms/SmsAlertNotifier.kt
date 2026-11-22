@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger
 internal object SmsAlertNotifier {
 
     const val CHANNEL_ID = "sms_threat_alerts"
+    private const val TAG = "ARMSMS"
 
     @Volatile
     private var channelCreated = false
@@ -35,7 +37,8 @@ internal object SmsAlertNotifier {
         context: Context,
         sender: String?,
         verdict: ThreatVerdictLevel,
-        messageText: String
+        messageText: String,
+        stableId: Int? = null
     ) {
         ensureChannel(context)
 
@@ -45,11 +48,13 @@ internal object SmsAlertNotifier {
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            Log.w(TAG, "notify_skipped no_permission")
             return
         }
 
         val notificationManager = NotificationManagerCompat.from(context)
         if (!notificationManager.areNotificationsEnabled()) {
+            Log.w(TAG, "notify_skipped notifications_disabled")
             return
         }
 
@@ -70,7 +75,7 @@ internal object SmsAlertNotifier {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
 
-        val notificationId = nextRequestCode()
+        val notificationId = stableId ?: nextRequestCode()
 
         val pendingIntent = PendingIntent.getActivity(
             context,
@@ -89,13 +94,16 @@ internal object SmsAlertNotifier {
             )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setOnlyAlertOnce(stableId != null)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
 
         try {
             notificationManager.notify(notificationId, notification)
+            Log.i(TAG, "notify_posted id=$notificationId")
         } catch (_: SecurityException) {
+            Log.w(TAG, "notify_failed security")
             // Notification permission was revoked between the check and notify.
         }
     }

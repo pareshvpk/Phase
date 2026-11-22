@@ -3,7 +3,8 @@
 
 Finds the single *.pte export in the repo (via list_repo_files), downloads it
 together with tokenizer.model, and copies them into models/ as
-llama3_2_1b.pte and tokenizer.model so the APK build can bundle them.
+llama3_2_1b.pte and tokenizer.model for verified USB provisioning. They are
+not bundled in the APK; use provision_android.py after downloading.
 
 The Hugging Face token is read from the HF_TOKEN environment variable and is
 never hardcoded or printed.

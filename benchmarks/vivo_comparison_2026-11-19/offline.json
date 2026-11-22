@@ -1,0 +1,39 @@
+{
+  "pre": {
+    "air": "0",
+    "wifi": "1"
+  },
+  "state": {
+    "air": "1",
+    "wifi": "Wifi is disabled\r",
+    "routes": ""
+  },
+  "results": [
+    {
+      "app": "ARM",
+      "id": "S01",
+      "label": "scam",
+      "lang": "en",
+      "route": "offline-share",
+      "verdict": "Be careful",
+      "timing": "",
+      "advice": "",
+      "explanationSource": null,
+      "explanation": null,
+      "activePssKiB": 1293798
+    },
+    {
+      "app": "Sentinel",
+      "id": "S01",
+      "label": "scam",
+      "lang": "en",
+      "route": "offline-share",
+      "verdict": "⚠ HIGH RISK",
+      "timing": "Detect: 33.9 ms (SMS 1.5)",
+      "advice": "",
+      "explanationSource": null,
+      "explanation": "The risk is that the scammer may have obtained your card information and is trying to use it. This is likely because they may have obtained your card details through phishing or other means. To avoid this risk, you should not reply with your OTP and PIN immediately.\n\n1. Do not click or open any links in the message.\n2. Verify the request independently using the official app or by typing the official website.\n3. Report the scam to cybercrime.gov.in, call 1930, or report on Sanchar Saathi (Chakshu).",
+      "activePssKiB": 1294369
+    }
+  ]
+}

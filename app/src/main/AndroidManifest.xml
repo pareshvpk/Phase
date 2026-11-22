@@ -1,17 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- The native relay is loaded only by the API-29-gated network service.
+         Existing message protection still supports API 26. -->
+    <uses-sdk tools:overrideLibrary="hev.socks5.tunnel" />
 
-    <!-- Opt-in incoming-SMS protection. Declared but only used when the user
-         enables SMS protection in the app. -->
+    <!-- Opt-in incoming-SMS/MMS protection. Declared but only used when the
+         user enables SMS protection in the app. -->
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Only used for the one-time, user-started download of the explanation model. -->
+    <!-- Local VPN forwarding and optional user-started model download. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <!-- SMS protection is optional; do not require telephony hardware. -->
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
+
+    <!-- The app review only needs visibility of accessibility-service providers. -->
+    <queries>
+        <intent>
+            <action android:name="android.accessibilityservice.AccessibilityService" />
+        </intent>
+    </queries>
 
     <application
         android:name=".ThreatAssistantApplication"
@@ -60,7 +76,38 @@
             </intent-filter>
         </receiver>
 
+        <!-- MMS push only schedules the content-trigger job; the messages app
+             downloads and writes the MMS later. -->
+        <receiver
+            android:name=".sms.IncomingMmsReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_WAP_PUSH">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Content-trigger job that scans newly written MMS text. -->
+        <service
+            android:name=".sms.MmsWatchJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <!-- Persists the per-app locale choice on API levels below 33. -->
+        <service
+            android:name=".network.NetworkVpnService"
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+            <meta-data android:name="android.net.VpnService.SUPPORTS_ALWAYS_ON" android:value="false" />
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="User-enabled local VPN for on-device network threat monitoring and direct forwarding" />
+        </service>
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"

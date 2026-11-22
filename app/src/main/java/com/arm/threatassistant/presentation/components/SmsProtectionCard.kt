@@ -19,7 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,14 +33,16 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.arm.threatassistant.R
 import com.arm.threatassistant.presentation.theme.ArmTheme
+import com.arm.threatassistant.sms.MmsWatcher
 import com.arm.threatassistant.sms.SmsProtectionPreferences
 
 /**
  * Opt-in card for incoming-SMS protection.
  *
- * Enabling requests RECEIVE_SMS (and POST_NOTIFICATIONS on API 33+). The
- * preference is only stored when RECEIVE_SMS is granted, so the receiver can
- * never be enabled without the required permission.
+ * Enabling requests RECEIVE_SMS, RECEIVE_MMS and READ_SMS (and
+ * POST_NOTIFICATIONS on API 33+). The preference is only stored when
+ * RECEIVE_SMS is granted, so the receiver can never be enabled without the
+ * required permission.
  */
 @Composable
 fun SmsProtectionCard(modifier: Modifier = Modifier) {
@@ -55,27 +58,43 @@ fun SmsProtectionCard(modifier: Modifier = Modifier) {
     var enabled by remember {
         mutableStateOf(SmsProtectionPreferences.isEnabled(context) && hasReceiveSmsPermission())
     }
+    fun canReadMms() = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_SMS) ==
+        PackageManager.PERMISSION_GRANTED
+
+    var canScanMms by remember { mutableStateOf(canReadMms()) }
     var permissionDenied by remember { mutableStateOf(false) }
 
     // Keep the stored opt-in consistent with the actual permission state.
-    LaunchedEffect(Unit) {
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        enabled = SmsProtectionPreferences.isEnabled(context) && hasReceiveSmsPermission()
+        canScanMms = canReadMms()
+        if (enabled) MmsWatcher.schedule(context)
         if (!hasReceiveSmsPermission() && SmsProtectionPreferences.isEnabled(context)) {
             SmsProtectionPreferences.setEnabled(context, false)
+            MmsWatcher.cancel(context)
         }
     }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { grants ->
-        val granted = grants[Manifest.permission.RECEIVE_SMS] == true
+    ) {
+        val granted = hasReceiveSmsPermission()
+        canScanMms = canReadMms()
         enabled = granted
         permissionDenied = !granted
         SmsProtectionPreferences.setEnabled(context, granted)
+        if (granted) {
+            MmsWatcher.schedule(context)
+        } else {
+            MmsWatcher.cancel(context)
+        }
     }
 
     fun requestPermissions() {
         val permissions = buildList {
             add(Manifest.permission.RECEIVE_SMS)
+            add(Manifest.permission.RECEIVE_MMS)
+            add(Manifest.permission.READ_SMS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 add(Manifest.permission.POST_NOTIFICATIONS)
             }
@@ -118,6 +137,7 @@ fun SmsProtectionCard(modifier: Modifier = Modifier) {
                             enabled = false
                             permissionDenied = false
                             SmsProtectionPreferences.setEnabled(context, false)
+                            MmsWatcher.cancel(context)
                         }
                     }
                 )
@@ -127,6 +147,7 @@ fun SmsProtectionCard(modifier: Modifier = Modifier) {
                 text = stringResource(
                     when {
                         permissionDenied -> R.string.sms_protection_permission_denied
+                        enabled && !canScanMms -> R.string.sms_protection_sms_only
                         enabled -> R.string.sms_protection_enabled
                         else -> R.string.sms_protection_disabled
                     }

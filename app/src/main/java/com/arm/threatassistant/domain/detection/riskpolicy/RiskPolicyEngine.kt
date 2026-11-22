@@ -277,6 +277,7 @@ object RiskPolicyEngine {
         val summary = mutableListOf<String>()
 
         if (ruleResult != null && ruleResult.signals.isNotEmpty()) {
+            ruleResult.signals.firstOrNull { it.isUpiPaymentMismatch }?.let { summary.add(it.description) }
             val highCount = ruleResult.signals.count {
                 it.severity == com.arm.threatassistant.domain.detection.ruleengine.DetectionSeverity.HIGH
             }

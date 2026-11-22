@@ -1,5 +1,8 @@
 package com.arm.threatassistant.sms
 
+import com.arm.threatassistant.domain.detection.ruleengine.CredentialLanguage
+import com.arm.threatassistant.domain.detection.ruleengine.UpiPaymentRequest
+
 /**
  * Classifies legitimate private SMS that can be dropped before analysis.
  *
@@ -21,7 +24,7 @@ object SensitiveSmsFilter {
     private val SECRET_REQUEST = Regex(
         """(share|send|forward|tell|provide|give|submit|enter|reply with)\b.{0,40}\b(otp|code|pin|password|cvv|passcode)"""
     )
-    private val NEGATED_PREFIX = Regex("""(do not|don't|dont|never|not)\s+$""")
+    private val NEGATED_PREFIX = Regex("""\b(?:do not|don['’]?t|never|not)(?:\s+ever)?\s+$""")
     private val LINK = Regex("""https?://|www\.|\b[a-z0-9-]+\.(com|in|net|org|info|xyz|top|link|co|io|ly|me|app|site|online|click|live|shop|cc|ru|cn|tk)\b""")
     private val REWARD_LURE = Regex("""\b(receive|claim|redeem|collect|win|won|winner|prize|lottery|reward|rewards|gift|bonus|free|jackpot|lucky)\b""")
 
@@ -30,6 +33,7 @@ object SensitiveSmsFilter {
     )
     private val STRONG_LURE = Regex("""\b(won|winner|prize|lottery|jackpot|lucky draw)\b""")
     private val LINK_CALL_TO_ACTION = Regex("""\b(join|activate|withdraw|withdrawal|claim|redeem|unlock)\b""")
+    private val VERIFY_LINK = Regex("""\b(verify|confirm|click|tap|update)\b""")
     private val THREAT_WORDS = listOf(
         "will be blocked", "will be suspended", "will be deactivated",
         "account will be", "call officer"
@@ -84,7 +88,8 @@ object SensitiveSmsFilter {
         if (body.isBlank()) return null
 
         val lower = body.lowercase()
-        if (hasSecretRequest(lower)) return null
+        val requestText = CredentialLanguage.maskReminders(lower)
+        if (hasSecretRequest(requestText) || CredentialLanguage.hinglishRequest.containsMatchIn(requestText)) return null
         if (hasRewardLure(lower)) return null
         if (hasScamOverride(lower)) return null
 
@@ -100,7 +105,7 @@ object SensitiveSmsFilter {
         for (match in SECRET_REQUEST.findAll(lower)) {
             val prefixStart = maxOf(0, match.range.first - 15)
             val prefix = lower.substring(prefixStart, match.range.first)
-            if (NEGATED_PREFIX.containsMatchIn(prefix)) continue
+            if (NEGATED_PREFIX.containsMatchIn(prefix) && !CredentialLanguage.hasExceptionAfter(lower, match.range.last + 1)) continue
             return true
         }
         return false
@@ -114,6 +119,7 @@ object SensitiveSmsFilter {
      * instead of being dropped outright.
      */
     private fun hasScamOverride(lower: String): Boolean {
+        if (UpiPaymentRequest.evidence(lower).isNotEmpty()) return true
         if (SCAM_PHRASES.containsMatchIn(lower)) return true
         // Prize/lottery wording never appears in genuine OTP or bank alerts, link or not
         // (e.g. "you won a £1000 prize ... call 0906...").
@@ -122,7 +128,8 @@ object SensitiveSmsFilter {
         // transaction alert but asks the user to act through a link.
         if (LINK.containsMatchIn(lower) && LINK_CALL_TO_ACTION.containsMatchIn(lower)) return true
         val hasThreat = THREAT_WORDS.any { lower.contains(it) }
-        return hasThreat && CALLBACK_NUMBER.containsMatchIn(lower)
+        return hasThreat && (CALLBACK_NUMBER.containsMatchIn(lower) ||
+            (LINK.containsMatchIn(lower) && VERIFY_LINK.containsMatchIn(lower)))
     }
 
     private fun hasOtpSignal(lower: String): Boolean {

@@ -11,6 +11,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.setValue
 import com.arm.threatassistant.domain.adapters.ProcessTextAdapter
 import com.arm.threatassistant.domain.adapters.ShareSheetAdapter
@@ -29,11 +30,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var ingestedInput by mutableStateOf<IngestedInput?>(null)
+    private var launchAction by mutableStateOf<String?>(null)
+    private var launchRequestId by mutableLongStateOf(0L)
     private var ingestRequestId = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val settings = AppSettings.get(this)
         super.onCreate(savedInstanceState)
+        launchAction = intent?.action
+        launchRequestId = savedInstanceState?.getLong("launch_request_id") ?: 0L
+        ingestRequestId = savedInstanceState?.getLong("ingest_request_id") ?: 0L
 
         val systemDark = (resources.configuration.uiMode and
             Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
@@ -68,7 +74,9 @@ class MainActivity : AppCompatActivity() {
                 val pending = ingestedInput
                 ThreatAssistantScreen(
                     ingestedInput = pending?.input,
-                    ingestRequestId = pending?.requestId ?: 0L
+                    ingestRequestId = pending?.requestId ?: 0L,
+                    launchAction = launchAction,
+                    launchRequestId = launchRequestId
                 )
             }
         }
@@ -77,7 +85,15 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        launchAction = intent.action
+        launchRequestId++
         handleIntent(intent)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putLong("launch_request_id", launchRequestId)
+        outState.putLong("ingest_request_id", ingestRequestId)
+        super.onSaveInstanceState(outState)
     }
 
     private fun handleIntent(intent: Intent?) {

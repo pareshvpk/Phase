@@ -19,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +33,7 @@ import com.arm.threatassistant.presentation.theme.ArmTheme
 
 /** Incoming-SMS protection and the offline privacy promise. */
 @Composable
-fun ProtectionScreen(modifier: Modifier = Modifier) {
+fun ProtectionScreen(modifier: Modifier = Modifier, onReviewApps: () -> Unit = {}) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -56,6 +57,11 @@ fun ProtectionScreen(modifier: Modifier = Modifier) {
         )
 
         SmsProtectionCard()
+        com.arm.threatassistant.presentation.components.NetworkProtectionCard()
+
+        OutlinedButton(onClick = onReviewApps, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.apps_review_title))
+        }
 
         Card(
             modifier = Modifier.fillMaxWidth(),

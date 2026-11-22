@@ -1,44 +1,73 @@
-# Downloading the SpinQuant INT4 Llama model
+# On-device Llama setup
 
-Roadmap task 1.1: switch the bundled model to the ExecuTorch-community
-**Llama-3.2-1B-Instruct-SpinQuant_INT4_EO8** export, stored as
-`models/llama3_2_1b.pte` alongside `models/tokenizer.model`.
+ARM uses Llama 3.2 1B Instruct SpinQuant INT4 EO8 through ExecuTorch on a supported
+64-bit Arm Android phone. Detection works without this model; the competition
+demonstration must include actual Llama generation, not only template advice.
 
-## Usage
+The model is **not bundled in the APK**. It is approximately 1.14 GB and is copied
+separately. A model already provisioned on a phone works without internet access.
+The optional in-app download has no configured public source in this build.
 
-```sh
-cd D:\ARM   # (or the repo root)
-HF_TOKEN=hf_your_token python tools/llm/download_spinquant.py
+## Obtain the files
+
+Use an account authorized for the model and comply with its distribution terms.
+The existing host downloader requires `huggingface_hub` and an `HF_TOKEN`
+environment variable; it does not print the token. Do not include the token or
+model files in the source archive.
+
+```powershell
+py -m pip install huggingface_hub
+py tools/llm/download_spinquant.py
 ```
 
-- `HF_TOKEN` must be set in the environment; it is never hardcoded or printed by
-  this script.
-- `--repo` overrides the Hugging Face repo id
-  (default: `executorch-community/Llama-3.2-1B-Instruct-SpinQuant_INT4_EO8-ET`).
-- `--models-dir` overrides the destination directory (default: `models`).
+This prepares `models/llama3_2_1b.pte` and `models/tokenizer.model`. Verify the
+exact pair against the size and SHA-256 pins in `gradle.properties`:
 
-The script first lists the repo files with `list_repo_files`, picks the single
-`*.pte` (fails with the file list if there are zero or more than one), then
-downloads the `.pte` and `tokenizer.model` via `hf_hub_download` and copies
-them to `models/llama3_2_1b.pte` and `models/tokenizer.model`.
-
-Install:
-
-```sh
-pip install huggingface_hub
+```powershell
+py tools/llm/provision_android.py --verify-only
 ```
 
-## Do not run on a phone
+A different export is rejected. Do not change the pins just to bypass a failed
+check. A deliberate model upgrade needs runtime compatibility testing first.
 
-This script only prepares files on the host. The model files are large
-(~1 GB) and git-ignored; never commit them. The APK build bundles whatever is
-in `models/` at build time.
+## Install over USB
 
-## Verification
+Enable USB debugging and authorize the host on a phone you control. Identify
+the serial using `adb devices -l`. The helper requires an explicit serial so it
+cannot accidentally select another attached device.
 
-After downloading, run `./gradlew assembleDebug` — the build copies
-`models/llama3_2_1b.pte` and `models/tokenizer.model` into the APK assets
-(`androidResources.noCompress` keeps `pte`/`model` uncompressed so
-`AssetManager.openFd` can report their length). The installer's marker compares
-asset lengths, so swapping in the smaller SpinQuant export triggers a fresh
-install on next launch.
+```powershell
+py tools/llm/provision_android.py --serial DEVICE_SERIAL --apk app/build/outputs/apk/release/app-release.apk
+```
+
+Use `--adb C:/path/to/adb.exe` if ADB is not on PATH; `--models-dir` overrides the
+local model directory. Omit `--apk` if the correct app is already installed.
+
+The helper checks both local files before invoking ADB, installs the APK with
+`-r` if requested, stops ARM, uploads to temporary files in the active user's
+app-specific external `files/llm` directory, verifies device hashes, then
+promotes the files and opens ARM. It never uninstalls the app to work around a
+signing mismatch. A failed transfer leaves the app stopped and incomplete files
+unused. Provisioning needs space for staged files, including an extra copy when
+replacing an existing model. Some OEMs restrict shell access to app external
+storage; the helper reports that failure rather than claiming success.
+
+## Confirm on the phone
+
+1. Open a suspicious message and generate an explanation.
+2. Turn on airplane mode, turn Wi-Fi off, and generate again.
+3. Verify the on-device Llama instrumentation/log evidence, not merely the
+   presence of fixed advice on screen.
+
+The app requires a compatible 64-bit runtime and Arm LSE atomics for the
+ExecuTorch build. Unsupported phones show fixed localized advice. Host checksum
+verification cannot prove device compatibility or generation.
+
+## Host regression tests
+
+```powershell
+py -m unittest discover -s tools/llm -p "test_*.py" -v
+```
+
+Tests cover corrupt files, absent hash pins, explicit device selection and a
+remote checksum mismatch preventing file promotion and application restart.

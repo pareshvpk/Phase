@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_title">Network protection</string>
+    <string name="network_description">Check this phone’s TCP/UDP traffic locally for unusual connection patterns.</string>
+    <string name="network_start">Start monitoring</string>
+    <string name="network_stop">Stop monitoring</string>
+    <string name="network_starting">Starting…</string>
+    <string name="network_running">Monitoring on this phone</string>
+    <string name="network_stopped">Monitoring is off</string>
+    <string name="network_failed">Monitoring stopped. Check your connection and try again.</string>
+    <string name="network_denied">VPN permission was not granted. Monitoring is off.</string>
+    <string name="network_unsupported">Network monitoring requires Android 10 or later.</string>
+    <string name="network_notification">Local traffic analysis is active. Tap to review or stop.</string>
+    <string name="network_alert_title">Unusual network activity</string>
+    <string name="network_alert_body">ARM noticed a traffic pattern worth checking. Open Network protection for advice.</string>
+    <string name="network_stats">%1$d packets · %2$d KiB sent · %3$d KiB received\n%4$d active flows · %5$d completed flows</string>
+    <string name="network_fanout">Many ports contacted: this phone reached at least 10 ports on one host within a minute. Discovery tools can do this too. Close unfamiliar apps and check whether the activity stops; review their access.</string>
+    <string name="network_connections">Connection burst: at least 100 flows began in 10 seconds. Downloads or busy apps can cause this. Pause recent activity and check which apps were running.</string>
+    <string name="network_udp_burst">High UDP rate: a flow averaged at least 1,000 datagrams per second. Streaming or games can cause this. Pause them and check whether the activity stops.</string>
+    <string name="network_estimate">Experimental model class: %1$s. %2$d unavailable features use training averages. This is not a confirmed attack or a safety verdict.</string>
+    <string name="network_clear">Clear findings</string>
+    <string name="network_limits">IPv4/IPv6 TCP and UDP only. Encrypted content is not decrypted. Findings describe patterns, not proven intrusions. No automatic threat blocking. Other VPNs cannot run at the same time.</string>
+    <string name="network_consent">ARM uses Android’s VPN interface to inspect traffic metadata and forward connections directly from this phone. No remote VPN server or cloud analysis is used. Payloads are forwarded but never saved. Findings stay in memory until cleared or the app process exits. This replaces another active VPN. Unsupported protocols, including ping, may not work. Existing connections may reconnect when monitoring starts or stops. You can stop at any time. Monitoring needs a working Wi-Fi or mobile connection; network changes may require restarting it.</string>
+</resources>

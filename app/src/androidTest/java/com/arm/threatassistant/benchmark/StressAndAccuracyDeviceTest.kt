@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.arm.threatassistant.domain.ThreatAnalyzer
+import com.arm.threatassistant.domain.detection.riskpolicy.RiskPolicyEngine
 import com.arm.threatassistant.domain.detection.riskpolicy.ThreatVerdictLevel
+import com.arm.threatassistant.domain.detection.ruleengine.DetectionSeverity
 import com.arm.threatassistant.domain.model.InputSource
 import com.arm.threatassistant.llm.AdviceGuard
 import com.arm.threatassistant.llm.ExplanationPromptBuilder
@@ -44,7 +46,7 @@ class StressAndAccuracyDeviceTest {
 
     private val ctx get() = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private data class Row(val text: String, val scam: Boolean, val language: String, val real: Boolean)
+    private data class Row(val text: String, val scam: Boolean, val language: String, val real: Boolean, val sender: String?)
 
     private data class Outcome(val skipped: Boolean, val verdict: ThreatVerdictLevel?, val alert: Boolean) {
         /** What the user sees as a warning in the app (Check tab or SMS alert). */
@@ -53,11 +55,18 @@ class StressAndAccuracyDeviceTest {
 
     private fun log(line: String) = Log.i(TAG, line)
 
-    /** The SMS receiver path: sensitive filter first, then the full analysis. */
-    private fun runPipeline(text: String): Outcome {
+    /** Receiver decision logic; does not deliver a broadcast or write notifications. */
+    private fun runPipeline(text: String, sender: String? = null): Outcome {
         if (SensitiveSmsFilter.shouldSkip(text)) return Outcome(skipped = true, verdict = null, alert = false)
-        val verdict = ThreatAnalyzer.analyze(ctx, text, InputSource.SMS).riskAssessment.verdict
-        return Outcome(skipped = false, verdict = verdict, alert = SmsAlertPolicy.shouldAlert(verdict))
+        val analysis = ThreatAnalyzer.analyze(ctx, text, InputSource.SMS)
+        val verdict = analysis.riskAssessment.verdict
+        val alert = SmsAlertPolicy.shouldAlert(
+            verdict, sender,
+            analysis.ruleDetectionResult.signals.any { it.severity == DetectionSeverity.HIGH },
+            analysis.classifierResult.isThreat &&
+                (analysis.classifierResult.threatScore ?: 0.0) >= RiskPolicyEngine.classifierMinConfidence
+        )
+        return Outcome(skipped = false, verdict = verdict, alert = alert)
     }
 
     private fun loadTestSet(): List<Row> {
@@ -69,8 +78,9 @@ class StressAndAccuracyDeviceTest {
         val label = header.indexOf("label")
         val lang = header.indexOf("language")
         val real = header.indexOf("real")
+        val sender = header.indexOf("sender")
         return records.drop(1).filter { it.size == header.size }.map {
-            Row(it[text], it[label] == "1", it[lang], it[real] == "True")
+            Row(it[text], it[label] == "1", it[lang], it[real] == "True", it.getOrNull(sender)?.takeIf(String::isNotBlank))
         }
     }
 
@@ -81,7 +91,8 @@ class StressAndAccuracyDeviceTest {
     @Test
     fun test1_endToEndAccuracy() {
         val rows = loadTestSet()
-        val results = rows.map { it to runPipeline(it.text) }
+        val results = rows.map { it to runPipeline(it.text, it.sender) }
+        log("ACC_SCOPE|messages=${rows.size}|known_senders=${rows.count { it.sender != null }}|delivery_test=false")
 
         fun report(name: String, subset: List<Pair<Row, Outcome>>) {
             val scams = subset.filter { it.first.scam }

@@ -1,0 +1,24 @@
+{"app":"Sentinel","id":"S01","label":"scam","lang":"en","route":"share","verdict":"⚠ HIGH RISK","timing":"Detect: 13.8 ms (SMS 0.3)","advice":""}
+{"app":"Sentinel","id":"S02","label":"scam","lang":"en","route":"selection","verdict":"⚠ HIGH RISK","timing":"Detect: 32.4 ms (SMS 2.8)","advice":""}
+{"app":"Sentinel","id":"S03","label":"scam","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 13.5 ms (SMS 3.2) | Advice: 0.1 ms | Total: 13.7 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"S04","label":"scam","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 17.7 ms (SMS 0.7) | Advice: 0.2 ms | Total: 18.2 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"S05","label":"scam","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 11.9 ms (SMS 0.2) | Advice: 0.1 ms | Total: 16.9 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"S06","label":"scam","lang":"en","route":"share","verdict":"⚠ HIGH RISK","timing":"Detect: 22.7 ms (SMS 0.9)","advice":""}
+{"app":"Sentinel","id":"S07","label":"scam","lang":"en","route":"share","verdict":"⚠ HIGH RISK","timing":"Detect: 7.0 ms (SMS 0.5)","advice":""}
+{"app":"Sentinel","id":"S08","label":"scam","lang":"hinglish","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 8.1 ms (SMS 0.3) | Advice: 8.4 ms | Total: 17.6 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"S09","label":"scam","lang":"hi","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 3.4 ms (SMS 0.4) | Advice: 0.2 ms | Total: 3.7 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"S10","label":"scam","lang":"ta","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 37.9 ms (SMS 1.4) | Advice: 0.0 ms | Total: 38.3 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"S11","label":"scam","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 13.9 ms (SMS 1.0) | Advice: 0.1 ms | Total: 14.5 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"S12","label":"scam","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 8.5 ms (SMS 1.7) | Advice: 0.0 ms | Total: 8.7 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B01","label":"routine","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 16.7 ms (SMS 0.6) | Advice: 0.1 ms | Total: 17.1 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B02","label":"routine","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 3.4 ms (SMS 0.2) | Advice: 0.1 ms | Total: 4.2 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B03","label":"routine","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 20.9 ms (SMS 0.4) | Advice: 0.1 ms | Total: 21.1 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B04","label":"routine","lang":"en","route":"selection","verdict":"✓ LOOKS SAFE","timing":"Detect: 7.0 ms (SMS 0.3) | Advice: 0.2 ms | Total: 7.3 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B05","label":"routine","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 3.0 ms (SMS 0.3) | Advice: 0.0 ms | Total: 3.3 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B06","label":"routine","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 3.5 ms (SMS 0.3) | Advice: 0.1 ms | Total: 3.7 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B07","label":"routine","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 18.1 ms (SMS 0.8) | Advice: 0.1 ms | Total: 24.1 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B08","label":"routine","lang":"hinglish","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 13.7 ms (SMS 0.3) | Advice: 0.1 ms | Total: 13.9 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B09","label":"routine","lang":"hi","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 15.4 ms (SMS 0.3) | Advice: 0.0 ms | Total: 15.6 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B10","label":"routine","lang":"ta","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 17.9 ms (SMS 1.2) | Advice: 0.1 ms | Total: 18.4 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B11","label":"routine","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 26.4 ms (SMS 0.9) | Advice: 0.1 ms | Total: 27.0 ms","advice":"Heuristic Template"}
+{"app":"Sentinel","id":"B12","label":"routine","lang":"en","route":"share","verdict":"✓ LOOKS SAFE","timing":"Detect: 13.6 ms (SMS 0.8) | Advice: 0.1 ms | Total: 14.1 ms","advice":"Heuristic Template"}

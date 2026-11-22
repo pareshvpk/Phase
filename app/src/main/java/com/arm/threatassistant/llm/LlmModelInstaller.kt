@@ -170,7 +170,7 @@ object LlmModelInstaller {
                     url = BuildConfig.LLM_TOKENIZER_URL,
                     destination = tokenizerFile(app),
                     expectedBytes = 0L,
-                    expectedSha256 = "",
+                    expectedSha256 = BuildConfig.LLM_TOKENIZER_SHA256,
                     onBytes = { done, total ->
                         onProgress(LlmInstallLogic.progress(done, (estimatedTotal.takeIf { it > 0 } ?: total)) * 0.01f)
                     }

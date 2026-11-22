@@ -140,4 +140,12 @@ class TodayAlertsLogicTest {
         assertEquals(30 * 60 * 1000L, remaining)
         assertTrue(remaining > 0)
     }
+
+    @Test
+    fun retryingAnMmsRecordKeepsOneAlert() {
+        val now = millisAt(2026, 1, 2, 12, 30)
+        val message = alert("mms-42", now)
+        val once = TodayAlertsLogic.add(emptyList(), message, now, zone)
+        assertEquals(once, TodayAlertsLogic.add(once, message, now, zone))
+    }
 }

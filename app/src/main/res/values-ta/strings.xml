@@ -124,4 +124,30 @@
     <string name="settings_local_language_explanations_title">ஹிந்தி/தமிழில் AI விளக்கங்கள் (பரிசோதனை)</string>
     <string name="settings_local_language_explanations_summary">ஹிந்தி மற்றும் தமிழுக்கு சாதனத்தில் உள்ள மாடலைப் பயன்படுத்துக, நிலையான விளக்கத்திற்குப் பதிலாக.</string>
 
+    <string name="reason_disclosure">தனிப்பட்ட குறியீடு அல்லது கடவுச்சொல்லைத் தெரிவிக்கச் சொல்கிறது</string>
+    <string name="action_disclosure_private">பதிலில் உங்கள் OTP, PIN அல்லது கடவுச்சொல்லை அனுப்பாதீர்கள்.</string>
+    <string name="action_disclosure_verify">கோரிக்கையைச் சரிபார்க்க அந்தக் கணக்கின் அதிகாரப்பூர்வ செயலியைத் திறக்கவும்.</string>
+    <string name="action_disclosure_shared">ஏற்கெனவே பகிர்ந்துவிட்டீர்களா? அதிகாரப்பூர்வ செயலி மூலம் சேவை வழங்குநரைத் தொடர்புகொள்ளுங்கள்.</string>
+    <string name="reason_upi_mismatch">பணம் கிடைக்கும் என்று சொல்லி பணம் செலுத்த ஒப்புதல் கேட்கிறது</string>
+    <string name="upi_mismatch_explanation">இந்தக் கோரிக்கையை ஏற்றால் உங்கள் கணக்கிலிருந்து பணம் செல்லலாம். பணத்தைத் திரும்பப் பெற நீங்கள் பணம் செலுத்த ஒப்புதல் அளிக்க வேண்டியதில்லை.</string>
+    <string name="action_upi_decline">பணம் செலுத்தும் கோரிக்கையை நிராகரிக்கவும்.</string>
+    <string name="action_upi_verify">உங்கள் UPI செயலியை நீங்களே திறந்து பரிவர்த்தனை வரலாற்றைப் பாருங்கள்.</string>
+    <string name="action_upi_paid">ஏற்கெனவே பணம் செலுத்திவிட்டீர்களா? உங்கள் UPI செயலி அல்லது வங்கி மூலம் புகார் அளிக்கவும்.</string>
+    <string name="onboarding_check_title">எந்தச் செய்தியையும் சரிபார்க்கலாம்</string>
+    <string name="onboarding_check_body">ஒரு செய்தியை ஒட்டவும் அல்லது வேறொரு செயலியிலிருந்து உரையைப் பகிரவும். ARM மோசடிக்கான அறிகுறிகளைச் சரிபார்த்து, எது ஆபத்தாகத் தெரிகிறது என்பதை விளக்குகிறது.</string>
+    <string name="onboarding_privacy_title">அனைத்தும் உங்கள் கைப்பேசியிலேயே இருக்கும்</string>
+    <string name="onboarding_privacy_body">செய்திகள் இணையமின்றிச் சரிபார்க்கப்படும். மாதிரி நிறுவப்பட்டிருந்தால், AI விளக்கங்களும் உங்கள் கைப்பேசியிலேயே உருவாகும். செய்திகள் ஒருபோதும் பதிவேற்றப்படாது. ஆபத்தான செய்திகளின் எச்சரிக்கைகள் இன்றைக்கு மட்டும் இந்தக் கைப்பேசியில் தனிப்பட்ட முறையில் சேமிக்கப்பட்டு, நாள் முடிந்ததும் நீக்கப்படும்.</string>
+    <string name="onboarding_protection_title">ஆபத்தான செய்திகளுக்கு எச்சரிக்கைகளைப் பெறுங்கள்</string>
+    <string name="onboarding_protection_body">SMS பாதுகாப்பு விருப்பத்திற்குரியது. வரும் SMS மற்றும் MMS உரைகளை இந்தக் கைப்பேசியில் சரிபார்க்க இதை அமைக்கவும். எந்த அனுமதிகளை வழங்குவது என்பதை நீங்களே தேர்வு செய்யலாம்.</string>
+    <string name="onboarding_step">%2$d இல் %1$d</string>
+    <string name="onboarding_skip">தவிர்</string>
+    <string name="onboarding_next">அடுத்து</string>
+    <string name="onboarding_back">பின்செல்</string>
+    <string name="onboarding_set_up">பாதுகாப்பை அமைக்கவும்</string>
+    <string name="onboarding_not_now">இப்போது வேண்டாம்</string>
+    <string name="settings_privacy_title">தனியுரிமை</string>
+    <string name="settings_show_introduction">அறிமுகத்தை மீண்டும் காட்டு</string>
+    <string name="privacy_model_download">விருப்ப மாதிரிப் பதிவிறக்கங்களுக்கும் நெட்வொர்க் கண்காணிப்பை இயக்கும்போது நேரடியாகப் போக்குவரத்தை அனுப்பவும் ARM இணையத்தைப் பயன்படுத்துகிறது. கண்டறிதல் ஃபோனிலேயே நடக்கும்; கிளவுட் பகுப்பாய்வோ தொலை VPN சேவையகமோ இல்லை.</string>
+    <string name="privacy_protection_control">SMS, MMS, செய்திகளைப் படித்தல் மற்றும் அறிவிப்பு அனுமதிகள் விருப்பத்திற்குரியவை. அவை வரும் செய்திகளின் பாதுகாப்பிற்குப் பயன்படும். பாதுகாப்புத் தாவலில் எப்போது வேண்டுமானாலும் பாதுகாப்பை நிறுத்தலாம்.</string>
+    <string name="privacy_close">மூடு</string>
 </resources>

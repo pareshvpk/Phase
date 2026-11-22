@@ -20,34 +20,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.arm.threatassistant.R
 import com.arm.threatassistant.domain.detection.riskpolicy.ThreatVerdictLevel
 import com.arm.threatassistant.presentation.theme.ArmTheme
+import com.arm.threatassistant.presentation.result.OfflineExplanation
+import com.arm.threatassistant.presentation.result.ReasonId
 
 /** Up to three practical next steps for the verdict. */
 @Composable
 fun ActionsCard(
     verdict: ThreatVerdictLevel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    reasons: List<ReasonId> = emptyList()
 ) {
-    val actionRes = when (verdict) {
-        ThreatVerdictLevel.SAFE -> listOf(R.string.action_safe_1)
-        ThreatVerdictLevel.SUSPICIOUS -> listOf(
-            R.string.action_suspicious_1,
-            R.string.action_suspicious_2,
-            R.string.action_suspicious_3
-        )
-        ThreatVerdictLevel.HIGH_RISK -> listOf(
-            R.string.action_high_risk_1,
-            R.string.action_high_risk_2,
-            R.string.action_high_risk_3
-        )
-        ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> listOf(
-            R.string.action_insufficient_1,
-            R.string.action_insufficient_2
-        )
+    val count = when (verdict) {
+        ThreatVerdictLevel.SAFE -> 1
+        ThreatVerdictLevel.INSUFFICIENT_EVIDENCE -> 2
+        else -> 3
     }
+    val actions = OfflineExplanation.safeStepsFor(LocalContext.current, verdict, reasons).take(count)
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -65,7 +58,7 @@ fun ActionsCard(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            actionRes.forEach { res ->
+            actions.forEach { action ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
@@ -75,7 +68,7 @@ fun ActionsCard(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = stringResource(res),
+                        text = action,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )

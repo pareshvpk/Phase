@@ -1,0 +1,32 @@
+test_cli_failure_does_not_emit_a_success_report (test_evaluate.EvaluationTests.test_cli_failure_does_not_emit_a_success_report) ... ok
+test_cli_outputs_hashes_and_machine_readable_metrics (test_evaluate.EvaluationTests.test_cli_outputs_hashes_and_machine_readable_metrics) ... ok
+test_incomplete_or_inconsistent_output_is_rejected (test_evaluate.EvaluationTests.test_incomplete_or_inconsistent_output_is_rejected) ... ok
+test_label_csv_rejects_duplicates_unknown_labels_and_bad_indexes (test_evaluate.EvaluationTests.test_label_csv_rejects_duplicates_unknown_labels_and_bad_indexes) ... ok
+test_label_hash_identifies_the_bytes_actually_used (test_evaluate.EvaluationTests.test_label_hash_identifies_the_bytes_actually_used) ... ok
+test_missing_class_metrics_are_null_not_perfect (test_evaluate.EvaluationTests.test_missing_class_metrics_are_null_not_perfect) ... ok
+test_model_and_pattern_metrics_are_separate (test_evaluate.EvaluationTests.test_model_and_pattern_metrics_are_separate) ... ok
+test_out_of_range_labels_are_rejected_even_in_partial_mode (test_evaluate.EvaluationTests.test_out_of_range_labels_are_rejected_even_in_partial_mode) ... ok
+test_partial_labels_require_explicit_opt_in (test_evaluate.EvaluationTests.test_partial_labels_require_explicit_opt_in) ... ok
+test_capacity_idle_and_reset (test_monitor.MonitorTests.test_capacity_idle_and_reset) ... ok
+test_close_includes_final_ack_then_reused_tuple (test_monitor.MonitorTests.test_close_includes_final_ack_then_reused_tuple) ... ok
+test_direction_bytes_and_time (test_monitor.MonitorTests.test_direction_bytes_and_time) ... ok
+test_fanout_expires_and_history_stays_bounded (test_monitor.MonitorTests.test_fanout_expires_and_history_stays_bounded) ... ok
+test_high_rate_requires_measured_duration (test_monitor.MonitorTests.test_high_rate_requires_measured_duration) ... ok
+test_idle_live_deadline (test_monitor.MonitorTests.test_idle_live_deadline) ... ok
+test_invalid_header_lengths (test_monitor.MonitorTests.test_invalid_header_lengths) ... ok
+test_invalid_records (test_monitor.MonitorTests.test_invalid_records) ... ok
+test_linux_offloaded_vlan (test_monitor.MonitorTests.test_linux_offloaded_vlan) ... ok
+test_live_receive_restores_vlan_and_counts_truncation (test_monitor.MonitorTests.test_live_receive_restores_vlan_and_counts_truncation) ... ok
+test_normal_flow_has_no_behaviour_observation (test_monitor.MonitorTests.test_normal_flow_has_no_behaviour_observation) ... ok
+test_offline_cli_limit_and_imputation (test_monitor.MonitorTests.test_offline_cli_limit_and_imputation) ... ok
+test_pcap_formats (test_monitor.MonitorTests.test_pcap_formats) ... ok
+test_pcap_header_and_legacy_original_length (test_monitor.MonitorTests.test_pcap_header_and_legacy_original_length) ... ok
+test_synthetic_scan_is_observed_without_network_access (test_monitor.MonitorTests.test_synthetic_scan_is_observed_without_network_access) ... ok
+test_tcp_synack_direction (test_monitor.MonitorTests.test_tcp_synack_direction) ... ok
+test_vlan_and_invalid_frames (test_monitor.MonitorTests.test_vlan_and_invalid_frames) ... ok
+test_vlan_flows_and_fanout_are_isolated (test_monitor.MonitorTests.test_vlan_flows_and_fanout_are_isolated) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.062s
+
+OK

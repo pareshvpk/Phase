@@ -16,6 +16,8 @@ import com.arm.threatassistant.domain.detection.urldetection.UrlDetectionSeverit
  * unit-tested. [labelRes] keeps the string lookup next to the mapping.
  */
 enum class ReasonId {
+    UPI_PAYMENT_MISMATCH,
+    SECRET_DISCLOSURE,
     CREDENTIAL_REQUEST,
     FINANCIAL_IMPERSONATION,
     PAYMENT_DEMAND,
@@ -38,6 +40,8 @@ enum class ReasonId {
 
 val ReasonId.labelRes: Int
     get() = when (this) {
+        ReasonId.UPI_PAYMENT_MISMATCH -> R.string.reason_upi_mismatch
+        ReasonId.SECRET_DISCLOSURE -> R.string.reason_disclosure
         ReasonId.CREDENTIAL_REQUEST -> R.string.reason_credential
         ReasonId.FINANCIAL_IMPERSONATION -> R.string.reason_financial
         ReasonId.PAYMENT_DEMAND -> R.string.reason_payment
@@ -68,7 +72,10 @@ object ReasonMapper {
         val severities = mutableMapOf<ReasonId, Int>()
 
         ruleResult?.signals?.forEach { signal ->
-            val reason = signal.category.toReason()
+            val reason = when (signal.ruleId) {
+                "cred_003", "cred_004", "cred_006", "cred_009" -> ReasonId.SECRET_DISCLOSURE
+                else -> if (signal.isUpiPaymentMismatch) ReasonId.UPI_PAYMENT_MISMATCH else signal.category.toReason()
+            }
             severities[reason] = maxOf(severities[reason] ?: 0, signal.severity.rank())
         }
         urlResult?.signals?.forEach { signal ->
@@ -80,6 +87,8 @@ object ReasonMapper {
             severities[ReasonId.SCAM_WORDING] = 1
         }
 
+        if (ReasonId.SECRET_DISCLOSURE in severities) severities.remove(ReasonId.CREDENTIAL_REQUEST)
+        if (ReasonId.UPI_PAYMENT_MISMATCH in severities) severities.remove(ReasonId.PAYMENT_DEMAND)
         return severities.entries
             .sortedWith(
                 compareByDescending<Map.Entry<ReasonId, Int>> { it.value }
@@ -129,6 +138,8 @@ private fun UrlDetectionSeverity.rank(): Int = when (this) {
 
 private val ReasonId.priority: Int
     get() = when (this) {
+        ReasonId.UPI_PAYMENT_MISMATCH -> 102
+        ReasonId.SECRET_DISCLOSURE -> 101
         ReasonId.CREDENTIAL_REQUEST -> 100
         ReasonId.FINANCIAL_IMPERSONATION -> 90
         ReasonId.PAYMENT_DEMAND -> 80

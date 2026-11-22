@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_title">नेटवर्क सुरक्षा</string>
+    <string name="network_description">इस फ़ोन के TCP/UDP ट्रैफ़िक में असामान्य कनेक्शन पैटर्न की जाँच फ़ोन पर ही करें।</string>
+    <string name="network_start">निगरानी शुरू करें</string>
+    <string name="network_stop">निगरानी रोकें</string>
+    <string name="network_starting">शुरू हो रहा है…</string>
+    <string name="network_running">इस फ़ोन पर निगरानी चालू है</string>
+    <string name="network_stopped">निगरानी बंद है</string>
+    <string name="network_failed">निगरानी रुक गई। कनेक्शन जाँचें और फिर कोशिश करें।</string>
+    <string name="network_denied">VPN की अनुमति नहीं मिली। निगरानी बंद है।</string>
+    <string name="network_unsupported">नेटवर्क निगरानी के लिए Android 10 या बाद का संस्करण चाहिए।</string>
+    <string name="network_notification">फ़ोन पर ट्रैफ़िक विश्लेषण चालू है। देखने या रोकने के लिए टैप करें।</string>
+    <string name="network_alert_title">असामान्य नेटवर्क गतिविधि</string>
+    <string name="network_alert_body">ARM ने जाँचने योग्य ट्रैफ़िक पैटर्न देखा। सलाह के लिए नेटवर्क सुरक्षा खोलें।</string>
+    <string name="network_stats">%1$d पैकेट · %2$d KiB भेजे · %3$d KiB मिले\n%4$d सक्रिय प्रवाह · %5$d पूरे प्रवाह</string>
+    <string name="network_fanout">कई पोर्ट से संपर्क: इस फ़ोन ने एक मिनट में एक होस्ट के कम से कम 10 पोर्ट से संपर्क किया। खोज उपकरण भी ऐसा कर सकते हैं। अनजान ऐप बंद करके देखें कि गतिविधि रुकती है या नहीं; उनकी पहुँच की समीक्षा करें।</string>
+    <string name="network_connections">कनेक्शन में उछाल: 10 सेकंड में कम से कम 100 प्रवाह शुरू हुए। डाउनलोड या व्यस्त ऐप इसका कारण हो सकते हैं। हाल की गतिविधि रोकें और चल रहे ऐप जाँचें।</string>
+    <string name="network_udp_burst">उच्च UDP दर: एक प्रवाह में औसतन कम से कम 1,000 डेटाग्राम प्रति सेकंड रहे। स्ट्रीमिंग या गेम इसका कारण हो सकते हैं। उन्हें रोककर गतिविधि जाँचें।</string>
+    <string name="network_estimate">प्रायोगिक मॉडल वर्ग: %1$s। %2$d अनुपलब्ध विशेषताओं के लिए प्रशिक्षण औसत इस्तेमाल हुआ। यह हमले की पुष्टि या सुरक्षा का प्रमाण नहीं है।</string>
+    <string name="network_clear">निष्कर्ष साफ़ करें</string>
+    <string name="network_limits">केवल IPv4/IPv6 TCP और UDP। एन्क्रिप्टेड सामग्री खोली नहीं जाती। निष्कर्ष पैटर्न बताते हैं, साबित हमले नहीं। खतरे अपने आप ब्लॉक नहीं होते। दूसरा VPN साथ नहीं चल सकता।</string>
+    <string name="network_consent">ARM ट्रैफ़िक मेटाडेटा जाँचने और कनेक्शन सीधे फ़ोन से आगे भेजने के लिए Android VPN इंटरफ़ेस इस्तेमाल करता है। रिमोट VPN सर्वर या क्लाउड विश्लेषण नहीं होता। सामग्री आगे भेजी जाती है, सहेजी नहीं जाती। निष्कर्ष साफ़ किए जाने या ऐप प्रक्रिया बंद होने तक मेमोरी में रहते हैं। यह दूसरे चालू VPN को बदल देगा। पिंग जैसे असमर्थित प्रोटोकॉल नहीं चल सकते। निगरानी शुरू या बंद होने पर कनेक्शन दोबारा जुड़ सकते हैं। आप कभी भी रोक सकते हैं। Wi-Fi या मोबाइल कनेक्शन ज़रूरी है; नेटवर्क बदलने पर निगरानी दोबारा शुरू करनी पड़ सकती है।</string>
+</resources>

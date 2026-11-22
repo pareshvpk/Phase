@@ -26,5 +26,10 @@ data class DetectionSignal(
     val matchedText: String,
     val severity: DetectionSeverity,
     val detectorId: String,
-    val detectorVersion: String
-)
+    val detectorVersion: String,
+    /** Exact inclusive offsets in the original message for a multi-part signal. */
+    val originalRanges: List<IntRange> = emptyList()
+) {
+    internal val isUpiPaymentMismatch: Boolean
+        get() = ruleId == UpiPaymentRequest.RULE_ID && originalRanges.isNotEmpty()
+}

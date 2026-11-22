@@ -48,7 +48,7 @@ object TodayAlertsLogic {
         } else {
             alert
         }
-        return (listOf(bounded) + prune(list, nowMillis, zone)).take(MAX_ENTRIES)
+        return (listOf(bounded) + prune(list, nowMillis, zone).filterNot { it.id == alert.id }).take(MAX_ENTRIES)
     }
 
     fun millisUntilNextMidnight(nowMillis: Long, zone: ZoneId): Long {

@@ -1,0 +1,82 @@
+{
+  "uci": {
+    "url": "https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip",
+    "licence": "CC BY 4.0",
+    "real": true,
+    "cite": "Almeida & Hidalgo, UCI SMS Spam Collection (2011)",
+    "file": "uci.zip",
+    "bytes": 203415,
+    "sha256": "1587ea43e58e82b14ff1f5425c88e17f8496bfcdb67a583dbff9eefaf9963ce3",
+    "downloaded": "2026-11-17"
+  },
+  "mendeley": {
+    "url": "https://data.mendeley.com/public-files/datasets/f45bkkt8pr/files/edb361de-918d-469f-9106-e84823830665/file_downloaded",
+    "licence": "CC BY 4.0",
+    "real": true,
+    "cite": "Mishra & Soni, SMS PHISHING DATASET, Mendeley Data, doi:10.17632/f45bkkt8pr.1",
+    "file": "mendeley.zip",
+    "bytes": 244698,
+    "sha256": "9bbf3188fdad81495d8e82825648b9b63b53fc86841a3d26c02629990b233cc3",
+    "downloaded": "2026-11-17"
+  },
+  "carnageiron": {
+    "url": "https://huggingface.co/datasets/carnageiron/scam-ham-india/resolve/main/scam_hum_india.csv",
+    "licence": "Apache-2.0",
+    "real": true,
+    "cite": "carnageiron/scam-ham-india (real samples + some augmentation)",
+    "file": "carnageiron.csv",
+    "bytes": 255834,
+    "sha256": "b1d78936cc18c0251d2f865f7ce190e9caccbb0164489624ba7507bc80303901",
+    "downloaded": "2026-11-17"
+  },
+  "bolewara": {
+    "url": "https://huggingface.co/datasets/bolewara/hinglish-scam-text-dataset/resolve/main/data.json",
+    "licence": "CC BY 4.0",
+    "real": true,
+    "cite": "bolewara/hinglish-scam-text-dataset",
+    "file": "bolewara.json",
+    "bytes": 472689,
+    "sha256": "4c2ea6d6c9303f6b7e27740cb3bbebde57ec3cc10ec7b7f9e565e99b5d483f16",
+    "downloaded": "2026-11-17"
+  },
+  "karanverma": {
+    "url": "https://huggingface.co/datasets/karanverma19/Indian_Multilingual_Scam_Message_Dataset/resolve/main/ultra_premium_scam_dataset.csv",
+    "licence": "Apache-2.0",
+    "real": false,
+    "cite": "karanverma19/Indian_Multilingual_Scam_Message_Dataset",
+    "file": "karanverma.csv",
+    "bytes": 15984,
+    "sha256": "3f55ed6f161d0b5f5dafde8b41b5134c8b64b7f854dc34cc265b946927e21bb6",
+    "downloaded": "2026-11-17"
+  },
+  "ridham": {
+    "url": "https://huggingface.co/datasets/Ridham115/indian-scam-sms-synthetic-audited/resolve/main/data/synthetic_audited.csv",
+    "licence": "CC BY 4.0",
+    "real": false,
+    "cite": "Ridham115/indian-scam-sms-synthetic-audited",
+    "file": "ridham.csv",
+    "bytes": 389521,
+    "sha256": "45bde5f156a1a42698bab209e32bcd41b3639013d772f644cc3208ed39fb61e2",
+    "downloaded": "2026-11-17"
+  },
+  "anmol14": {
+    "url": "https://huggingface.co/datasets/anmolshrivastav/scam_ham_india_14_languages/resolve/main/scam_ham_india_14_languages.csv",
+    "licence": "MIT",
+    "real": false,
+    "cite": "anmolshrivastav/scam_ham_india_14_languages",
+    "file": "anmol14.csv",
+    "bytes": 3497601,
+    "sha256": "50b633a3a17be7b8622a99757295a73d78567f27c13d6f7b12935ba4f688d190",
+    "downloaded": "2026-11-17"
+  },
+  "cloveai": {
+    "url": "hf-rows:CloveAI/india-spam-sms",
+    "licence": "MIT",
+    "real": false,
+    "cite": "CloveAI/india-spam-sms",
+    "file": "cloveai.jsonl",
+    "bytes": 2051596,
+    "sha256": "41fbcf5a2dc6235ee5d65e1a3bed9fe4b557781f09136e08a0255329accd91fa",
+    "downloaded": "2026-11-17"
+  }
+}

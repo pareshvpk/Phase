@@ -1,0 +1,16 @@
+﻿{
+    "date":  "2026-11-21",
+    "jvm_tests":  377,
+    "jvm_failures":  0,
+    "lint_errors":  0,
+    "lint_warnings":  33,
+    "device":  "vivo V2338 (API 36)",
+    "phone_tests":  1,
+    "phone_seconds":  3.122,
+    "debug_apk_sha256":  "6b63cedf492aac2b60ba7610108360fe7ee0066f1836fb83be74bd592cf36f38",
+    "release_phone_tested":  false,
+    "scope":  "Controlled IPv4 TCP/UDP forwarding, model, fanout, stop and restart",
+    "unresolved":  "AVG warning; broader IPv6, DNS/TLS/QUIC, handover and soak validation",
+    "release_apk_sha256":  "884eb2242068f7b6e412e39bfa11b46d8f725f03e6605596b8b1df35d24f4981",
+    "release_signature_verified":  true
+}

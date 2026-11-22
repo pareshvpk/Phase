@@ -1,0 +1,10 @@
+{
+  "app": "Sentinel",
+  "id": "M01",
+  "label": "routine",
+  "lang": "en",
+  "route": "manual",
+  "verdict": "✓ LOOKS SAFE",
+  "timing": "Detect: 6.3 ms (SMS 0.5) | Advice: 8.6 ms | Total: 19.6 ms",
+  "advice": "Heuristic Template"
+}

@@ -1,0 +1,11 @@
+1
+Wifi is disabled
+Wifi scanning is always available
+
+com.arm.threatassistant.llm.LlmDeviceTest:.
+
+Time: 20.252
+
+OK (1 test)
+
+

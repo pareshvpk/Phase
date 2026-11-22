@@ -7,6 +7,7 @@ import com.arm.threatassistant.llm.LlmExplainerProvider
 import com.arm.threatassistant.llm.LlmInstallState
 import com.arm.threatassistant.presentation.settings.AppSettings
 import com.arm.threatassistant.presentation.settings.explanationLanguageName
+import com.arm.threatassistant.sms.MmsWatcher
 import java.util.Locale
 
 /**
@@ -24,6 +25,7 @@ class ThreatAssistantApplication : Application() {
             priority = Thread.MIN_PRIORITY
         }.start()
         LlmExplainerProvider.warmUp(this, currentExplanationLanguageName())
+        MmsWatcher.schedule(this)
     }
 
     override fun onTrimMemory(level: Int) {

@@ -26,3 +26,9 @@ tools/network_ids/data/
 keystore.properties
 *.jks
 *.keystore
+
+# Local submission archives and verification output
+artifacts/
+
+# Pinned source archive is retained; this is its disposable extraction.
+tools/network_android/vendor/hev-socks5-tunnel-2.20.0/

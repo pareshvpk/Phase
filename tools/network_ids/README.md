@@ -16,14 +16,18 @@ numpy forward pass, so it runs on a Raspberry Pi 5 (or any PC) with Python 3.11
 and numpy. `scipy` is only needed to retrain; the training script uses it for
 L-BFGS.
 
-This is a **companion / teaching tool**, not an inline firewall. It does not
-capture packets, block traffic or scan your machine. It tells you what a flow
-looks like, why, and what to check.
+The companion supports prepared NSL-KDD feature rows and passive packet summaries.
+The packet monitor measures flow metadata and produces an experimental model
+score for each flow. All processing stays local.
 
 ## Files
 
 ```
 tools/network_ids/
+  monitor.py            PCAP/live passive flow monitoring and offline demo
+  test_monitor.py       synthetic packet tests
+  evaluate.py           offline evaluation of independently labelled monitor output
+  test_evaluate.py      metric, coverage and input-integrity tests
   train.py              training pipeline (numpy + scipy, offline)
   detect.py             inference + explanations (numpy only)
   data/raw/KDDTrain+.txt
@@ -169,44 +173,153 @@ For every flow:
 The gradient/input attribution is a simple local saliency method. It explains
 the model, not ground truth.
 
-## Live traffic -> NSL-KDD features (not implemented)
+## Monitoring an Ethernet interface or an offline PCAP
 
-`detect.py` consumes feature rows. It does **not** capture live traffic. To go
-from a real home network to `flows.csv` you would need a flow exporter such as
-Zeek or argus, plus a converter. That converter is not included here; the
-honest status is "design documented, code not written".
+Run these commands from `tools/network_ids`. Install Python 3.11+ and NumPy
+(on Raspberry Pi OS, `sudo apt install python3-numpy`). The demo uses two
+in-memory synthetic UDP datagrams and works offline without capture privileges
+or dataset downloads.
 
-Sketch of the conversion:
+```sh
+python3 monitor.py --demo
+python3 monitor.py --demo-scan
+python3 monitor.py --pcap sample.pcap --max-packets 1000
+sudo python3 monitor.py --interface eth0 --seconds 30
+python3 -m unittest discover -p 'test_monitor.py' -v
+```
 
-1. Run Zeek (or argus) on the Pi / router mirror port and keep connection logs
-   (`conn.log` / argus records): timestamps, source and destination
-   addresses/ports, protocol, duration, bytes and connection state.
-2. For each finished connection, map to one NSL-KDD row:
-   - `duration`, `src_bytes`, `dst_bytes` from the log;
-   - `protocol_type` -> `tcp` / `udp` / `icmp`;
-   - `flag` -> `SF` for a normal close, `S0` for no reply / SYN-only, `REJ`
-     for rejected, `RSTO` / `RSTR` / `RSTOS0` for reset variants, `OTH`
-     otherwise;
-   - `service` -> the well-known port's service name from the NSL-KDD
-     category list (`http`, `domain`, `ftp`, `ssh`, `telnet`, `smtp`, ...),
-     otherwise `other`;
-   - the login/privilege columns (`logged_in`, `num_failed_logins`,
-     `root_shell`, ...) are not visible in a connection log. Leave them at 0;
-     this loses information for r2l/u2r. The z-score pipeline accepts zeros.
-3. The `count`, `srv_count`, `*_rate`, `same_srv_rate` and `dst_host_*`
-   features are windowed aggregates, not per-connection values. They need:
-   - a 2-second sliding window per destination host for `count` and the
-     serror/rerror/same-service rates;
-   - a 100-connection window per destination host for the `dst_host_*`
-     columns.
-   Compute them over recent connections, then emit the row. Results will
-   differ from NSL-KDD's exact definitions; expect accuracy loss.
-4. Append the two label columns only if you have ground truth for evaluation.
+Live capture uses a Linux packet socket and requires CAP_NET_RAW or root.
+Choose an Ethernet interface that sees the intended traffic. By default the Pi
+sees frames delivered to its interface. Capturing other hosts' conversations
+requires an appropriate observation point and interface configuration.
+[Python socket API](https://docs.python.org/3/library/socket.html#socket-families) and [Linux packet sockets](https://man7.org/linux/man-pages/man7/packet.7.html).
 
-No IP addresses are passed to the model or to the optional language model, so
-the rows themselves are privacy-friendly.
+Both sources support Ethernet IPv4 TCP/UDP, including up to two VLAN tags.
+Flows and port-fanout histories are isolated by VLAN stack as well as endpoints.
+The JSON `vlan_ids` array lists IDs outermost first, or is empty for untagged
+traffic. VLAN priority bits do not create a different network. Linux live
+capture requests `PACKET_AUXDATA` and restores an outer tag stripped into
+driver metadata; truncated frames or control metadata are counted as skipped.
+These paths have synthetic and mocked-socket tests; actual NIC offload behaviour
+still needs verification on the target device.
+Offline input accepts classic PCAP 2.4 with microsecond or nanosecond timestamps
+in either byte order. IPv6, non-TCP/UDP, fragments, truncated and malformed
+headers count as skipped frames. PCAPNG requires conversion to Ethernet PCAP.
+Records above 256 KiB are rejected. Frame checksums are not validated.
+[Classic PCAP file format](https://datatracker.ietf.org/doc/draft-ietf-opsawg-pcap/).
+
+The monitor streams JSON Lines to stdout. A flow includes endpoint addresses
+and ports, first and last timestamps (Unix seconds), packet count, observed
+model inputs, the list of imputed inputs, local model contributions and a
+class-specific follow-up check. Only metadata is printed. The final summary
+counts frames processed, frames skipped and flows emitted. Errors go to stderr
+with a nonzero exit code. Capture defaults are 10,000 frames, 512 active flows
+and 30 live seconds. `--max-packets`, `--max-flows`, `--seconds` and `--idle`
+adjust these bounds. Idle expiration uses the timestamp of the next observed
+frame and defaults to 30 seconds. Capacity pressure emits the least recently
+seen flow. At end of input or a capture limit all remaining flows are emitted.
+
+A flow groups both directions of a protocol and endpoint pair. The first sender
+is treated as originator, reversed when the first TCP packet is SYN+ACK.
+Midstream observations may therefore reverse client/server roles. Duration is
+whole seconds. Byte counts sum transport payload lengths, including retransmits.
+The destination port suggests a service on a short allowlist. Both TCP FINs
+suggest the SF state. A reset ends a flow, and a new SYN following both FINs
+starts a fresh one. A midstream capture, reused tuple, offload or dropped
+packets can distort the observed values. The monitor does not reassemble TCP
+or read application content.
+
+Each flow's `observations` list includes an explanation and follow-up action
+when a rule triggers. One rule looks for ten distinct destination ports active
+within 60 seconds between the same apparent source and destination IP over the
+same protocol, using the last packet time of completed flow summaries. It
+retains up to ten ports for each of the 512 most recently processed peer pairs.
+A second rule looks for at least 1,000 packets per second averaged across a
+single flow lasting at least one second. Ordinary discovery or bulk transfers
+can meet these thresholds. The offline `--demo-scan` fixture produces twelve
+UDP flow summaries and three port-fanout observations without opening sockets.
+
+Unobservable login and privilege features, historical NSL-KDD window
+statistics and other unknown inputs are set to their training means in
+standardized feature space. Missing categorical blocks use the training mean
+for each one-hot column. The raw features used and imputed feature names are
+reported per flow. The resulting model scores are uncalibrated on packet
+captures. The KDDTest+ metrics above apply only to complete benchmark rows.
+A labelled deployment capture is required to measure accuracy at that site.
+
+## Evaluating labelled capture output
+
+`evaluate.py` uses only the Python standard library and never accesses the
+network. Save a complete monitor run, then label each emitted flow from
+independent evidence such as a controlled test scenario or confirmed host logs.
+Do not use the model's predicted class as ground truth.
+
+```sh
+python3 monitor.py --pcap sample.pcap --max-packets 10000 > flows.jsonl
+python3 evaluate.py --input flows.jsonl --labels labels.csv > evaluation.json
+python3 -m unittest discover -s . -p 'test_*.py' -v
+```
+
+The UTF-8 CSV must have exactly `flow_index,label` columns. Indexes start at one
+and count only `type: flow` records in emission order, excluding the summary:
+
+```csv
+flow_index,label
+1,normal
+2,probe
+3,dos
+```
+
+Allowed classes are `normal`, `dos`, `probe`, `r2l` and `u2r`. Label every flow
+by default. `--allow-partial` explicitly permits a labelled subset and reports
+its coverage. Duplicate indexes, unknown classes, out-of-range labels, incomplete
+output and inconsistent summary counts fail with a nonzero exit code. Input
+must be UTF-8; in Windows PowerShell use `| Set-Content -Encoding UTF8 flows.jsonl`
+instead of its default redirection encoding.
+
+The report includes SHA-256 hashes of the exact monitor output and labels used,
+multiclass confusion matrix (rows=true, columns=predicted), per-class precision
+and recall, and binary attack recall/false-positive rate. It measures the
+experimental model separately from the presence of traffic-pattern observations.
+A zero denominator is JSON `null`, never an assumed perfect result. The report
+contains counts rather than endpoint addresses or packet content.
+
+These are **flow-segment** metrics. Idle/capacity limits can split connections,
+and fanout observations need several flows before triggering. Metrics do not
+measure unique incidents, skipped protocols, unlabelled traffic or unseen hosts.
+Synthetic fixture results validate the evaluator and cannot establish live
+intrusion-detection accuracy.
 
 ## Optional Llama via ExecuTorch `llama_main`
+
+### Observed traffic patterns
+
+The monitor also reports bounded, deterministic observations independently of
+the experimental classifier: at least 10 distinct destination ports contacted
+by one source on one device within 60 seconds, or a flow averaging at least
+1,000 packets per second over at least one measured second. Authorized scanners
+and large legitimate transfers can produce these observations. They are reasons
+to investigate, not confirmed attacks. Each observation includes an explanation
+and a verification/remediation step. History is capped at 512 source/device pairs
+and 10 retained ports per pair.
+
+Run an entirely offline synthetic port-fanout example (no packets are sent):
+
+```sh
+python3 tools/network_ids/monitor.py --demo-scan
+python3 -m unittest discover -s tools/network_ids -v
+```
+
+Live capture sees only traffic delivered to the selected interface; it does not
+automatically observe an entire switched network. The implementation currently
+supports Ethernet IPv4 TCP/UDP, not IPv6, ICMP, fragmented-IP reassembly or PCAPNG.
+The summary counts unsupported/truncated frames as skipped. Complete-row NSL-KDD
+metrics do not apply to these partial-feature monitor outputs.
+
+Protocol references: [Linux packet socket API](https://man7.org/linux/man-pages/man7/packet.7.html),
+[PCAP format draft](https://www.ietf.org/archive/id/draft-ietf-opsawg-pcap-07.html).
+
+### Existing feature-row Llama runner
 
 `--llama-cmd` is optional. If given, `detect.py` builds a short prompt (class,
 confidence, top features, no IPs or raw logs), writes it to the command's
