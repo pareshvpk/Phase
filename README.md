@@ -23,6 +23,11 @@ companion for Arm Linux. Current application: **2.1.0**, package
 Detection and explanations run on the phone. Internet permission supports optional
 model downloads and direct forwarding for opt-in network monitoring. No public
 model download URL is configured. The approximately 1.14 GB Llama model is separate from the APK.
+
+## Download
+
+Download the signed Android APK from the [ARM 2.1.0 GitHub Release](https://github.com/pareshvpk/Phase/releases/tag/v2.1.0).
+It supports Android 8.0 or later on ARM devices. The optional Llama model is not included in the APK.
 See [verified offline model installation](tools/llm/README.md).
 
 ## Network companion
